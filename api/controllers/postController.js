@@ -1,4 +1,3 @@
-const paginate = require('../utils/paginate');
 const apiFilter = require('../utils/apiFilter');
 
 exports.getAllPosts = async ({ Post, query }, res) => {

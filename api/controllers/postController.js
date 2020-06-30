@@ -1,6 +1,8 @@
 const apiFilter = require('../utils/apiFilter');
+const catchError = require('../utils/catchError');
+const AppError = require('../utils/appError');
 
-exports.getAllPosts = async ({ Post, query }, res) => {
+exports.getAllPosts = catchError(async ({ Post, query }, res, next) => {
   const posts = await Post.findAll(apiFilter(query, 'post_id'));
 
   res.status(200).json({
@@ -10,10 +12,12 @@ exports.getAllPosts = async ({ Post, query }, res) => {
       posts,
     },
   });
-};
+});
 
-exports.getPost = async ({ Post, params }, res) => {
+exports.getPost = catchError(async ({ Post, params }, res, next) => {
   const post = await Post.findOne({ where: { link: params.link } });
+
+  if (!post) return next(new AppError('Document not found', 404));
 
   res.status(200).json({
     status: 'success',
@@ -21,9 +25,9 @@ exports.getPost = async ({ Post, params }, res) => {
       post,
     },
   });
-};
+});
 
-exports.createPost = async ({ Post, body }, res) => {
+exports.createPost = catchError(async ({ Post, body }, res, next) => {
   const newPost = await Post.create({
     content: body.content,
     link: Post.generateLink(),
@@ -35,10 +39,10 @@ exports.createPost = async ({ Post, body }, res) => {
       post: newPost,
     },
   });
-};
+});
 
-exports.updatePost = async ({ Post, params, body }, res) => {
-  await Post.update(
+exports.updatePost = catchError(async ({ Post, params, body }, res, next) => {
+  const result = await Post.update(
     { content: body.content },
     {
       where: {
@@ -47,21 +51,25 @@ exports.updatePost = async ({ Post, params, body }, res) => {
     }
   );
 
+  if (!result[0]) return next(new AppError('Document not found', 404));
+
   res.status(204).json({
     status: 'success',
     data: null,
   });
-};
+});
 
-exports.deletePost = async ({ Post, params }, res) => {
-  await Post.destroy({
+exports.deletePost = catchError(async ({ Post, params }, res, next) => {
+  const result = await Post.destroy({
     where: {
       link: params.link,
     },
   });
 
+  if (!result) return next(new AppError('Document not found', 404));
+
   res.status(204).json({
     status: 'success',
     data: null,
   });
-};
+});

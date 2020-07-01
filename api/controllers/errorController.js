@@ -9,8 +9,20 @@ const handleMDBError = (err) => {
     return new AppError(`Invalid field: ${invalidField}`, 400);
   }
 
+  if (
+    err.name === 'SequelizeValidationError' ||
+    err.name === 'SequelizeUniqueConstraintError'
+  )
+    return new AppError(err.errors[0].message, 400);
+
   return err;
 };
+
+const handleJWTError = () =>
+  new AppError('Invalid token. Please login again', 401);
+
+const handleJWTExpiredError = () =>
+  new AppError('Your token has expired. Please log in again', 401);
 
 const sendErrorDev = (err, req, res) => {
   return res.status(err.statusCode).json({
@@ -40,10 +52,13 @@ module.exports = (err, req, res, next) => {
 
   if (process.env.NODE_ENV === 'development') sendErrorDev(err, req, res);
   else if (process.env.NODE_ENV === 'production') {
+    // if (process.env.NODE_ENV === 'development') {
     let error = { ...err };
     error.message = err.message;
 
-    if (err.name === 'SequelizeDatabaseError') error = handleMDBError(error);
+    if (err.name.startsWith('Sequelize')) error = handleMDBError(error);
+    if (err.name === 'JsonWebTokenError') error = handleJWTError(error);
+    if (err.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
     sendErrorProd(error, req, res);
   }

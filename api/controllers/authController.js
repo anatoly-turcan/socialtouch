@@ -6,6 +6,7 @@ const catchError = require('../utils/catchError');
 const validate = require('../utils/validate');
 const userConstraints = require('../validators/userConstraints');
 const User = require('../entities/userSchema');
+const UserSettings = require('../entities/userSettingsSchema');
 const UserModel = require('../models/userModel');
 
 const signToken = (id, salt) => {
@@ -56,6 +57,9 @@ exports.signup = catchError(async ({ connection, body }, res, next) => {
     .getRepository(User)
     .save(await user.prepare());
 
+  // Create row in the user_settings table
+  await connection.getRepository(UserSettings).save({ user_id: newUser.id });
+
   createSendToken(newUser, 201, res);
 });
 
@@ -68,14 +72,12 @@ exports.signin = catchError(async ({ connection, body }, res, next) => {
   );
   if (validation) return next(new AppError(validation, 400));
 
-  const additionalColumns = ['id', 'salt', 'password_hash'];
-
   const user = await connection
     .getRepository(User)
-    .createQueryBuilder('user')
-    .select('user')
-    .addSelect(additionalColumns.map((column) => `user.${column}`))
-    .where('user.email = :email', { email })
+    .createQueryBuilder()
+    .select()
+    .addSelect(['id', 'salt', 'password_hash'])
+    .where('active = 1 AND email = :email', { email })
     .getOne();
 
   if (!user || !(await UserModel.correctPassword(password, user.password_hash)))
@@ -112,10 +114,10 @@ exports.protect = catchError(async (req, res, next) => {
 
   const user = await req.connection
     .getRepository(User)
-    .createQueryBuilder('user')
-    .select('user')
-    .addSelect(additionalColumns.map((column) => `user.${column}`))
-    .where('user.id = :id', { id })
+    .createQueryBuilder()
+    .select()
+    .addSelect(...additionalColumns)
+    .where('active = 1 AND id = :id', { id })
     .getOne();
 
   if (!user)
@@ -141,11 +143,12 @@ exports.forgotPassword = catchError(async ({ connection, body }, res, next) => {
   const validation = validate({ email: body.email }, userConstraints.email);
   if (validation) return next(new AppError(validation, 400));
 
-  const user = await connection
-    .getRepository(User)
-    .createQueryBuilder('user')
-    .select('user')
-    .where('user.email = :email', { email: body.email })
+  const repo = connection.getRepository(User);
+
+  const user = await repo
+    .createQueryBuilder()
+    .select()
+    .where('active = 1 AND email = :email', { email: body.email })
     .getOne();
 
   if (!user)
@@ -156,14 +159,13 @@ exports.forgotPassword = catchError(async ({ connection, body }, res, next) => {
     resetToken,
   } = UserModel.createPasswordResetToken();
 
-  await connection
-    .getRepository(User)
-    .createQueryBuilder('user')
+  await repo
+    .createQueryBuilder()
     .update()
     .set({
       password_reset_token: passwordResetToken,
     })
-    .where('user.id = :id', { id: user.id })
+    .where('id = :id', { id: user.id })
     .execute();
 
   // Sending reset url to the email
@@ -176,16 +178,19 @@ exports.forgotPassword = catchError(async ({ connection, body }, res, next) => {
 
 exports.resetPassword = catchError(
   async ({ connection, params, body }, res, next) => {
+    const repo = connection.getRepository(User);
+
     const hashedToken = crypto
       .createHash('sha256')
       .update(params.token)
       .digest('hex');
 
-    const user = await connection
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .select('user')
-      .where('user.password_reset_token = :token', { token: hashedToken })
+    const user = await repo
+      .createQueryBuilder()
+      .select()
+      .where('active = 1 AND password_reset_token = :token', {
+        token: hashedToken,
+      })
       .getOne();
 
     if (!user) return next(new AppError('Token has expired', 400));
@@ -198,16 +203,15 @@ exports.resetPassword = catchError(
     );
     if (validation) return next(new AppError(validation, 400));
 
-    await connection
-      .getRepository(User)
-      .createQueryBuilder('user')
+    await repo
+      .createQueryBuilder()
       .update()
       .set({
         password_reset_token: null,
         password_hash: await UserModel.hashPassword(password),
         password_changed_at: new Date().toISOString(),
       })
-      .where('user.id = :id', { id: user.id })
+      .where('id = :id', { id: user.id })
       .execute();
 
     createSendToken(user, 200, res);
@@ -217,12 +221,12 @@ exports.resetPassword = catchError(
 exports.updatePassword = catchError(
   async ({ connection, user: currentUser, body }, res, next) => {
     const { password, passwordConfirm, newPassword } = body;
+    const repo = connection.getRepository(User);
 
-    const user = await connection
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .select('user')
-      .where('user.id = :id', { id: currentUser.id })
+    const user = await repo
+      .createQueryBuilder()
+      .select()
+      .where('id = :id', { id: currentUser.id })
       .getOne();
 
     if (!(await UserModel.correctPassword(password, user.password_hash)))
@@ -234,12 +238,11 @@ exports.updatePassword = catchError(
     );
     if (validation) return next(new AppError(validation, 400));
 
-    await connection
-      .getRepository(User)
-      .createQueryBuilder('user')
+    await repo
+      .createQueryBuilder()
       .update()
       .set({ password_hash: await UserModel.hashPassword(newPassword) })
-      .where('user.id = :id', { id: user.id })
+      .where('id = :id', { id: user.id })
       .execute();
 
     createSendToken(user, 200, res);

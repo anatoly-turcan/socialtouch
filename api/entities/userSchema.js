@@ -48,6 +48,7 @@ module.exports = new EntitySchema({
     link: {
       type: 'varchar',
       nullable: false,
+      unique: true,
     },
     active: {
       type: 'boolean',

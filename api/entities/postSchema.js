@@ -42,7 +42,7 @@ module.exports = new EntitySchema({
       type: 'many-to-one',
       joinTable: true,
       joinColumn: { name: 'user_id', referencedColumnName: 'id' },
-      cascade: true,
+      cascade: ['insert', 'update'],
     },
   },
 });

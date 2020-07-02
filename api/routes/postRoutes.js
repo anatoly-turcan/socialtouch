@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const postController = require('../controllers/postController');
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router
   .route('/')

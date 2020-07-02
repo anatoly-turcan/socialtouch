@@ -1,37 +1,16 @@
-const { randomBytes } = require('crypto');
-const { DataTypes, Model } = require('sequelize');
+const crypto = require('crypto');
 
-class Post extends Model {
-  static generateLink() {
-    return randomBytes(10).toString('hex');
+module.exports = class Post {
+  constructor(userId, content, groupId = null) {
+    this.user_id = userId;
+    this.group_id = groupId;
+    this.content = content;
   }
-}
 
-module.exports = (sequelize) => {
-  return Post.init(
-    {
-      post_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      user_id: DataTypes.INTEGER,
-      group_id: DataTypes.INTEGER,
-      content: DataTypes.TEXT,
-      content_preview_limit: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-      },
-      link: {
-        type: DataTypes.STRING(20),
-        allowNull: false,
-      },
-    },
-    {
-      sequelize,
-      modelName: 'post',
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-    }
-  );
+  prepare() {
+    this.salt = crypto.randomBytes(8).toString('hex');
+    this.link = crypto.randomBytes(12).toString('hex');
+
+    return this;
+  }
 };

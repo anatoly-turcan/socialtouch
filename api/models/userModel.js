@@ -1,50 +1,25 @@
-const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const { DataTypes, Model } = require('sequelize');
+const bcrypt = require('bcryptjs');
 
-class User extends Model {
-  static generateLink() {
-    return crypto.randomBytes(10).toString('hex');
+module.exports = class User {
+  constructor(username, email, password, passwordConfirm) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+    this.passwordConfirm = passwordConfirm;
   }
 
-  static generateSalt() {
-    return crypto.randomBytes(8).toString('hex');
+  async prepare() {
+    this.salt = crypto.randomBytes(8).toString('hex');
+    this.link = crypto.randomBytes(12).toString('hex');
+    this.password_hash = await bcrypt.hash(this.password, 12);
+    this.password = undefined;
+
+    return this;
   }
 
   static async hashPassword(password) {
     return await bcrypt.hash(password, 12);
-  }
-
-  static validate(
-    body,
-    fields = { username: true, email: true, password: true }
-  ) {
-    if (fields.username) {
-      if (!body.password) return 'Missing fields';
-
-      if (body.username.length < 2) return 'Username must be greater than 1';
-
-      if (body.username.length > 20) return 'Username must not exceed 20';
-    }
-
-    if (fields.email) {
-      if (!body.email) return 'Missing fields';
-
-      if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(body.email))
-        return 'Invalid email address';
-    }
-
-    if (fields.password) {
-      if (!body.password || !body.passwordConfirm) return 'Missing fields';
-
-      if (body.password.length < 8) return 'Password must be greater than 7';
-
-      if (body.password.length > 30) return 'Password must not exceed 30';
-
-      if (body.password !== body.passwordConfirm) return 'Password mismatch';
-    }
-
-    return null;
   }
 
   static async correctPassword(password, hash) {
@@ -71,60 +46,4 @@ class User extends Model {
 
     return { passwordResetToken, resetToken };
   }
-}
-
-module.exports = (sequelize) => {
-  return User.init(
-    {
-      user_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      username: {
-        type: DataTypes.STRING(20),
-        allowNull: false,
-        unique: {
-          msg: 'Username is already in use',
-        },
-      },
-      email: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        unique: {
-          msg: 'Email is already in use',
-        },
-      },
-      salt: {
-        type: DataTypes.STRING(16),
-        allowNull: false,
-      },
-      password_hash: {
-        type: DataTypes.STRING(60),
-        allowNull: false,
-      },
-      password_reset_token: {
-        type: DataTypes.STRING(64),
-      },
-      password_changed_at: {
-        type: DataTypes.DATE,
-      },
-      img_id: {
-        type: DataTypes.INTEGER,
-      },
-      link: {
-        type: DataTypes.STRING(20),
-        allowNull: false,
-        unique: {
-          msg: 'This short link is already in use',
-        },
-      },
-    },
-    {
-      sequelize,
-      modelName: 'user',
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-    }
-  );
 };

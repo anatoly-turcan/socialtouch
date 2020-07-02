@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.6",
-    "@types/sequelize": "^4.28.9",
+    "@types/node": "^14.0.14",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.5",
@@ -23,8 +23,10 @@
     "mariadb": "^2.4.0",
     "mongoose": "^5.9.20",
     "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
-    "sequelize": "^6.2.3",
+    "typeorm": "^0.2.25",
+    "validate.js": "^0.13.1",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {

@@ -1,9 +1,12 @@
 const jwt = require('jsonwebtoken');
-const { promisify } = require('util');
 const crypto = require('crypto');
-const catchError = require('../utils/catchError');
+const { promisify } = require('util');
 const AppError = require('../utils/appError');
-const userModel = require('../models/userModel');
+const catchError = require('../utils/catchError');
+const validate = require('../utils/validate');
+const userConstraints = require('../validators/userConstraints');
+const User = require('../entities/userSchema');
+const UserModel = require('../models/userModel');
 
 const signToken = (id, salt) => {
   return jwt.sign({ id }, process.env.JWT_SECRET + salt, {
@@ -12,7 +15,7 @@ const signToken = (id, salt) => {
 };
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.user_id, user.salt);
+  const token = signToken(user.id, user.salt);
 
   const cookieOptions = {
     expires: new Date(
@@ -36,31 +39,46 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-exports.signup = catchError(async ({ User, body }, res, next) => {
-  const validationError = User.validate(body);
+exports.signup = catchError(async ({ connection, body }, res, next) => {
+  const user = new UserModel(
+    body.username,
+    body.email,
+    body.password,
+    body.passwordConfirm
+  );
 
-  if (validationError) return next(new AppError(validationError, 400));
+  const validation = validate(user, userConstraints.create);
+  if (validation) return next(new AppError(validation, 400));
 
-  const newUser = await User.create({
-    username: body.username,
-    email: body.email,
-    password_hash: await User.hashPassword(body.password, 12),
-    salt: User.generateSalt(),
-    link: User.generateLink(),
-  });
+  user.passwordConfirm = undefined;
+
+  const newUser = await connection
+    .getRepository(User)
+    .save(await user.prepare());
 
   createSendToken(newUser, 201, res);
 });
 
-exports.signin = catchError(async ({ User, body }, res, next) => {
+exports.signin = catchError(async ({ connection, body }, res, next) => {
   const { email, password } = body;
 
-  if (!email || !password)
-    return next(new AppError('Please provide email and password', 400));
+  const validation = validate(
+    { email, password },
+    userConstraints.emailAndPassword
+  );
+  if (validation) return next(new AppError(validation, 400));
 
-  const user = await User.findOne({ where: { email } });
+  const additionalColumns = ['id', 'salt', 'password_hash'];
 
-  if (!user || !(await User.correctPassword(password, user.password_hash)))
+  const user = await connection
+    .getRepository(User)
+    .createQueryBuilder('user')
+    .select('user')
+    .addSelect(additionalColumns.map((column) => `user.${column}`))
+    .where('user.email = :email', { email })
+    .getOne();
+
+  if (!user || !(await UserModel.correctPassword(password, user.password_hash)))
     return next(new AppError('Incorrect email or password', 401));
 
   createSendToken(user, 200, res);
@@ -76,51 +94,77 @@ exports.protect = catchError(async (req, res, next) => {
       new AppError('You are not logged in! Please log in to get access', 401)
     );
 
-  const User = userModel(req.db);
+  const { id } = jwt.decode(token);
 
-  const userId = jwt.decode(token).id;
+  const additionalColumns =
+    process.env.NODE_ENV === 'production'
+      ? [
+          'email',
+          'salt',
+          'password_hash',
+          'password_reset_token',
+          'password_changed_at',
+          'active',
+          'created_at',
+          'updated_at',
+        ]
+      : [];
 
-  const { dataValues: currentUser } = await User.findByPk(userId);
+  const user = await req.connection
+    .getRepository(User)
+    .createQueryBuilder('user')
+    .select('user')
+    .addSelect(additionalColumns.map((column) => `user.${column}`))
+    .where('user.id = :id', { id })
+    .getOne();
 
-  if (!currentUser)
+  if (!user)
     return next(
       new AppError('The user belonging to this token does no longer exist')
     );
 
   const decoded = await promisify(jwt.verify)(
     token,
-    process.env.JWT_SECRET + currentUser.salt
+    process.env.JWT_SECRET + user.salt
   );
 
-  if (User.changedPasswordAfter(currentUser.password_changed_at, decoded.iat))
+  if (UserModel.changedPasswordAfter(user.password_changed_at, decoded.iat))
     return next(
       new AppError('User recently changed password! Please log in again', 401)
     );
 
-  req.user = currentUser;
+  req.user = user;
   next();
 });
 
-exports.forgotPassword = catchError(async ({ User, body }, res, next) => {
-  const user = await User.findOne({ where: { email: body.email } });
+exports.forgotPassword = catchError(async ({ connection, body }, res, next) => {
+  const validation = validate({ email: body.email }, userConstraints.email);
+  if (validation) return next(new AppError(validation, 400));
 
-  const validationError = User.validate({ email: body.email }, { email: true });
-
-  if (validationError) return next(new AppError(validationError, 400));
+  const user = await connection
+    .getRepository(User)
+    .createQueryBuilder('user')
+    .select('user')
+    .where('user.email = :email', { email: body.email })
+    .getOne();
 
   if (!user)
     return next(new AppError('There is no user with email address', 404));
 
-  const { passwordResetToken, resetToken } = User.createPasswordResetToken();
+  const {
+    passwordResetToken,
+    resetToken,
+  } = UserModel.createPasswordResetToken();
 
-  await User.update(
-    { password_reset_token: passwordResetToken },
-    {
-      where: {
-        user_id: user.user_id,
-      },
-    }
-  );
+  await connection
+    .getRepository(User)
+    .createQueryBuilder('user')
+    .update()
+    .set({
+      password_reset_token: passwordResetToken,
+    })
+    .where('user.id = :id', { id: user.id })
+    .execute();
 
   // Sending reset url to the email
   res.status(200).json({
@@ -131,71 +175,72 @@ exports.forgotPassword = catchError(async ({ User, body }, res, next) => {
 });
 
 exports.resetPassword = catchError(
-  async ({ User, params, body }, res, next) => {
+  async ({ connection, params, body }, res, next) => {
     const hashedToken = crypto
       .createHash('sha256')
       .update(params.token)
       .digest('hex');
 
-    const user = await User.findOne({
-      where: { password_reset_token: hashedToken },
-    });
+    const user = await connection
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .select('user')
+      .where('user.password_reset_token = :token', { token: hashedToken })
+      .getOne();
 
     if (!user) return next(new AppError('Token has expired', 400));
 
     const { password, passwordConfirm } = body;
 
-    const validationError = User.validate(
+    const validation = validate(
       { password, passwordConfirm },
-      { password: true }
+      userConstraints.newPassword
     );
+    if (validation) return next(new AppError(validation, 400));
 
-    if (validationError) return next(new AppError(validationError, 400));
-
-    await User.update(
-      {
+    await connection
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .update()
+      .set({
         password_reset_token: null,
-        password_hash: await User.hashPassword(password, 12),
-        password_changed_at: Date.now(),
-      },
-      {
-        where: {
-          user_id: user.user_id,
-        },
-      }
-    );
+        password_hash: await UserModel.hashPassword(password),
+        password_changed_at: new Date().toISOString(),
+      })
+      .where('user.id = :id', { id: user.id })
+      .execute();
 
     createSendToken(user, 200, res);
   }
 );
 
 exports.updatePassword = catchError(
-  async ({ User, user: currentUser, body }, res, next) => {
+  async ({ connection, user: currentUser, body }, res, next) => {
     const { password, passwordConfirm, newPassword } = body;
 
-    const validationError = User.validate(
-      { password: newPassword, passwordConfirm },
-      { password: true }
-    );
+    const user = await connection
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .select('user')
+      .where('user.id = :id', { id: currentUser.id })
+      .getOne();
 
-    if (validationError) return next(new AppError(validationError, 400));
-
-    const user = await User.findByPk(currentUser.user_id);
-
-    if (!(await User.correctPassword(password, user.password_hash)))
+    if (!(await UserModel.correctPassword(password, user.password_hash)))
       return next(new AppError('Your current password is wrong', 401));
 
-    await User.update(
-      {
-        password_hash: await User.hashPassword(newPassword),
-        password_changed_at: Date.now(),
-      },
-      {
-        where: {
-          user_id: user.user_id,
-        },
-      }
+    const validation = validate(
+      { password: newPassword, passwordConfirm },
+      userConstraints.newPassword
     );
+    if (validation) return next(new AppError(validation, 400));
+
+    await connection
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .update()
+      .set({ password_hash: await UserModel.hashPassword(newPassword) })
+      .where('user.id = :id', { id: user.id })
+      .execute();
 
     createSendToken(user, 200, res);
   }

@@ -1,21 +1,15 @@
 const AppError = require('../utils/appError');
 
-const handleMDBError = (err) => {
-  // ER_BAD_FIELD_ERROR
-  if (err.original.errno === 1054) {
-    const invalidField = err.message
-      .substr(err.message.indexOf("'"))
-      .split("'")[1];
-    return new AppError(`Invalid field: ${invalidField}`, 400);
-  }
+const handleSqlDuplicateFieldError = ({ message }, req, res) => {
+  const field = message.split("'")[1];
 
-  if (
-    err.name === 'SequelizeValidationError' ||
-    err.name === 'SequelizeUniqueConstraintError'
-  )
-    return new AppError(err.errors[0].message, 400);
+  return new AppError(`'${field}' is already in use`, 400);
+};
 
-  return err;
+const handleSqlBadFieldError = ({ message }, req, res) => {
+  const field = message.split("'")[1].split('.')[1];
+
+  return new AppError(`Wrong field: '${field}'`, 400);
 };
 
 const handleJWTError = () =>
@@ -56,7 +50,10 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
     error.message = err.message;
 
-    if (err.name.startsWith('Sequelize')) error = handleMDBError(error);
+    if (err.code === 'ER_DUP_ENTRY')
+      error = handleSqlDuplicateFieldError(error);
+    if (err.code === 'ER_BAD_FIELD_ERROR')
+      error = handleSqlBadFieldError(error);
     if (err.name === 'JsonWebTokenError') error = handleJWTError(error);
     if (err.name === 'TokenExpiredError') error = handleJWTExpiredError();
 

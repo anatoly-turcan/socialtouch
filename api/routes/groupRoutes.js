@@ -6,7 +6,7 @@ const router = Router();
 router
   .route('/')
   .get(groupController.getAllGroups)
-  .patch(groupController.createGroup);
+  .post(groupController.createGroup);
 
 router
   .route('/:link')

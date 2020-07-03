@@ -1,12 +1,15 @@
 const AppError = require('../utils/appError');
 
-const handleSqlDuplicateFieldError = ({ message }, req, res) => {
+const handleSqlDuplicateFieldError = ({ message }) => {
+  if (message.indexOf('PRIMARY') !== -1)
+    return new AppError('You have already done it', 400);
+
   const field = message.split("'")[1];
 
   return new AppError(`'${field}' is already in use`, 400);
 };
 
-const handleSqlBadFieldError = ({ message }, req, res) => {
+const handleSqlBadFieldError = ({ message }) => {
   const field = message.split("'")[1].split('.')[1];
 
   return new AppError(`Wrong field: '${field}'`, 400);

@@ -1,7 +1,11 @@
 const { Router } = require('express');
 const groupController = require('../controllers/groupController');
+const postRouter = require('./postRoutes');
 
 const router = Router();
+
+router.use('/:gLink/posts', groupController.groupProtect, postRouter);
+router.use('/:gLink/posts/:link', groupController.groupProtect, postRouter);
 
 router
   .route('/')
@@ -13,5 +17,8 @@ router
   .get(groupController.getGroup)
   .patch(groupController.updateGroup)
   .delete(groupController.deleteGroup);
+
+router.route('/:link/subscribe').post(groupController.subscribe);
+router.route('/:link/unsubscribe').post(groupController.unsubscribe);
 
 module.exports = router;

@@ -10,7 +10,7 @@ const handlerFactory = require('./handlerFactory');
 const alias = 'post';
 
 exports.getAllPosts = catchError(
-  async ({ connection, query, params }, res, next) => {
+  async ({ connection, query, params, group }, res, next) => {
     const filter = apiFilter(query, alias);
     const builder = connection.getRepository(Post).createQueryBuilder(alias);
 
@@ -28,6 +28,8 @@ exports.getAllPosts = catchError(
           return `${alias}.user_id = ${subQuery}`;
         })
         .setParameter('link', params.link);
+    else if (group)
+      builder.select(filter.fields).where(`${alias}.group_id = ${group.id}`);
     else
       builder
         .leftJoinAndSelect(`${alias}.user`, 'user')

@@ -36,6 +36,9 @@ exports.updateOne = (options) =>
     const validation = validate(newData, options.constraints);
     if (validation) return next(new AppError(validation, 400));
 
+    if (req.group)
+      options.where = `${options.where} AND group_id = ${req.group.id}`;
+
     const { affected } = await req.connection
       .getRepository(options.Entity)
       .createQueryBuilder()
@@ -76,6 +79,9 @@ exports.deleteOne = (options) =>
   catchError(async (req, res, next) => {
     const selectors = extractSelectors(options.whereSelectors, req);
 
+    if (req.group)
+      options.where = `${options.where} AND group_id = ${req.group.id}`;
+
     const { affected } = await req.connection
       .getRepository(options.Entity)
       .createQueryBuilder()
@@ -97,6 +103,7 @@ exports.createOne = (options) =>
     insertData(Model, options.bodyFields, req.body);
 
     if (options.userId) Model[options.userId] = req.user.id;
+    if (req.group) Model.group_id = req.group.id;
 
     const validation = validate(Model, options.constraints);
     if (validation) return next(new AppError(validation, 400));

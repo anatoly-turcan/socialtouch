@@ -8,15 +8,17 @@ const Post = require('../entities/postSchema');
 const User = require('../entities/userSchema');
 const PostModel = require('../models/postModel');
 
+const alias = 'post';
+
 exports.getAllPosts = catchError(
   async ({ connection, query, params }, res, next) => {
-    const filter = apiFilter(query, 'post');
+    const filter = apiFilter(query, alias);
     const repo = connection.getRepository(Post);
     let posts;
 
     if (params.link) {
       posts = await repo
-        .createQueryBuilder('post')
+        .createQueryBuilder(alias)
         .select(filter.fields)
         .where((qb) => {
           const subQuery = qb
@@ -26,7 +28,7 @@ exports.getAllPosts = catchError(
             .where('user.link = :link')
             .getQuery();
 
-          return `post.user_id = ${subQuery}`;
+          return `${alias}.user_id = ${subQuery}`;
         })
         .setParameter('link', params.link)
         .skip(filter.offset)
@@ -35,11 +37,11 @@ exports.getAllPosts = catchError(
         .getMany();
     } else {
       posts = await repo
-        .createQueryBuilder('post')
-        .leftJoinAndSelect('post.user', 'user')
+        .createQueryBuilder(alias)
+        .leftJoinAndSelect(`${alias}.user`, 'user')
         .select([...filter.fields, 'user.username', 'user.link', 'user.img_id'])
-        .skip(filter.offset)
-        .take(filter.limit)
+        .offset(filter.offset)
+        .limit(filter.limit)
         .orderBy(...filter.order)
         .getMany();
     }
@@ -57,10 +59,10 @@ exports.getAllPosts = catchError(
 exports.getPost = catchError(async ({ connection, params }, res, next) => {
   const post = await connection
     .getRepository(Post)
-    .createQueryBuilder('post')
-    .where('post.link = :link', { link: params.link })
-    .leftJoinAndSelect('post.user', 'user')
-    .select(['post', 'user.username', 'user.link', 'user.img_id'])
+    .createQueryBuilder(alias)
+    .where(`${alias}.link = :link`, { link: params.link })
+    .leftJoinAndSelect(`${alias}.user`, 'user')
+    .select([alias, 'user.username', 'user.link', 'user.img_id'])
     .getOne();
 
   if (!post) return next(new AppError('Document not found', 404));
@@ -103,8 +105,11 @@ exports.updatePost = catchError(
       .getRepository(Post)
       .createQueryBuilder()
       .update()
-      .set({ content, user_id: user.id })
-      .where('link = :link', { link: params.link })
+      .set({ content })
+      .where('link = :link AND user_id = :id', {
+        link: params.link,
+        id: user.id,
+      })
       .execute();
 
     if (!affected) return next(new AppError('Document not found', 404));

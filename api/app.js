@@ -7,6 +7,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const authController = require('./controllers/authController');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
+const groupRouter = require('./routes/groupRoutes');
 
 module.exports = (connection) => {
   const app = express();
@@ -27,6 +28,7 @@ module.exports = (connection) => {
   app.use(authController.protect);
   app.use('/api/v1/posts', postRouter);
   app.use('/api/v1/users', userRouter);
+  app.use('/api/v1/groups', groupRouter);
 
   app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on the server`, 404));

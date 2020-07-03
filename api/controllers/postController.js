@@ -1,24 +1,21 @@
 // const apiFilter = require('../utils/apiFilter');
 const catchError = require('../utils/catchError');
-const AppError = require('../utils/appError');
-const validate = require('../utils/validate');
 const apiFilter = require('../utils/apiFilter');
 const postConstraints = require('../validators/postConstraints');
 const Post = require('../entities/postSchema');
 const User = require('../entities/userSchema');
 const PostModel = require('../models/postModel');
+const handlerFactory = require('./handlerFactory');
 
 const alias = 'post';
 
 exports.getAllPosts = catchError(
   async ({ connection, query, params }, res, next) => {
     const filter = apiFilter(query, alias);
-    const repo = connection.getRepository(Post);
-    let posts;
+    const builder = connection.getRepository(Post).createQueryBuilder(alias);
 
-    if (params.link) {
-      posts = await repo
-        .createQueryBuilder(alias)
+    if (params.link)
+      builder
         .select(filter.fields)
         .where((qb) => {
           const subQuery = qb
@@ -30,21 +27,22 @@ exports.getAllPosts = catchError(
 
           return `${alias}.user_id = ${subQuery}`;
         })
-        .setParameter('link', params.link)
-        .skip(filter.offset)
-        .take(filter.limit)
-        .orderBy(...filter.order)
-        .getMany();
-    } else {
-      posts = await repo
-        .createQueryBuilder(alias)
+        .setParameter('link', params.link);
+    else
+      builder
         .leftJoinAndSelect(`${alias}.user`, 'user')
-        .select([...filter.fields, 'user.username', 'user.link', 'user.img_id'])
-        .offset(filter.offset)
-        .limit(filter.limit)
-        .orderBy(...filter.order)
-        .getMany();
-    }
+        .select([
+          ...filter.fields,
+          'user.username',
+          'user.link',
+          'user.img_id',
+        ]);
+
+    const posts = await builder
+      .offset(filter.offset)
+      .limit(filter.limit)
+      .orderBy(...filter.order)
+      .getMany();
 
     res.status(200).json({
       status: 'success',
@@ -56,97 +54,40 @@ exports.getAllPosts = catchError(
   }
 );
 
-exports.getPost = catchError(async ({ connection, params }, res, next) => {
-  const post = await connection
-    .getRepository(Post)
-    .createQueryBuilder(alias)
-    .where(`${alias}.link = :link`, { link: params.link })
-    .leftJoinAndSelect(`${alias}.user`, 'user')
-    .select([alias, 'user.username', 'user.link', 'user.img_id'])
-    .getOne();
-
-  if (!post) return next(new AppError('Document not found', 404));
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      post,
-    },
-  });
+exports.getPost = handlerFactory.getOne({
+  Entity: Post,
+  alias,
+  where: `${alias}.link = :link`,
+  whereSelectors: [['link', 'params', 'link']],
+  join: [`${alias}.user`, 'user'],
+  joinSelectors: ['user.username', 'user.link', 'user.img_id'],
 });
 
-exports.createPost = catchError(
-  async ({ connection, body, user }, res, next) => {
-    const { content } = body;
+exports.createPost = handlerFactory.createOne({
+  Entity: Post,
+  Model: PostModel,
+  bodyFields: ['content'],
+  userId: 'user_id',
+  constraints: postConstraints,
+  responseName: 'post',
+});
 
-    const validation = validate({ content }, postConstraints);
-    if (validation) return next(new AppError(validation, 400));
+exports.updatePost = handlerFactory.updateOne({
+  Entity: Post,
+  bodyFields: ['content'],
+  constraints: postConstraints,
+  where: 'link = :link AND user_id = :id',
+  whereSelectors: [
+    ['link', 'params', 'link'],
+    ['id', 'user', 'id'],
+  ],
+});
 
-    const post = new PostModel(user.id, content);
-    const newPost = await connection.getRepository(Post).save(post.prepare());
-
-    res.status(201).json({
-      status: 'success',
-      data: {
-        post: newPost,
-      },
-    });
-  }
-);
-
-exports.updatePost = catchError(
-  async ({ connection, params, body, user }, res, next) => {
-    const { content } = body;
-
-    const validation = validate({ content }, postConstraints);
-    if (validation) return next(new AppError(validation, 400));
-
-    const { affected } = await connection
-      .getRepository(Post)
-      .createQueryBuilder()
-      .update()
-      .set({ content })
-      .where('link = :link AND user_id = :id', {
-        link: params.link,
-        id: user.id,
-      })
-      .execute();
-
-    if (!affected) return next(new AppError('Document not found', 404));
-
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  }
-);
-
-exports.deletePost = catchError(
-  async ({ connection, params, user }, res, next) => {
-    const repo = connection.getRepository(Post);
-
-    const post = await repo
-      .createQueryBuilder()
-      .select()
-      .where('link = :link', { link: params.link })
-      .getOne();
-
-    if (!post) return next(new AppError('Document not found', 404));
-
-    if (post.user_id !== user.id)
-      return next(
-        new AppError('You do not have permission to delete this post')
-      );
-
-    await repo
-      .createQueryBuilder()
-      .delete()
-      .where('id = :id', { id: post.id })
-      .execute();
-
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  }
-);
+exports.deletePost = handlerFactory.deleteOne({
+  Entity: Post,
+  where: 'link = :link AND user = :id',
+  whereSelectors: [
+    ['link', 'params', 'link'],
+    ['id', 'user', 'id'],
+  ],
+});

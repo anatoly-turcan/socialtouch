@@ -1,34 +1,11 @@
-const { isEmpty } = require('validate.js');
 const catchError = require('../utils/catchError');
-const AppError = require('../utils/appError');
-const validate = require('../utils/validate');
 const apiFilter = require('../utils/apiFilter');
-const deleteUndefined = require('../utils/deleteUndefined');
 const Group = require('../entities/groupSchema');
 const GroupModel = require('../models/groupModel');
 const groupConstraints = require('../validators/groupConstraints');
+const handlerFactory = require('./handlerFactory');
 
 const alias = 'group';
-
-exports.createGroup = catchError(
-  async ({ connection, body, user }, res, next) => {
-    const group = new GroupModel(body.name, body.description, user.id);
-
-    const validation = validate(group, groupConstraints.create);
-    if (validation) return next(new AppError(validation, 400));
-
-    const newGroup = await connection
-      .getRepository(Group)
-      .save(group.prepare());
-
-    res.status(201).json({
-      status: 'success',
-      data: {
-        group: newGroup,
-      },
-    });
-  }
-);
 
 exports.getAllGroups = catchError(async ({ connection, query }, res, next) => {
   const filter = apiFilter(query, alias);
@@ -58,75 +35,40 @@ exports.getAllGroups = catchError(async ({ connection, query }, res, next) => {
   });
 });
 
-exports.getGroup = catchError(async ({ connection, params }, res, next) => {
-  const group = await connection
-    .getRepository(Group)
-    .createQueryBuilder(alias)
-    .where(`active = 1 AND ${alias}.link = :link`, { link: params.link })
-    .leftJoinAndSelect(`${alias}.creator`, 'creator')
-    .select([alias, 'creator.username', 'creator.link', 'creator.img_id'])
-    .getOne();
-
-  if (!group) return next(new AppError('Document not found', 404));
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      group,
-    },
-  });
+exports.createGroup = handlerFactory.createOne({
+  Entity: Group,
+  Model: GroupModel,
+  bodyFields: ['name', 'description'],
+  userId: 'creator_id',
+  constraints: groupConstraints.create,
+  responseName: 'group',
 });
 
-exports.updateGroup = catchError(
-  async ({ connection, params, body, user }, res, next) => {
-    const { name, description } = body;
+exports.getGroup = handlerFactory.getOne({
+  Entity: Group,
+  alias,
+  where: `${alias}.active = 1 AND ${alias}.link = :link`,
+  whereSelectors: [['link', 'params', 'link']],
+  join: [`${alias}.creator`, 'creator'],
+  joinSelectors: ['creator.username', 'creator.link', 'creator.img_id'],
+});
 
-    const newData = { name, description };
-    deleteUndefined(newData);
+exports.updateGroup = handlerFactory.updateOne({
+  Entity: Group,
+  bodyFields: ['name', 'description'],
+  constraints: groupConstraints.update,
+  where: 'active = 1 AND link = :link AND creator_id = :id',
+  whereSelectors: [
+    ['link', 'params', 'link'],
+    ['id', 'user', 'id'],
+  ],
+});
 
-    if (isEmpty(newData)) return next(new AppError('Nothing to update'));
-
-    const validation = validate(newData, groupConstraints.update);
-    if (validation) return next(new AppError(validation, 400));
-
-    const { affected } = await connection
-      .getRepository(Group)
-      .createQueryBuilder()
-      .update()
-      .set(newData)
-      .where('active = 1 AND link = :link AND creator_id = :id', {
-        link: params.link,
-        id: user.id,
-      })
-      .execute();
-
-    if (!affected) return next(new AppError('Document not found', 404));
-
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  }
-);
-
-exports.deleteGroup = catchError(
-  async ({ connection, params, user }, res, next) => {
-    const { affected } = await connection
-      .getRepository(Group)
-      .createQueryBuilder()
-      .update()
-      .set({ active: false })
-      .where('active = 1 AND link = :link AND creator_id = :id', {
-        link: params.link,
-        id: user.id,
-      })
-      .execute();
-
-    if (!affected) return next(new AppError('Document not found', 404));
-
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  }
-);
+exports.deleteGroup = handlerFactory.deactivateOne({
+  Entity: Group,
+  where: 'active = 1 AND link = :link AND creator_id = :id',
+  whereSelectors: [
+    ['link', 'params', 'link'],
+    ['id', 'user', 'id'],
+  ],
+});

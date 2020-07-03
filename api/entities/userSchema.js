@@ -1,6 +1,6 @@
 const { EntitySchema } = require('typeorm');
 
-const select = process.env.NODE_ENV === 'development';
+// const select = process.env.NODE_ENV === 'development';
 
 module.exports = new EntitySchema({
   name: 'User',
@@ -19,32 +19,32 @@ module.exports = new EntitySchema({
       type: 'varchar',
       nullable: false,
       unique: true,
-      select,
+      // select,
     },
     salt: {
       type: 'varchar',
       nullable: false,
-      select,
+      // select,
     },
     password_hash: {
       type: 'varchar',
       nullable: false,
-      select,
+      // select,
     },
     password_reset_token: {
       type: 'varchar',
       nullable: true,
-      select,
+      // select,
     },
     password_changed_at: {
       type: 'datetime',
       nullable: true,
-      select,
+      // select,
     },
     img_id: {
       type: 'int',
       nullable: true,
-      select,
+      // select,
     },
     link: {
       type: 'varchar',
@@ -55,15 +55,15 @@ module.exports = new EntitySchema({
       type: 'boolean',
       default: true,
       nullable: false,
-      select,
+      // select,
     },
     created_at: {
       createDate: true,
-      select,
+      // select,
     },
     updated_at: {
       updateDate: true,
-      select,
+      // select,
     },
   },
 });

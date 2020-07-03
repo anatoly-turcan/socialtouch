@@ -1,11 +1,14 @@
+const { isEmpty } = require('validate.js');
 const catchError = require('../utils/catchError');
 const AppError = require('../utils/appError');
 const apiFilter = require('../utils/apiFilter');
 const validate = require('../utils/validate');
+const deleteUndefined = require('../utils/deleteUndefined');
 const userConstraints = require('../validators/userConstraints');
 const userSettingsConstraints = require('../validators/userSettingsConstraints');
 const User = require('../entities/userSchema');
 const UserSettings = require('../entities/userSettingsSchema');
+// const handlerFactory = require('../controllers/handlerFactory');
 
 exports.getAllUsers = catchError(async ({ connection, query }, res, next) => {
   const filter = apiFilter(query, 'user');
@@ -65,28 +68,23 @@ exports.getMe = catchError(async ({ connection, user }, res, next) => {
 exports.updateMe = catchError(async ({ connection, user, body }, res, next) => {
   const { username, email, link } = body;
 
-  const newData = {};
+  const newData = { username, email, link };
+  deleteUndefined(newData);
 
-  if (username) newData.username = username;
-  if (email) newData.email = email;
-  if (link) newData.link = link;
+  if (isEmpty(newData)) return next(new AppError('Nothing to update'));
 
-  if (!Object.keys(newData).length)
-    return next(new AppError('Nothing to update', 400));
-
-  const validation = validate(
-    { username, email, link },
-    userConstraints.updateMe
-  );
+  const validation = validate(newData, userConstraints.updateMe);
   if (validation) return next(new AppError(validation, 400));
 
-  await connection
+  const { affected } = await connection
     .getRepository(User)
     .createQueryBuilder()
     .update()
     .set(newData)
     .where('id = :id', { id: user.id })
     .execute();
+
+  if (!affected) return next(new AppError('Document not found', 404));
 
   res.status(204).json({
     status: 'success',
@@ -95,13 +93,15 @@ exports.updateMe = catchError(async ({ connection, user, body }, res, next) => {
 });
 
 exports.deleteMe = catchError(async ({ connection, user }, res, next) => {
-  await connection
+  const { affected } = await connection
     .getRepository(User)
     .createQueryBuilder()
     .update()
     .set({ active: false })
     .where('id = :id', { id: user.id })
     .execute();
+
+  if (!affected) return next(new AppError('Document not found', 404));
 
   res.status(204).json({
     status: 'success',
@@ -122,32 +122,35 @@ exports.getMySettings = catchError(async ({ connection, user }, res, next) => {
   });
 });
 
+// exports.updateMySettings = handlerFactory.updateOne({
+//   Model: UserSettings,
+//   bodyFields: ['age', 'gender', 'phone', 'town', 'school', 'job'],
+//   constraints: userSettingsConstraints,
+//   where: 'user_id = :id',
+//   whereSelectors: [['id', 'user', 'id']],
+// });
+
 exports.updateMySettings = catchError(
   async ({ connection, user, body }, res, next) => {
     const { age, gender, phone, town, school, job } = body;
 
-    const newData = {};
+    const newData = { age, gender, phone, town, school, job };
+    deleteUndefined(newData);
 
-    if (age !== undefined) newData.age = age;
-    if (gender !== undefined) newData.gender = gender;
-    if (phone !== undefined) newData.phone = phone;
-    if (town !== undefined) newData.town = town;
-    if (school !== undefined) newData.school = school;
-    if (job !== undefined) newData.job = job;
+    if (isEmpty(newData)) return next(new AppError('Nothing to update'));
 
-    if (!Object.keys(newData).length)
-      return next(new AppError('Nothing to update', 400));
-
-    const validation = validate({ age, gender }, userSettingsConstraints);
+    const validation = validate(newData, userSettingsConstraints);
     if (validation) return next(new AppError(validation, 400));
 
-    await connection
+    const { affected } = await connection
       .getRepository(UserSettings)
       .createQueryBuilder()
       .update()
       .set(newData)
       .where('user_id = :id', { id: user.id })
       .execute();
+
+    if (!affected) return next(new AppError('Document not found', 404));
 
     res.status(204).json({
       status: 'success',

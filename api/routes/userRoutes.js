@@ -12,4 +12,6 @@ router.use('/:link/posts', postRouter);
 router.route('/').get(userController.getAllUsers);
 router.route('/:link').get(userController.getUser);
 
+router.route('/:link/groups').get(userController.getGroups);
+
 module.exports = router;

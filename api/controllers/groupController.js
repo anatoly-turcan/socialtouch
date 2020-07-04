@@ -87,58 +87,93 @@ exports.groupProtect = catchError(async (req, res, next) => {
   next();
 });
 
-// exports.subscribe = catchError(
-//   async ({ connection, params, user }, res, next) => {
-//     const group = await connection
-//       .getRepository(Group)
-//       .findOne({ where: { link: params.link } });
+exports.subscribe = catchError(
+  async ({ connection, params, user }, res, next) => {
+    const group = await connection.getRepository(Group).findOne({
+      where: {
+        link: params.link,
+      },
+    });
 
-//     if (!group) return next(new AppError('Group not found', 404));
+    if (!group) return next(new AppError('Document not found', 404));
 
-//     await connection
-//       .getRepository(GroupMembers)
-//       .createQueryBuilder()
-//       .insert()
-//       .values({ groupId: group.id, userId: user.id })
-//       .execute();
+    await connection
+      .createQueryBuilder()
+      .relation(Group, 'subscribers')
+      .of(group.id) // id | object {id: ..., ...}
+      .add(user.id); // id | object {id: ..., ...}
 
-//     res.status(204).json({
-//       status: 'success',
-//       data: null,
-//     });
-//   }
-// );
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  }
+);
 
-// exports.unsubscribe = catchError(
-//   async ({ connection, params, user }, res, next) => {
-//     const group = await connection
-//       .getRepository(Group)
-//       .findOne({ where: { link: params.link } });
+exports.unsubscribe = catchError(
+  async ({ connection, params, user }, res, next) => {
+    const group = await connection.getRepository(Group).findOne({
+      where: {
+        link: params.link,
+      },
+    });
 
-//     if (!group) return next(new AppError('Group not found', 404));
+    if (!group) return next(new AppError('Document not found', 404));
 
-//     await connection
-//       .getRepository(GroupMembers)
-//       .createQueryBuilder()
-//       .delete()
-//       .where('groupId = :groupId AND userId = :userId', {
-//         groupId: group.id,
-//         userId: user.id,
-//       })
-//       .execute();
+    await connection
+      .createQueryBuilder()
+      .relation(Group, 'subscribers')
+      .of(group.id) // id | object {id: ..., ...}
+      .remove(user.id); // id | object {id: ..., ...}
 
-//     res.status(204).json({
-//       status: 'success',
-//       data: null,
-//     });
-//   }
-// );
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  }
+);
 
-exports.getSubscribers = catchError(async ({ connection }, res, next) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      subscribers: ['subscribers'],
-    },
-  });
-});
+exports.getSubscribers = catchError(
+  async ({ connection, params, query }, res, next) => {
+    // const subscribers = await connection
+    //   .createQueryBuilder()
+    //   .select(['link'])
+    //   .relation(Group, 'subscribers')
+    //   .of(group.id)
+    //   .loadMany();
+    const { offset, limit } = apiFilter(query);
+
+    const result = await connection
+      .getRepository(Group)
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.subscribers', 'subscribers')
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('g.id')
+          .from(Group, 'g')
+          .where('g.link = :link')
+          .getQuery();
+        return `group.id = ${subQuery}`;
+      })
+      .setParameter('link', params.link)
+      .select([
+        'group.id',
+        'subscribers.username',
+        'subscribers.link',
+        'subscribers.imgId',
+      ])
+      .offset(offset)
+      .limit(limit)
+      .getOne();
+
+    if (!result) return next(new AppError('Document not found', 404));
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        subscribers: result.subscribers,
+      },
+    });
+  }
+);

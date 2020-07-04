@@ -5,6 +5,7 @@ const userSettingsConstraints = require('../validators/userSettingsConstraints')
 const User = require('../entities/userSchema');
 const UserSettings = require('../entities/userSettingsSchema');
 const handlerFactory = require('./handlerFactory');
+const AppError = require('../utils/appError');
 
 const alias = 'user';
 
@@ -85,3 +86,37 @@ exports.updateMySettings = handlerFactory.updateOne({
   where: 'userId = :id',
   whereSelectors: [['id', 'user', 'id']],
 });
+
+exports.getGroups = catchError(
+  async ({ connection, params, query }, res, next) => {
+    const { offset, limit } = apiFilter(query);
+
+    const result = await connection
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.groups', 'groups')
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('u.id')
+          .from(User, 'u')
+          .where('u.link = :link')
+          .getQuery();
+        return `user.id = ${subQuery}`;
+      })
+      .setParameter('link', params.link)
+      .select(['user.id', 'groups.name', 'groups.link', 'groups.imgId'])
+      .offset(offset)
+      .limit(limit)
+      .getOne();
+
+    if (!result) return next(new AppError('Document not found', 404));
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        groups: result.groups,
+      },
+    });
+  }
+);

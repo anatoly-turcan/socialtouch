@@ -61,6 +61,7 @@ module.exports = new EntitySchema({
       target: 'User',
       type: 'many-to-many',
       joinTable: true,
+      inverseSide: 'groups',
     },
   },
 });

@@ -66,4 +66,11 @@ module.exports = new EntitySchema({
       // select,
     },
   },
+  relations: {
+    groups: {
+      target: 'Group',
+      type: 'many-to-many',
+      inverseSide: 'subscribers',
+    },
+  },
 });

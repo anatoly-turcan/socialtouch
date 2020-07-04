@@ -46,7 +46,7 @@ exports.getMe = catchError(async ({ connection, user }, res, next) => {
 exports.getMySettings = catchError(async ({ connection, user }, res, next) => {
   const settings = await connection
     .getRepository(UserSettings)
-    .findOne({ where: { user_id: user.id } });
+    .findOne({ where: { userId: user.id } });
 
   res.status(200).json({
     status: 'success',

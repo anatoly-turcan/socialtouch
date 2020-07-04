@@ -34,7 +34,7 @@ const createSendToken = (user, statusCode, res) => {
       user: {
         username: user.username,
         link: user.link,
-        img: user.img_id || undefined,
+        img: user.imgId || undefined,
       },
     },
   });
@@ -58,7 +58,7 @@ exports.signup = catchError(async ({ connection, body }, res, next) => {
     .save(await user.prepare());
 
   // Create row in the user_settings table
-  await connection.getRepository(UserSettings).save({ user_id: newUser.id });
+  await connection.getRepository(UserSettings).save({ userId: newUser.id });
 
   createSendToken(newUser, 201, res);
 });
@@ -76,7 +76,7 @@ exports.signin = catchError(async ({ connection, body }, res, next) => {
     .getRepository(User)
     .createQueryBuilder()
     .select()
-    .addSelect(['id', 'salt', 'passwordHash'])
+    .addSelect('id', 'salt', 'passwordHash')
     .where('active = 1 AND email = :email', { email })
     .getOne();
 
@@ -186,9 +186,9 @@ exports.resetPassword = catchError(
       .digest('hex');
 
     const user = await repo
-      .createQueryBuilder()
+      .createQueryBuilder('user')
       .select()
-      .where('active = 1 AND passwordResetToken = :token', {
+      .where('user.active = 1 AND user.passwordResetToken = :token', {
         token: hashedToken,
       })
       .getOne();

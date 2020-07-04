@@ -37,7 +37,7 @@ exports.updateOne = (options) =>
     if (validation) return next(new AppError(validation, 400));
 
     if (req.group)
-      options.where = `${options.where} AND group_id = ${req.group.id}`;
+      options.where = `${options.where} AND groupId = ${req.group.id}`;
 
     const { affected } = await req.connection
       .getRepository(options.Entity)
@@ -80,7 +80,7 @@ exports.deleteOne = (options) =>
     const selectors = extractSelectors(options.whereSelectors, req);
 
     if (req.group)
-      options.where = `${options.where} AND group_id = ${req.group.id}`;
+      options.where = `${options.where} AND groupId = ${req.group.id}`;
 
     const { affected } = await req.connection
       .getRepository(options.Entity)
@@ -103,7 +103,7 @@ exports.createOne = (options) =>
     insertData(Model, options.bodyFields, req.body);
 
     if (options.userId) Model[options.userId] = req.user.id;
-    if (req.group) Model.group_id = req.group.id;
+    if (req.group) Model.groupId = req.group.id;
 
     const validation = validate(Model, options.constraints);
     if (validation) return next(new AppError(validation, 400));
@@ -138,6 +138,8 @@ exports.getOne = (options) =>
     else prepare.select();
 
     const document = await prepare.getOne();
+
+    console.log(document);
 
     if (!document) return next(new AppError('Document not found', 404));
     if (process.env.NODE_ENV === 'production') delete document.id;

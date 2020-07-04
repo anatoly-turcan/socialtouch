@@ -82,6 +82,6 @@ exports.updateMySettings = handlerFactory.updateOne({
   Entity: UserSettings,
   bodyFields: ['age', 'gender', 'phone', 'town', 'school', 'job'],
   constraints: userSettingsConstraints,
-  where: 'user_id = :id',
+  where: 'userId = :id',
   whereSelectors: [['id', 'user', 'id']],
 });

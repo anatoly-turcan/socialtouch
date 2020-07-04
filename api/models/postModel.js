@@ -2,8 +2,8 @@ const crypto = require('crypto');
 
 module.exports = class Post {
   constructor(userId, content, groupId = null) {
-    this.user_id = userId;
-    this.group_id = groupId;
+    this.userId = userId;
+    this.groupId = groupId;
     this.content = content;
   }
 

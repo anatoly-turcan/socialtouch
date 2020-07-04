@@ -25,20 +25,15 @@ exports.getAllPosts = catchError(
             .where('user.link = :link')
             .getQuery();
 
-          return `${alias}.user_id = ${subQuery}`;
+          return `${alias}.userId = ${subQuery}`;
         })
         .setParameter('link', params.link);
     else if (group)
-      builder.select(filter.fields).where(`${alias}.group_id = ${group.id}`);
+      builder.select(filter.fields).where(`${alias}.groupId = ${group.id}`);
     else
       builder
         .leftJoinAndSelect(`${alias}.user`, 'user')
-        .select([
-          ...filter.fields,
-          'user.username',
-          'user.link',
-          'user.img_id',
-        ]);
+        .select([...filter.fields, 'user.username', 'user.link', 'user.imgId']);
 
     const posts = await builder
       .offset(filter.offset)
@@ -62,14 +57,14 @@ exports.getPost = handlerFactory.getOne({
   where: `${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
   join: [`${alias}.user`, 'user'],
-  joinSelectors: ['user.username', 'user.link', 'user.img_id'],
+  joinSelectors: ['user.username', 'user.link', 'user.imgId'],
 });
 
 exports.createPost = handlerFactory.createOne({
   Entity: Post,
   Model: PostModel,
   bodyFields: ['content'],
-  userId: 'user_id',
+  userId: 'userId',
   constraints: postConstraints,
   responseName: 'post',
 });
@@ -78,7 +73,7 @@ exports.updatePost = handlerFactory.updateOne({
   Entity: Post,
   bodyFields: ['content'],
   constraints: postConstraints,
-  where: 'link = :link AND user_id = :id',
+  where: 'link = :link AND userId = :id',
   whereSelectors: [
     ['link', 'params', 'link'],
     ['id', 'user', 'id'],

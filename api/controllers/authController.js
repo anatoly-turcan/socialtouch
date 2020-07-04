@@ -20,7 +20,7 @@ const createSendToken = (user, statusCode, res) => {
 
   const cookieOptions = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      Date.now() + process.env.JWTCOOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
   };
 
@@ -76,11 +76,11 @@ exports.signin = catchError(async ({ connection, body }, res, next) => {
     .getRepository(User)
     .createQueryBuilder()
     .select()
-    .addSelect(['id', 'salt', 'password_hash'])
+    .addSelect(['id', 'salt', 'passwordHash'])
     .where('active = 1 AND email = :email', { email })
     .getOne();
 
-  if (!user || !(await UserModel.correctPassword(password, user.password_hash)))
+  if (!user || !(await UserModel.correctPassword(password, user.passwordHash)))
     return next(new AppError('Incorrect email or password', 401));
 
   createSendToken(user, 200, res);
@@ -103,12 +103,12 @@ exports.protect = catchError(async (req, res, next) => {
       ? [
           'email',
           'salt',
-          'password_hash',
-          'password_reset_token',
-          'password_changed_at',
+          'passwordHash',
+          'passwordResetToken',
+          'passwordChangedAt',
           'active',
-          'created_at',
-          'updated_at',
+          'createdAt',
+          'updatedAt',
         ]
       : [];
 
@@ -130,7 +130,7 @@ exports.protect = catchError(async (req, res, next) => {
     process.env.JWT_SECRET + user.salt
   );
 
-  if (UserModel.changedPasswordAfter(user.password_changed_at, decoded.iat))
+  if (UserModel.changedPasswordAfter(user.passwordChangedAt, decoded.iat))
     return next(
       new AppError('User recently changed password! Please log in again', 401)
     );
@@ -163,7 +163,7 @@ exports.forgotPassword = catchError(async ({ connection, body }, res, next) => {
     .createQueryBuilder()
     .update()
     .set({
-      password_reset_token: passwordResetToken,
+      passwordResetToken: passwordResetToken,
     })
     .where('id = :id', { id: user.id })
     .execute();
@@ -188,7 +188,7 @@ exports.resetPassword = catchError(
     const user = await repo
       .createQueryBuilder()
       .select()
-      .where('active = 1 AND password_reset_token = :token', {
+      .where('active = 1 AND passwordResetToken = :token', {
         token: hashedToken,
       })
       .getOne();
@@ -207,9 +207,9 @@ exports.resetPassword = catchError(
       .createQueryBuilder()
       .update()
       .set({
-        password_reset_token: null,
-        password_hash: await UserModel.hashPassword(password),
-        password_changed_at: new Date().toISOString(),
+        passwordResetToken: null,
+        passwordHash: await UserModel.hashPassword(password),
+        passwordChangedAt: new Date().toISOString(),
       })
       .where('id = :id', { id: user.id })
       .execute();
@@ -229,7 +229,7 @@ exports.updatePassword = catchError(
       .where('id = :id', { id: currentUser.id })
       .getOne();
 
-    if (!(await UserModel.correctPassword(password, user.password_hash)))
+    if (!(await UserModel.correctPassword(password, user.passwordHash)))
       return next(new AppError('Your current password is wrong', 401));
 
     const validation = validate(
@@ -241,7 +241,7 @@ exports.updatePassword = catchError(
     await repo
       .createQueryBuilder()
       .update()
-      .set({ password_hash: await UserModel.hashPassword(newPassword) })
+      .set({ passwordHash: await UserModel.hashPassword(newPassword) })
       .where('id = :id', { id: user.id })
       .execute();
 

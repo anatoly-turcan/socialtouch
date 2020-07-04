@@ -4,8 +4,8 @@ module.exports = class Group {
   constructor(name, description, creatorId, imgId = undefined) {
     this.name = name;
     this.description = description;
-    this.creator_id = creatorId;
-    this.img_id = imgId;
+    this.creatorId = creatorId;
+    this.imgId = imgId;
   }
 
   prepare() {

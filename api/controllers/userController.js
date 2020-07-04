@@ -120,3 +120,91 @@ exports.getGroups = catchError(
     });
   }
 );
+
+exports.addFriend = catchError(
+  async ({ connection, params, user }, res, next) => {
+    if (params.link === user.link)
+      return next(new AppError('You cannot add yourself as a friend', 400));
+
+    const target = await connection
+      .getRepository(User)
+      .findOne({ where: { link: params.link } });
+
+    if (!target) return next(new AppError('User not found', 404));
+
+    await connection
+      .createQueryBuilder()
+      .relation(User, 'targets')
+      .of(Math.min(target.id, user.id))
+      .add(Math.max(target.id, user.id));
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  }
+);
+
+exports.unfriend = catchError(
+  async ({ connection, params, user }, res, next) => {
+    const target = await connection
+      .getRepository(User)
+      .findOne({ where: { link: params.link } });
+
+    if (!target) return next(new AppError('User not found', 404));
+
+    await connection
+      .createQueryBuilder()
+      .relation(User, 'targets')
+      .of(Math.min(target.id, user.id))
+      .remove(Math.max(target.id, user.id));
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  }
+);
+
+exports.getFriends = catchError(
+  async ({ connection, params, query }, res, next) => {
+    const { offset, limit } = apiFilter(query);
+
+    const result = await connection
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .leftJoin('user.targets', 'targets')
+      .leftJoin('user.friends', 'friends')
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('u.id')
+          .from(User, 'u')
+          .where('u.link = :link')
+          .getQuery();
+        return `user.id = ${subQuery}`;
+      })
+      .setParameter('link', params.link)
+      .select([
+        'user.id',
+        'targets.username',
+        'targets.link',
+        'targets.imgId',
+        'friends.username',
+        'friends.link',
+        'friends.imgId',
+      ])
+      .offset(offset)
+      .limit(limit - 1)
+      .getOne();
+
+    if (!result) return next(new AppError('Document not found', 404));
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        friends: [...result.friends, ...result.targets],
+      },
+    });
+  }
+);

@@ -72,5 +72,18 @@ module.exports = new EntitySchema({
       type: 'many-to-many',
       inverseSide: 'subscribers',
     },
+    friends: {
+      target: 'User',
+      type: 'many-to-many',
+      inverseSide: 'targets',
+      joinTable: {
+        name: 'friends',
+      },
+    },
+    targets: {
+      target: 'User',
+      type: 'many-to-many',
+      inverseSide: 'friends',
+    },
   },
 });

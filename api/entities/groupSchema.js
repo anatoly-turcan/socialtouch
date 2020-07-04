@@ -19,12 +19,12 @@ module.exports = new EntitySchema({
       type: 'text',
       nullable: true,
     },
-    creator_id: {
+    creatorId: {
       type: 'int',
       nullable: false,
       // select,
     },
-    img_id: {
+    imgId: {
       type: 'int',
       nullable: true,
       // select,
@@ -40,11 +40,11 @@ module.exports = new EntitySchema({
       nullable: false,
       // select,
     },
-    created_at: {
+    createdAt: {
       createDate: true,
       // select,
     },
-    updated_at: {
+    updatedAt: {
       updateDate: true,
       // select,
     },
@@ -56,6 +56,11 @@ module.exports = new EntitySchema({
       joinTable: true,
       joinColumn: { name: 'creator_id', referencedColumnName: 'id' },
       cascade: ['insert', 'update'],
+    },
+    subscribers: {
+      target: 'User',
+      type: 'many-to-many',
+      joinTable: true,
     },
   },
 });

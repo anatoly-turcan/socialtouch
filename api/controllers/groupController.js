@@ -1,7 +1,6 @@
 const catchError = require('../utils/catchError');
 const apiFilter = require('../utils/apiFilter');
 const Group = require('../entities/groupSchema');
-const GroupMembers = require('../entities/groupMembersSchema');
 const GroupModel = require('../models/groupModel');
 const groupConstraints = require('../validators/groupConstraints');
 const handlerFactory = require('./handlerFactory');
@@ -20,7 +19,7 @@ exports.getAllGroups = catchError(async ({ connection, query }, res, next) => {
       ...filter.fields,
       'creator.username',
       'creator.link',
-      'creator.img_id',
+      'creator.imgId',
     ])
     .where(`${alias}.active = 1`)
     .orderBy(...filter.order)
@@ -41,7 +40,7 @@ exports.createGroup = handlerFactory.createOne({
   Entity: Group,
   Model: GroupModel,
   bodyFields: ['name', 'description'],
-  userId: 'creator_id',
+  userId: 'creatorId',
   constraints: groupConstraints.create,
   responseName: 'group',
 });
@@ -52,14 +51,14 @@ exports.getGroup = handlerFactory.getOne({
   where: `${alias}.active = 1 AND ${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
   join: [`${alias}.creator`, 'creator'],
-  joinSelectors: ['creator.username', 'creator.link', 'creator.img_id'],
+  joinSelectors: ['creator.username', 'creator.link', 'creator.imgId'],
 });
 
 exports.updateGroup = handlerFactory.updateOne({
   Entity: Group,
   bodyFields: ['name', 'description'],
   constraints: groupConstraints.update,
-  where: 'active = 1 AND link = :link AND creator_id = :id',
+  where: 'active = 1 AND link = :link AND creatorId = :id',
   whereSelectors: [
     ['link', 'params', 'link'],
     ['id', 'user', 'id'],
@@ -68,7 +67,7 @@ exports.updateGroup = handlerFactory.updateOne({
 
 exports.deleteGroup = handlerFactory.deactivateOne({
   Entity: Group,
-  where: 'active = 1 AND link = :link AND creator_id = :id',
+  where: 'active = 1 AND link = :link AND creatorId = :id',
   whereSelectors: [
     ['link', 'params', 'link'],
     ['id', 'user', 'id'],
@@ -88,49 +87,58 @@ exports.groupProtect = catchError(async (req, res, next) => {
   next();
 });
 
-exports.subscribe = catchError(
-  async ({ connection, params, user }, res, next) => {
-    const group = await connection
-      .getRepository(Group)
-      .findOne({ where: { link: params.link } });
+// exports.subscribe = catchError(
+//   async ({ connection, params, user }, res, next) => {
+//     const group = await connection
+//       .getRepository(Group)
+//       .findOne({ where: { link: params.link } });
 
-    if (!group) return next(new AppError('Group not found', 404));
+//     if (!group) return next(new AppError('Group not found', 404));
 
-    await connection
-      .getRepository(GroupMembers)
-      .createQueryBuilder()
-      .insert()
-      .values({ group_id: group.id, user_id: user.id })
-      .execute();
+//     await connection
+//       .getRepository(GroupMembers)
+//       .createQueryBuilder()
+//       .insert()
+//       .values({ groupId: group.id, userId: user.id })
+//       .execute();
 
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  }
-);
+//     res.status(204).json({
+//       status: 'success',
+//       data: null,
+//     });
+//   }
+// );
 
-exports.unsubscribe = catchError(
-  async ({ connection, params, user }, res, next) => {
-    const group = await connection
-      .getRepository(Group)
-      .findOne({ where: { link: params.link } });
+// exports.unsubscribe = catchError(
+//   async ({ connection, params, user }, res, next) => {
+//     const group = await connection
+//       .getRepository(Group)
+//       .findOne({ where: { link: params.link } });
 
-    if (!group) return next(new AppError('Group not found', 404));
+//     if (!group) return next(new AppError('Group not found', 404));
 
-    await connection
-      .getRepository(GroupMembers)
-      .createQueryBuilder()
-      .delete()
-      .where('group_id = :group_id AND user_id = :user_id', {
-        group_id: group.id,
-        user_id: user.id,
-      })
-      .execute();
+//     await connection
+//       .getRepository(GroupMembers)
+//       .createQueryBuilder()
+//       .delete()
+//       .where('groupId = :groupId AND userId = :userId', {
+//         groupId: group.id,
+//         userId: user.id,
+//       })
+//       .execute();
 
-    res.status(204).json({
-      status: 'success',
-      data: null,
-    });
-  }
-);
+//     res.status(204).json({
+//       status: 'success',
+//       data: null,
+//     });
+//   }
+// );
+
+exports.getSubscribers = catchError(async ({ connection }, res, next) => {
+  res.status(200).json({
+    status: 'success',
+    data: {
+      subscribers: ['subscribers'],
+    },
+  });
+});

@@ -3,7 +3,7 @@ const { EntitySchema } = require('typeorm');
 module.exports = new EntitySchema({
   name: 'UserSettings',
   columns: {
-    user_id: {
+    userId: {
       primary: true,
       type: 'int',
       nullable: false,

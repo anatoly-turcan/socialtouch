@@ -12,7 +12,7 @@ module.exports = class User {
   async prepare() {
     this.salt = crypto.randomBytes(8).toString('hex');
     this.link = crypto.randomBytes(12).toString('hex');
-    this.password_hash = await bcrypt.hash(this.password, 12);
+    this.passwordHash = await bcrypt.hash(this.password, 12);
     this.password = undefined;
 
     return this;

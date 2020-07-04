@@ -26,22 +26,22 @@ module.exports = new EntitySchema({
       nullable: false,
       // select,
     },
-    password_hash: {
+    passwordHash: {
       type: 'varchar',
       nullable: false,
       // select,
     },
-    password_reset_token: {
+    passwordResetToken: {
       type: 'varchar',
       nullable: true,
       // select,
     },
-    password_changed_at: {
+    passwordChangedAt: {
       type: 'datetime',
       nullable: true,
       // select,
     },
-    img_id: {
+    imgId: {
       type: 'int',
       nullable: true,
       // select,
@@ -57,11 +57,11 @@ module.exports = new EntitySchema({
       nullable: false,
       // select,
     },
-    created_at: {
+    createdAt: {
       createDate: true,
       // select,
     },
-    updated_at: {
+    updatedAt: {
       updateDate: true,
       // select,
     },

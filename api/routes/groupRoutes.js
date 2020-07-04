@@ -18,7 +18,9 @@ router
   .patch(groupController.updateGroup)
   .delete(groupController.deleteGroup);
 
-router.route('/:link/subscribe').post(groupController.subscribe);
-router.route('/:link/unsubscribe').post(groupController.unsubscribe);
+// router.route('/:link/subscribe').post(groupController.subscribe);
+// router.route('/:link/unsubscribe').post(groupController.unsubscribe);
+
+router.route('/:link/subscribers').get(groupController.getSubscribers);
 
 module.exports = router;

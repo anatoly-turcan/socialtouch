@@ -10,12 +10,12 @@ module.exports = new EntitySchema({
       type: 'int',
       generated: true,
     },
-    user_id: {
+    userId: {
       type: 'int',
       nullable: false,
       // select,
     },
-    group_id: {
+    groupId: {
       type: 'int',
       nullable: true,
       // select,
@@ -24,7 +24,7 @@ module.exports = new EntitySchema({
       type: 'text',
       nullable: false,
     },
-    preview_limit: {
+    previewLimit: {
       type: 'int',
       default: 0,
     },
@@ -33,10 +33,10 @@ module.exports = new EntitySchema({
       unique: true,
       nullable: true,
     },
-    created_at: {
+    createdAt: {
       createDate: true,
     },
-    updated_at: {
+    updatedAt: {
       updateDate: true,
       // select,
     },

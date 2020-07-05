@@ -3,7 +3,7 @@ const { EntitySchema } = require('typeorm');
 // const select = process.env.NODE_ENV === 'development';
 
 module.exports = new EntitySchema({
-  name: 'Group',
+  name: 'Groups',
   columns: {
     id: {
       primary: true,
@@ -51,16 +51,16 @@ module.exports = new EntitySchema({
   },
   relations: {
     creator: {
-      target: 'User',
+      target: 'Users',
       type: 'many-to-one',
       joinTable: true,
       joinColumn: { name: 'creator_id', referencedColumnName: 'id' },
       cascade: ['insert', 'update'],
     },
     subscribers: {
-      target: 'User',
+      target: 'Users',
       type: 'many-to-many',
-      joinTable: true,
+      joinTable: { name: 'group_subscribers' },
       inverseSide: 'groups',
     },
   },

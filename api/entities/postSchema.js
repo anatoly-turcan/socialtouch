@@ -3,7 +3,7 @@ const { EntitySchema } = require('typeorm');
 // const select = process.env.NODE_ENV === 'development';
 
 module.exports = new EntitySchema({
-  name: 'Post',
+  name: 'Posts',
   columns: {
     id: {
       primary: true,
@@ -43,7 +43,7 @@ module.exports = new EntitySchema({
   },
   relations: {
     user: {
-      target: 'User',
+      target: 'Users',
       type: 'many-to-one',
       joinColumn: { name: 'user_id', referencedColumnName: 'id' },
       cascade: true,

@@ -18,4 +18,5 @@ router
   .delete(userController.unfriend)
   .get(userController.getFriends);
 
+router.route('/:link/confirmFriendship').post(userController.confirmFriendship);
 module.exports = router;

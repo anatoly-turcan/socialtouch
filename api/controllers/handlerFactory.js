@@ -104,6 +104,7 @@ exports.createOne = (options) =>
 
     if (options.userId) Model[options.userId] = req.user.id;
     if (req.group) Model.groupId = req.group.id;
+    if (req.post) Model.postId = req.post.id;
 
     const validation = validate(Model, options.constraints);
     if (validation) return next(new AppError(validation, 400));

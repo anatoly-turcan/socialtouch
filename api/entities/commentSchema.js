@@ -1,32 +1,24 @@
 const { EntitySchema } = require('typeorm');
 
-// const select = process.env.NODE_ENV === 'development';
-
 module.exports = new EntitySchema({
-  name: 'Posts',
+  name: 'Comments',
   columns: {
     id: {
       primary: true,
       type: 'int',
       generated: true,
     },
+    postId: {
+      type: 'int',
+      nullable: false,
+    },
     userId: {
       type: 'int',
       nullable: false,
-      // select,
-    },
-    groupId: {
-      type: 'int',
-      nullable: true,
-      // select,
     },
     content: {
       type: 'text',
       nullable: false,
-    },
-    previewLimit: {
-      type: 'int',
-      default: 0,
     },
     link: {
       type: 'varchar',
@@ -38,19 +30,20 @@ module.exports = new EntitySchema({
     },
     updatedAt: {
       updateDate: true,
-      // select,
     },
   },
   relations: {
+    post: {
+      target: 'Posts',
+      type: 'many-to-one',
+      cascade: true,
+      inverseSide: 'comments',
+    },
     user: {
       target: 'Users',
       type: 'many-to-one',
+      joinColumn: { name: 'user_id', referencedColumnName: 'id' },
       cascade: true,
-    },
-    comments: {
-      target: 'Comments',
-      type: 'one-to-many',
-      inverseSide: 'post',
     },
   },
 });

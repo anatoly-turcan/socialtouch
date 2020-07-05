@@ -11,7 +11,7 @@ module.exports = (query, prefix) => {
 
   if (query && query.order) {
     result.order = [
-      `${prefix}.created_at`,
+      `${prefix}.id`,
       query.order && query.order === 'asc' ? 'ASC' : 'DESC',
     ];
   } else result.order = [`${prefix}.id`, 'DESC'];

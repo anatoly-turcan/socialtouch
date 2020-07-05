@@ -139,10 +139,9 @@ exports.getOne = (options) =>
 
     const document = await prepare.getOne();
 
-    console.log(document);
-
     if (!document) return next(new AppError('Document not found', 404));
     if (process.env.NODE_ENV === 'production') delete document.id;
+    if (options.add) await options.add(document, req);
 
     res.status(200).json({
       status: 'success',

@@ -4,6 +4,7 @@ const userConstraints = require('../validators/userConstraints');
 const userSettingsConstraints = require('../validators/userSettingsConstraints');
 const User = require('../entities/userSchema');
 const UserSettings = require('../entities/userSettingsSchema');
+const Friends = require('../entities/friendsSchema');
 const handlerFactory = require('./handlerFactory');
 const AppError = require('../utils/appError');
 
@@ -63,6 +64,19 @@ exports.getUser = handlerFactory.getOne({
   where: `${alias}.active = 1 AND ${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
   join: [],
+  add: async (doc, req) => {
+    const { count } = await req.connection
+      .getRepository(Friends)
+      .createQueryBuilder('friend')
+      .select('COUNT(*)', 'count')
+      .where('friend.friendId = :friendId AND friend.targetId = :targetId', {
+        friendId: Math.min(doc.id, req.user.id),
+        targetId: Math.max(doc.id, req.user.id),
+      })
+      .getRawOne();
+
+    doc.isFriend = count > 0;
+  },
 });
 
 exports.updateMe = handlerFactory.updateOne({
@@ -132,11 +146,19 @@ exports.addFriend = catchError(
 
     if (!target) return next(new AppError('User not found', 404));
 
-    await connection
+    const { raw } = await connection
+      .getRepository(Friends)
       .createQueryBuilder()
-      .relation(User, 'targets')
-      .of(Math.min(target.id, user.id))
-      .add(Math.max(target.id, user.id));
+      .insert()
+      .values({
+        friendId: Math.min(target.id, user.id),
+        targetId: Math.max(target.id, user.id),
+        by: user.id,
+      })
+      .execute();
+
+    if (!raw.affectedRows)
+      return next(new AppError('Can not add to the friend. Try again later'));
 
     res.status(204).json({
       status: 'success',
@@ -153,11 +175,20 @@ exports.unfriend = catchError(
 
     if (!target) return next(new AppError('User not found', 404));
 
-    await connection
+    const { affected } = await connection
+      .getRepository(Friends)
       .createQueryBuilder()
-      .relation(User, 'targets')
-      .of(Math.min(target.id, user.id))
-      .remove(Math.max(target.id, user.id));
+      .delete()
+      .where('friendId = :friendId AND targetId = :targetId', {
+        friendId: Math.min(target.id, user.id),
+        targetId: Math.max(target.id, user.id),
+      })
+      .execute();
+
+    if (!affected)
+      return next(
+        new AppError('Impossible to unfriend. You are not friends', 400)
+      );
 
     res.status(204).json({
       status: 'success',
@@ -171,40 +202,66 @@ exports.getFriends = catchError(
     const { offset, limit } = apiFilter(query);
 
     const result = await connection
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .leftJoin('user.targets', 'targets')
-      .leftJoin('user.friends', 'friends')
+      .getRepository(Friends)
+      .createQueryBuilder('f')
+      .leftJoinAndSelect(User, 'u', 'f.friendId = u.id OR f.targetId = u.id')
       .where((qb) => {
         const subQuery = qb
           .subQuery()
-          .select('u.id')
-          .from(User, 'u')
-          .where('u.link = :link')
+          .select('user.id')
+          .from(User, 'user')
+          .where('user.link = :link')
           .getQuery();
-        return `user.id = ${subQuery}`;
+        return `u.id != ${subQuery} AND f.active = 1 AND (f.friendId = ${subQuery} OR f.targetId = ${subQuery})`;
       })
       .setParameter('link', params.link)
-      .select([
-        'user.id',
-        'targets.username',
-        'targets.link',
-        'targets.imgId',
-        'friends.username',
-        'friends.link',
-        'friends.imgId',
-      ])
+      .select(['u.username', 'u.link', 'u.img_id'])
       .offset(offset)
-      .limit(limit - 1)
-      .getOne();
+      .limit(limit)
+      .getRawMany();
 
     if (!result) return next(new AppError('Document not found', 404));
 
+    const friends = result.map((el) => {
+      return Object.keys(el).reduce((acc, key) => {
+        return { ...acc, [key.replace('u_', '')]: el[key] };
+      }, {});
+    });
+
     res.status(200).json({
       status: 'success',
+      results: result.length,
       data: {
-        friends: [...result.friends, ...result.targets],
+        friends,
       },
+    });
+  }
+);
+
+exports.confirmFriendship = catchError(
+  async ({ connection, params, user }, res, next) => {
+    const friend = await connection
+      .getRepository(User)
+      .findOne({ where: { link: params.link } });
+
+    const { affected } = await connection
+      .getRepository(Friends)
+      .createQueryBuilder()
+      .update()
+      .set({ active: true })
+      .where('friendId = :friendId AND targetId = :targetId AND by != :id', {
+        friendId: Math.min(user.id, friend.id),
+        targetId: Math.max(user.id, friend.id),
+        id: user.id,
+      })
+      .execute();
+
+    if (!affected)
+      return next(new AppError('This friend request does not exist', 404));
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
     });
   }
 );

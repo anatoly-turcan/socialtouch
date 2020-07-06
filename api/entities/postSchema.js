@@ -46,9 +46,15 @@ module.exports = new EntitySchema({
       target: 'Users',
       type: 'many-to-one',
       cascade: true,
+      onDelete: 'CASCADE',
     },
     comments: {
       target: 'Comments',
+      type: 'one-to-many',
+      inverseSide: 'post',
+    },
+    images: {
+      target: 'Images',
       type: 'one-to-many',
       inverseSide: 'post',
     },

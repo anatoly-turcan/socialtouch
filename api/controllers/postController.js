@@ -158,6 +158,7 @@ exports.getAllComments = catchError(
       .getRepository(Comment)
       .createQueryBuilder('comments')
       .leftJoinAndSelect('comments.user', 'user')
+      .leftJoinAndSelect('user.image', 'image')
       .where('comments.postId = :id', { id: post.id })
       .select([
         'comments.content',
@@ -166,6 +167,7 @@ exports.getAllComments = catchError(
         'user.username',
         'user.link',
         'user.imgId',
+        'image.location',
       ])
       .limit(limit)
       .offset(offset)

@@ -16,7 +16,8 @@ exports.getAllUsers = catchError(async ({ connection, query }, res, next) => {
   const users = await connection
     .getRepository(User)
     .createQueryBuilder(alias)
-    .select([...filter.fields])
+    .leftJoinAndSelect(`${alias}.images`, 'images')
+    .select([...filter.fields, 'images.location'])
     .where(`${alias}.active = 1`)
     .offset(filter.offset)
     .limit(filter.limit)
@@ -35,7 +36,11 @@ exports.getAllUsers = catchError(async ({ connection, query }, res, next) => {
 exports.getMe = catchError(async ({ connection, user }, res, next) => {
   const me = await connection
     .getRepository(User)
-    .findOne({ where: { id: user.id } });
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.image', 'image')
+    .select()
+    .where('user.id = :id', { id: user.id })
+    .getOne();
 
   res.status(200).json({
     status: 'success',
@@ -63,7 +68,8 @@ exports.getUser = handlerFactory.getOne({
   alias,
   where: `${alias}.active = 1 AND ${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
-  join: [],
+  join: [`${alias}.images`, 'images'],
+  joinSelectors: ['images.location'],
   add: async (doc, req) => {
     const { count } = await req.connection
       .getRepository(Friends)
@@ -265,3 +271,10 @@ exports.confirmFriendship = catchError(
     });
   }
 );
+
+exports.updateImage = catchError(async (req, res, next) => {
+  res.status(200).json({
+    status: 'success',
+    data: req.file.originalname,
+  });
+});

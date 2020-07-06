@@ -55,8 +55,19 @@ module.exports = new EntitySchema({
     },
     images: {
       target: 'Images',
-      type: 'one-to-many',
+      type: 'many-to-many',
       inverseSide: 'post',
+      joinTable: {
+        name: 'post_images',
+        joinColumn: {
+          name: 'post_id',
+          referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+          name: 'img_id',
+          referencedColumnName: 'id',
+        },
+      },
     },
   },
 });

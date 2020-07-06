@@ -46,8 +46,8 @@ module.exports = new EntitySchema({
     },
     post: {
       target: 'Posts',
-      type: 'many-to-one',
-      inverseSide: 'image',
+      type: 'many-to-many',
+      inverseSide: 'images',
     },
   },
 });

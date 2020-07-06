@@ -12,6 +12,7 @@ router.use('/:link/posts', postRouter);
 router.route('/').get(userController.getAllUsers);
 router.route('/:link').get(userController.getUser);
 router.route('/:link/groups').get(userController.getGroups);
+router.route('/:link/images').get(userController.getImages);
 router
   .route('/:link/friends')
   .post(userController.addFriend)

@@ -38,12 +38,14 @@ module.exports = new EntitySchema({
       type: 'many-to-one',
       cascade: true,
       inverseSide: 'comments',
+      onDelete: 'CASCADE',
     },
     user: {
       target: 'Users',
       type: 'many-to-one',
       joinColumn: { name: 'user_id', referencedColumnName: 'id' },
       cascade: true,
+      onDelete: 'CASCADE',
     },
   },
 });

@@ -21,7 +21,7 @@ module.exports = new EntitySchema({
     },
     creatorId: {
       type: 'int',
-      nullable: false,
+      nullable: true,
       // select,
     },
     imgId: {
@@ -56,12 +56,31 @@ module.exports = new EntitySchema({
       joinTable: true,
       joinColumn: { name: 'creator_id', referencedColumnName: 'id' },
       cascade: ['insert', 'update'],
+      onDelete: 'SET NULL',
     },
     subscribers: {
       target: 'Users',
       type: 'many-to-many',
-      joinTable: { name: 'group_subscribers' },
+      joinTable: {
+        name: 'group_subscribers',
+        joinColumn: {
+          name: 'group_id',
+          referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+          name: 'user_id',
+          referencedColumnName: 'id',
+        },
+      },
+
       inverseSide: 'groups',
+      onDelete: 'CASCADE',
+    },
+    image: {
+      target: 'Images',
+      type: 'one-to-many',
+      inverseSide: 'post',
+      onDelete: 'SET NULL',
     },
   },
 });

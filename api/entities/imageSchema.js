@@ -43,15 +43,11 @@ module.exports = new EntitySchema({
       target: 'Groups',
       type: 'one-to-one',
       inverseSide: 'image',
-      eager: true,
-      lazy: true,
     },
     post: {
       target: 'Posts',
       type: 'many-to-one',
       inverseSide: 'image',
-      eager: true,
-      lazy: true,
     },
   },
 });

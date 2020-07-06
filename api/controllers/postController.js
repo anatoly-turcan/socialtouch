@@ -34,12 +34,17 @@ exports.getAllPosts = catchError(
         .setParameter('link', params.link);
     else if (group)
       builder.select(filter.fields).where(`${alias}.groupId = ${group.id}`);
-    else
-      builder
-        .leftJoinAndSelect(`${alias}.user`, 'user')
-        .select([...filter.fields, 'user.username', 'user.link', 'user.imgId']);
 
     const posts = await builder
+      .leftJoinAndSelect(`${alias}.user`, 'user')
+      .leftJoinAndSelect('user.image', 'img')
+      .select([
+        ...filter.fields,
+        'user.username',
+        'user.link',
+        'user.imgId',
+        'img.location',
+      ])
       .offset(filter.offset)
       .limit(filter.limit)
       .orderBy(...filter.order)
@@ -60,8 +65,17 @@ exports.getPost = handlerFactory.getOne({
   alias,
   where: `${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
-  join: [`${alias}.user`, 'user'],
-  joinSelectors: ['user.username', 'user.link', 'user.imgId'],
+  join: [
+    [`${alias}.user`, 'user'],
+    ['user.image', 'img'],
+  ],
+  joinSelectors: [
+    alias,
+    'user.username',
+    'user.link',
+    'user.imgId',
+    'img.location',
+  ],
 });
 
 exports.createPost = handlerFactory.createOne({

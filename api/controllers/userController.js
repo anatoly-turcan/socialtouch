@@ -16,8 +16,8 @@ exports.getAllUsers = catchError(async ({ connection, query }, res, next) => {
   const users = await connection
     .getRepository(User)
     .createQueryBuilder(alias)
-    .leftJoinAndSelect(`${alias}.images`, 'images')
-    .select([...filter.fields, 'images.location'])
+    .leftJoinAndSelect(`${alias}.image`, 'image')
+    .select([...filter.fields, 'image.location'])
     .where(`${alias}.active = 1`)
     .offset(filter.offset)
     .limit(filter.limit)
@@ -68,8 +68,8 @@ exports.getUser = handlerFactory.getOne({
   alias,
   where: `${alias}.active = 1 AND ${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
-  join: [`${alias}.images`, 'images'],
-  joinSelectors: ['images.location'],
+  join: [[`${alias}.image`, 'image']],
+  joinSelectors: [alias, 'image.location'],
   add: async (doc, req) => {
     const { count } = await req.connection
       .getRepository(Friends)
@@ -211,6 +211,7 @@ exports.getFriends = catchError(
       .getRepository(Friends)
       .createQueryBuilder('f')
       .leftJoinAndSelect(User, 'u', 'f.friendId = u.id OR f.targetId = u.id')
+      .leftJoinAndSelect('u.image', 'img')
       .where((qb) => {
         const subQuery = qb
           .subQuery()
@@ -221,7 +222,7 @@ exports.getFriends = catchError(
         return `u.id != ${subQuery} AND f.active = 1 AND (f.friendId = ${subQuery} OR f.targetId = ${subQuery})`;
       })
       .setParameter('link', params.link)
-      .select(['u.username', 'u.link', 'u.img_id'])
+      .select(['u.username', 'u.link', 'img.location'])
       .offset(offset)
       .limit(limit)
       .getRawMany();

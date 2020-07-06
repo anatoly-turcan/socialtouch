@@ -26,6 +26,14 @@ const insertData = (object, fields, data) =>
     if (data[field]) object[field] = data[field];
   });
 
+const join = (query, joins) => {
+  joins.forEach((j) => {
+    query.leftJoinAndSelect(...j);
+  });
+
+  return query;
+};
+
 exports.updateOne = (options) =>
   catchError(async (req, res, next) => {
     const selectors = extractSelectors(options.whereSelectors, req);
@@ -127,18 +135,18 @@ exports.getOne = (options) =>
   catchError(async (req, res, next) => {
     const selectors = extractSelectors(options.whereSelectors, req);
 
-    const prepare = req.connection
+    const query = req.connection
       .getRepository(options.Entity)
       .createQueryBuilder(options.alias)
       .where(options.where, selectors);
 
     if (options.join.length)
-      prepare
-        .leftJoinAndSelect(...options.join)
-        .select([options.alias, ...options.joinSelectors]);
-    else prepare.select();
+      join(query, options.join).select([...options.joinSelectors]);
+    else query.select();
 
-    const document = await prepare.getOne();
+    const document = await query.getOne();
+
+    console.log(options);
 
     if (!document) return next(new AppError('Document not found', 404));
     if (process.env.NODE_ENV === 'production') delete document.id;

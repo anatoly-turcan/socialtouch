@@ -78,9 +78,10 @@ module.exports = new EntitySchema({
     },
     image: {
       target: 'Images',
-      type: 'one-to-many',
-      inverseSide: 'post',
+      type: 'one-to-one',
+      inverseSide: 'group',
       onDelete: 'SET NULL',
+      joinColumn: { name: 'img_id', referencedColumnName: 'id' },
     },
   },
 });

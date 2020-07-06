@@ -34,7 +34,7 @@ const createSendToken = (user, statusCode, res) => {
       user: {
         username: user.username,
         link: user.link,
-        img: user.imgId || undefined,
+        img: user.image || undefined,
       },
     },
   });
@@ -74,11 +74,14 @@ exports.signin = catchError(async ({ connection, body }, res, next) => {
 
   const user = await connection
     .getRepository(User)
-    .createQueryBuilder()
-    .select()
-    .addSelect('id', 'salt', 'passwordHash')
-    .where('active = 1 AND email = :email', { email })
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.image', 'img')
+    .select(['user', 'img.location'])
+    .addSelect(['user.id'])
+    .where('user.active = 1 AND user.email = :email', { email })
     .getOne();
+
+  console.log(user);
 
   if (!user || !(await UserModel.correctPassword(password, user.passwordHash)))
     return next(new AppError('Incorrect email or password', 401));

@@ -14,12 +14,15 @@ exports.getAllGroups = catchError(async ({ connection, query }, res, next) => {
   const groups = await connection
     .getRepository(Group)
     .createQueryBuilder(alias)
+    .leftJoinAndSelect(`${alias}.image`, 'img')
     .leftJoinAndSelect(`${alias}.creator`, 'creator')
+    .leftJoinAndSelect(`creator.image`, 'creatorImg')
     .select([
       ...filter.fields,
+      'img.location',
       'creator.username',
       'creator.link',
-      'creator.imgId',
+      'creatorImg.location',
     ])
     .where(`${alias}.active = 1`)
     .orderBy(...filter.order)
@@ -50,8 +53,18 @@ exports.getGroup = handlerFactory.getOne({
   alias,
   where: `${alias}.active = 1 AND ${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
-  join: [`${alias}.creator`, 'creator'],
-  joinSelectors: ['creator.username', 'creator.link', 'creator.imgId'],
+  join: [
+    [`${alias}.image`, 'img'],
+    [`${alias}.creator`, 'creator'],
+    ['creator.image', 'creatorImage'],
+  ],
+  joinSelectors: [
+    alias,
+    'img.location',
+    'creator.username',
+    'creator.link',
+    'creatorImage.location',
+  ],
 });
 
 exports.updateGroup = handlerFactory.updateOne({
@@ -147,6 +160,7 @@ exports.getSubscribers = catchError(
       .getRepository(Group)
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.subscribers', 'subscribers')
+      .leftJoinAndSelect('subscribers.image', 'img')
       .where((qb) => {
         const subQuery = qb
           .subQuery()
@@ -161,7 +175,7 @@ exports.getSubscribers = catchError(
         'group.id',
         'subscribers.username',
         'subscribers.link',
-        'subscribers.imgId',
+        'img.location',
       ])
       .offset(offset)
       .limit(limit)

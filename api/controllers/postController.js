@@ -37,9 +37,11 @@ exports.getAllPosts = catchError(
 
     const posts = await builder
       .leftJoinAndSelect(`${alias}.user`, 'user')
+      .leftJoinAndSelect(`${alias}.images`, 'images')
       .leftJoinAndSelect('user.image', 'img')
       .select([
         ...filter.fields,
+        'images.location',
         'user.username',
         'user.link',
         'user.imgId',
@@ -67,10 +69,12 @@ exports.getPost = handlerFactory.getOne({
   whereSelectors: [['link', 'params', 'link']],
   join: [
     [`${alias}.user`, 'user'],
+    [`${alias}.images`, 'images'],
     ['user.image', 'img'],
   ],
   joinSelectors: [
     alias,
+    'images.location',
     'user.username',
     'user.link',
     'user.imgId',

@@ -9,7 +9,6 @@ import Navbar from './components/navbar';
 import UserContext from './context/userContext';
 
 import './App.css';
-import ProtectedRoute from './components/common/protectedRoute';
 import UserPage from './components/userPage';
 
 const App = () => {
@@ -21,12 +20,14 @@ const App = () => {
         <Navbar />
         <div className="content">
           <Switch>
-            <Route path="/signin" component={Signin} />
-            <Route path="/signup" component={Signup} />
-            <Route path="/forgot" component={Forgot} />
-            <Route path="/restore" component={Restore} />
+            {!user && <Route path="/signin" component={Signin} />}
+            {!user && <Route path="/signup" component={Signup} />}
+            {!user && <Route path="/forgot" component={Forgot} />}
+            {!user && <Route path="/restore" component={Restore} />}
+            {!user && <Redirect to="/signin" />}
+
             <Route path="/not-found" component={NotFound} />
-            <ProtectedRoute path="/:link" component={UserPage} />
+            <Route path="/:link" component={UserPage} />
             <Redirect to="/not-found" />
           </Switch>
         </div>

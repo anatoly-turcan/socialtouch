@@ -8,7 +8,7 @@ const UserPage = () => {
     <div>
       {user.username}
       {user.link}
-      {user.img.location}
+      {user.img && user.img.location}
     </div>
   );
 };

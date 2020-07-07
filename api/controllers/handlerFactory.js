@@ -146,8 +146,6 @@ exports.getOne = (options) =>
 
     const document = await query.getOne();
 
-    console.log(options);
-
     if (!document) return next(new AppError('Document not found', 404));
     if (process.env.NODE_ENV === 'production') delete document.id;
     if (options.add) await options.add(document, req);

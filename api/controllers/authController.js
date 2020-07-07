@@ -81,8 +81,6 @@ exports.signin = catchError(async ({ connection, body }, res, next) => {
     .where('user.active = 1 AND user.email = :email', { email })
     .getOne();
 
-  console.log(user);
-
   if (!user || !(await UserModel.correctPassword(password, user.passwordHash)))
     return next(new AppError('Incorrect email or password', 401));
 

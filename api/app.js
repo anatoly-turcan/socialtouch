@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const postRouter = require('./routes/postRoutes.js');
@@ -11,6 +12,9 @@ const groupRouter = require('./routes/groupRoutes');
 
 module.exports = (connection) => {
   const app = express();
+
+  app.use(cors({ origin: true, credentials: true }));
+  app.options('*', cors());
 
   if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 

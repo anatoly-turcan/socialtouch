@@ -173,7 +173,7 @@ exports.forgotPassword = catchError(async ({ connection, body }, res, next) => {
   res.status(200).json({
     status: 'success',
     resetToken,
-    message: 'Token sent to email!',
+    message: 'Token sent to email',
   });
 });
 

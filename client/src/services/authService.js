@@ -1,8 +1,21 @@
 import { api } from '../config.json';
 import http from './httpService';
 
-const signin = async (email, password) => {
+const signin = async ({ email, password }) => {
   return await http.post(`${api}/auth/signin`, { email, password });
+};
+
+const signup = async ({ username, email, password, passwordConfirm }) => {
+  return await http.post(`${api}/auth/signup`, {
+    username,
+    email,
+    password,
+    passwordConfirm,
+  });
+};
+
+const forgotPassword = async ({ email }) => {
+  return await http.post(`${api}/auth/forgotPassword`, { email });
 };
 
 const getMe = async () => {
@@ -16,5 +29,7 @@ const getMe = async () => {
 
 export default {
   signin,
+  signup,
+  forgotPassword,
   getMe,
 };

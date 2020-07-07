@@ -522,6 +522,10 @@ nav ul li {
   margin-top: 40px;
 }
 
+.block__result-message {
+  padding: 20px;
+}
+
 .block__header {
   font-size: 150%;
   display: flex;

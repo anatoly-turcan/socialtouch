@@ -12,6 +12,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "remixicon": "^2.5.0",
+    "validate.js": "^0.13.1",
     "webfontloader": "^1.6.28"
   },
   "scripts": {

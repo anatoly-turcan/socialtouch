@@ -14,6 +14,10 @@ const signup = async ({ username, email, password, passwordConfirm }) => {
   });
 };
 
+const signout = async () => {
+  return await http.post(`${api}/auth/signout`);
+};
+
 const forgotPassword = async ({ email }) => {
   return await http.post(`${api}/auth/forgotPassword`, { email });
 };
@@ -30,6 +34,7 @@ const getMe = async () => {
 export default {
   signin,
   signup,
+  signout,
   forgotPassword,
   getMe,
 };

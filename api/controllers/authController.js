@@ -249,3 +249,14 @@ exports.updatePassword = catchError(
     createSendToken(user, 200, res);
   }
 );
+
+exports.signout = (req, res) => {
+  res.cookie('jwt', 'logged-out', {
+    expires: new Date(Date.now()),
+    // httpOnly: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+  });
+};

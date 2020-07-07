@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import Form from './form';
-import AuthPage from './authPage';
+import AuthPage from '../../pages/auth';
 import Input from './input';
 import auth from '../../services/authService';
 import UserContext from '../../context/userContext';

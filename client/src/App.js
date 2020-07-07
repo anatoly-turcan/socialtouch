@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import NotFound from './components/notFound';
+import NotFound from './pages/notFound';
 import Signin from './components/auth/signin';
 import Signup from './components/auth/signup';
 import Forgot from './components/auth/forgot';
@@ -9,7 +9,7 @@ import Navbar from './components/navbar';
 import UserContext from './context/userContext';
 
 import './App.css';
-import UserPage from './components/userPage';
+import UserPage from './pages/user';
 
 const App = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));

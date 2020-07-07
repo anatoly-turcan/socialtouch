@@ -39,7 +39,7 @@ exports.getMe = catchError(async ({ connection, user }, res, next) => {
     .getRepository(User)
     .createQueryBuilder('user')
     .leftJoinAndSelect('user.image', 'image')
-    .select()
+    .select(['user.username', 'user.link', 'image.location'])
     .where('user.id = :id', { id: user.id })
     .getOne();
 

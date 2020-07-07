@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AuthPage from './authPage';
+import AuthPage from '../../pages/auth';
 import Form from './form';
 import Input from './input';
 import auth from '../../services/authService';

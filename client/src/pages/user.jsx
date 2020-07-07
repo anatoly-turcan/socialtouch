@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import UserContext from './../context/userContext';
+import UserContext from '../context/userContext';
 
-const UserPage = () => {
+const User = () => {
   const { user } = useContext(UserContext);
 
   return (
@@ -13,4 +13,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default User;

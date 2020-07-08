@@ -34,7 +34,7 @@ const createSendToken = (user, statusCode, res) => {
       user: {
         username: user.username,
         link: user.link,
-        img: user.image || undefined,
+        image: user.image || undefined,
       },
     },
   });

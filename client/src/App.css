@@ -34,6 +34,20 @@ html {
   color: var(--white);
 }
 
+.global-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--dark);
+  font-size: 150%;
+  height: 100vh;
+  color: var(--white);
+}
+
+.loader {
+  padding: 15px;
+}
+
 .container {
   display: grid;
   grid-template-columns: var(--header-size) auto;

@@ -2,13 +2,14 @@ import React, { useState, useContext } from 'react';
 import Form from './form';
 import AuthPage from '../../pages/auth';
 import Input from './input';
-import auth from '../../services/authService';
+import api from '../../services/apiService';
 import UserContext from '../../context/userContext';
 import constraints from './constraints';
 import validate from '../../utils/validate';
+import { Redirect } from 'react-router-dom';
 
 const Signup = ({ history }) => {
-  const { setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [data, setData] = useState({
     username: '',
     email: '',
@@ -16,6 +17,9 @@ const Signup = ({ history }) => {
     passwordConfirm: '',
   });
   const [error, setError] = useState('');
+  const [loader, setLoader] = useState(false);
+
+  if (user) return <Redirect to="/" />;
 
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
@@ -28,13 +32,13 @@ const Signup = ({ history }) => {
     if (validation) return setError(validation);
 
     try {
-      const result = await auth.signup(data);
-      const { user } = result.data.data;
-      localStorage.setItem('user', JSON.stringify(user));
-      setUser(user);
-      history.replace(`/${user.link}`);
+      setLoader(true);
+      setError(false);
+      const user = await api.signup(data);
+      localStorage.setItem('user', 'true');
+      window.location = `/${user.link}`;
     } catch ({ response }) {
-      setError(response.data.message);
+      setError(response && response.data.message);
     }
   };
 
@@ -46,6 +50,7 @@ const Signup = ({ history }) => {
         reverseLink="/signin"
         onSubmit={handleSubmit}
         error={error}
+        loader={loader}
       >
         <Input
           name="username"

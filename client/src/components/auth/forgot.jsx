@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import AuthPage from '../../pages/auth';
 import Form from './form';
 import Input from './input';
-import auth from '../../services/authService';
+import api from '../../services/apiService';
 import constraints from './constraints';
 import validate from '../../utils/validate';
+import UserContext from './../../context/userContext';
+import { Redirect } from 'react-router-dom';
 
 const Forgot = (props) => {
+  const { user } = useContext(UserContext);
   const [data, setData] = useState({ email: '' });
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [loader, setLoader] = useState(false);
+
+  if (user) return <Redirect to="/" />;
 
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
@@ -22,10 +28,12 @@ const Forgot = (props) => {
     if (validation) return setError(validation);
 
     try {
-      const result = await auth.forgotPassword(data);
+      setLoader(true);
+      setError(false);
+      const result = await api.forgotPassword(data);
       setMessage(result.data.message);
     } catch ({ response }) {
-      setError(response.data.message);
+      setError(response && response.data.message);
     }
   };
 
@@ -41,6 +49,7 @@ const Forgot = (props) => {
           reverseLink="/signin"
           onSubmit={handleSubmit}
           error={error}
+          loader={loader}
         >
           <Input
             name="email"

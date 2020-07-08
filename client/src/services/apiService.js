@@ -42,6 +42,14 @@ const getPosts = async (userLink, page = 1, limit = 10) => {
   return result.data.data.posts;
 };
 
+const getFriends = async (userLink, limit = 5) => {
+  let query = `${api}/users/${userLink}/friends`;
+  if (limit) query = `${query}/?limit=${limit}`;
+  const result = await http.get(query);
+
+  return result.data.data.friends;
+};
+
 export default {
   signin,
   signup,
@@ -50,4 +58,5 @@ export default {
   getMe,
   getUser,
   getPosts,
+  getFriends,
 };

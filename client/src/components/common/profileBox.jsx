@@ -1,7 +1,8 @@
 import React from 'react';
 import avatar from '../../img/no-avatar.png';
+import { Link } from 'react-router-dom';
 
-const ProfileBox = ({ user }) => {
+const ProfileBox = ({ user, friends }) => {
   return (
     <div className="person">
       <div className="person__element person--photo">
@@ -28,13 +29,17 @@ const ProfileBox = ({ user }) => {
             Friends <span className="person--data-counter">*</span>
           </a>
           <div className="person--data--el-container">
-            {/* <a href="#" className="round__box">
-              <img
-                src="https://randomuser.me/api/portraits/women/32.jpg"
-                alt="Friend image / link"
-              />
-            </a> */}
-            Here will be friends
+            {friends.length
+              ? friends.map((friend) => (
+                  <Link
+                    to={`/${friend.link}`}
+                    className="round__box"
+                    key={friend.link}
+                  >
+                    <img src={friend.img_location || avatar} alt="Friend box" />
+                  </Link>
+                ))
+              : 'No friends'}
           </div>
         </div>
 

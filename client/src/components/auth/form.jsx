@@ -9,6 +9,7 @@ const Form = ({
   btn,
   onSubmit,
   error,
+  loader,
 }) => {
   return (
     <Fragment>
@@ -22,13 +23,16 @@ const Form = ({
       </div>
       {error && <div className="block__error">{error}</div>}
       <div className="block__content">
-        <form className="form" onSubmit={onSubmit}>
-          {children}
-          <div className="form__actions">
-            {title === 'Sign in' && <Link to="/forgot">Forgot password</Link>}
-            <button type="submit">{!btn ? title : btn}</button>
-          </div>
-        </form>
+        {loader && <div className="loader">Loading...</div>}
+        {!loader && (
+          <form className="form" onSubmit={onSubmit}>
+            {children}
+            <div className="form__actions">
+              {title === 'Sign in' && <Link to="/forgot">Forgot password</Link>}
+              <button type="submit">{!btn ? title : btn}</button>
+            </div>
+          </form>
+        )}
       </div>
     </Fragment>
   );

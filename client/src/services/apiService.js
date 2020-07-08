@@ -2,16 +2,18 @@ import { api } from '../config.json';
 import http from './httpService';
 
 const signin = async ({ email, password }) => {
-  return await http.post(`${api}/auth/signin`, { email, password });
+  const result = await http.post(`${api}/auth/signin`, { email, password });
+  return result.data.data.user;
 };
 
 const signup = async ({ username, email, password, passwordConfirm }) => {
-  return await http.post(`${api}/auth/signup`, {
+  const result = await http.post(`${api}/auth/signup`, {
     username,
     email,
     password,
     passwordConfirm,
   });
+  return result.data.data.user;
 };
 
 const signout = async () => {
@@ -23,12 +25,13 @@ const forgotPassword = async ({ email }) => {
 };
 
 const getMe = async () => {
-  try {
-    const result = await http.get(`${api}/users/me`);
-    return result.data.data.user;
-  } catch (error) {
-    return null;
-  }
+  const result = await http.get(`${api}/users/me`);
+  return result.data.data.user;
+};
+
+const getUser = async (link) => {
+  const result = await http.get(`${api}/users/${link}`);
+  return result.data.data.user;
 };
 
 export default {
@@ -37,4 +40,5 @@ export default {
   signout,
   forgotPassword,
   getMe,
+  getUser,
 };

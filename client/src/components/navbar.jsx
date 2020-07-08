@@ -11,7 +11,7 @@ const Navbar = (props) => {
       <div className={user ? 'navbar' : 'navbar-disable'}>
         <div className="profile">
           <img
-            src={user && user.img ? user.img.location : avatar}
+            src={user && user.image ? user.image.location : avatar}
             alt="profile"
           />
         </div>
@@ -40,6 +40,12 @@ const Navbar = (props) => {
               <Link
                 to="/groups"
                 className="btn-nav icon-lg ri-group-fill"
+              ></Link>
+            </li>
+            <li>
+              <Link
+                to="/signout"
+                className="btn-nav icon-lg ri-logout-box-r-fill"
               ></Link>
             </li>
           </ul>

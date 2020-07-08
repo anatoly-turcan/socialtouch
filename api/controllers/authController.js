@@ -252,7 +252,7 @@ exports.updatePassword = catchError(
 
 exports.signout = (req, res) => {
   res.cookie('jwt', 'logged-out', {
-    expires: new Date(Date.now()),
+    expires: new Date(Date.now() - 10000),
     // httpOnly: true,
   });
 

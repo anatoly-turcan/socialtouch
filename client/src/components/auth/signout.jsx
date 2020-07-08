@@ -1,23 +1,23 @@
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import UserContext from './../../context/userContext';
-import auth from '../../services/authService';
+import api from '../../services/apiService';
 
 const Signout = () => {
-  const { setUser } = useContext(UserContext);
+  console.log('signOUT');
 
   useEffect(() => {
     const sendSignoutRequest = async () => {
       try {
-        await auth.signout();
         localStorage.removeItem('user');
-        setUser(null);
+        await api.signout();
+        window.location = '/';
       } catch (error) {}
     };
 
     sendSignoutRequest();
-  });
+  }, []);
 
-  return null;
+  return <div className="global-loader">Loading...</div>;
 };
 
 export default Signout;

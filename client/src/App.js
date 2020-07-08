@@ -21,7 +21,7 @@ const App = () => {
     const fetchData = async () => {
       try {
         setLoader(true);
-        localStorage.getItem('user') && setUser(await api.getMe());
+        setUser(await api.getMe());
       } catch (error) {
         setUser(null);
       } finally {
@@ -29,7 +29,7 @@ const App = () => {
       }
     };
 
-    fetchData();
+    !user && fetchData();
   }, []);
 
   if (loader) return <div className="global-loader">Loading...</div>;
@@ -44,7 +44,6 @@ const App = () => {
             <Route path="/signup" component={Signup} />
             <Route path="/forgot" component={Forgot} />
             <Route path="/restore" component={Restore} />
-            {!user && <Redirect to={`/signin`} />}
             <ProtectedRoute path="/signout" component={Signout} />
             <ProtectedRoute path="/not-found" component={NotFound} />
             {user && <Redirect from="/" exact to={`/${user.link}`} />}

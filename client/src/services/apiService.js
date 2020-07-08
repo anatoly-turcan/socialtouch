@@ -21,7 +21,8 @@ const signout = async () => {
 };
 
 const forgotPassword = async ({ email }) => {
-  return await http.post(`${api}/auth/forgotPassword`, { email });
+  const result = await http.post(`${api}/auth/forgotPassword`, { email });
+  return result.data.message;
 };
 
 const getMe = async () => {

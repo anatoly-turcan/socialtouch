@@ -10,10 +10,13 @@ const Navbar = (props) => {
     <header>
       <div className={user ? 'navbar' : 'navbar-disable'}>
         <div className="profile">
-          <img
-            src={user && user.image ? user.image.location : avatar}
-            alt="profile"
-          />
+          <Link to={`/${user && user.link}`}>
+            <img
+              src={user && user.image ? user.image.location : avatar}
+              alt="profile"
+              className="navbar-profile-image"
+            />
+          </Link>
         </div>
 
         <nav>

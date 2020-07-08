@@ -48,6 +48,14 @@ html {
   padding: 15px;
 }
 
+.not-found-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 130%;
+}
+
 .container {
   display: grid;
   grid-template-columns: var(--header-size) auto;
@@ -178,14 +186,23 @@ header {
 
 .profile {
   overflow: hidden;
+  transition: 0.1s;
 }
 
-.profile img {
+.profile:hover {
+  opacity: 0.8;
+}
+
+.navbar-profile-image {
   height: 100%;
   border-radius: 50%;
   box-shadow: 0 0 1px #ecf0f1;
   width: 100%;
   object-fit: cover;
+}
+
+.navbar-profile-image:hover {
+  opacity: 0.8;
 }
 /* ------ Navigation > buttons ------ */
 

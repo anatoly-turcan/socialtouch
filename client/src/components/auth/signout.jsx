@@ -1,16 +1,16 @@
-import React, { useContext, useEffect } from 'react';
-import UserContext from './../../context/userContext';
+import React, { useEffect, useContext } from 'react';
 import api from '../../services/apiService';
+import UserContext from './../../context/userContext';
 
-const Signout = () => {
-  console.log('signOUT');
+const Signout = ({ history }) => {
+  const { setUser } = useContext(UserContext);
 
   useEffect(() => {
     const sendSignoutRequest = async () => {
       try {
-        localStorage.removeItem('user');
         await api.signout();
-        window.location = '/';
+        setUser(null);
+        history.replace('/signin');
       } catch (error) {}
     };
 

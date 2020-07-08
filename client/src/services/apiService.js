@@ -35,6 +35,13 @@ const getUser = async (link) => {
   return result.data.data.user;
 };
 
+const getPosts = async (userLink, page = 1, limit = 10) => {
+  const result = await http.get(
+    `${api}/users/${userLink}/posts?page=${page}&limit=${limit}&fields=link,content,previewLimit,createdAt`
+  );
+  return result.data.data.posts;
+};
+
 export default {
   signin,
   signup,
@@ -42,4 +49,5 @@ export default {
   forgotPassword,
   getMe,
   getUser,
+  getPosts,
 };

@@ -1,32 +1,54 @@
 import React, { useContext, useState, useEffect } from 'react';
 import UserContext from '../context/userContext';
 import api from '../services/apiService';
+import PostBox from '../components/common/postBox';
+import ProfileBox from '../components/common/profileBox';
 
 const User = ({ history, match }) => {
   const { user } = useContext(UserContext);
   const [linkedUser, setLinkedUser] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loader, setLoader] = useState(true);
 
   useEffect(() => {
     const { link } = match.params;
-    if (link === user.link) setLinkedUser(user);
-    else {
-      const fetchData = async () => {
+
+    const fetchData = async () => {
+      // Get user
+      if (link === user.link) setLinkedUser(user);
+      else
         try {
           setLinkedUser(await api.getUser(link));
         } catch (error) {
           if (error.response && error.response.status === 404)
             history.replace('/not-found');
         }
-      };
-      fetchData();
-    }
+
+      // Get posts
+      try {
+        setPosts(await api.getPosts(link));
+      } catch (error) {
+        setPosts([]);
+      }
+
+      setLoader(false);
+    };
+
+    fetchData();
   }, [user, history, match.params]);
 
+  if (loader) return <div className="global-loader">Loading...</div>;
+
   return (
-    <div>
-      {linkedUser && linkedUser.username} <br />
-      {linkedUser && linkedUser.link} <br />
-      {linkedUser && linkedUser.img && linkedUser.img.location} <br />
+    <div className="content__personal-page">
+      <div className="posts">
+        {posts.length ? (
+          posts.map((post) => <PostBox post={post} key={post.link} />)
+        ) : (
+          <div className="centered-info">No posts</div>
+        )}
+      </div>
+      <ProfileBox user={linkedUser} />
     </div>
   );
 };

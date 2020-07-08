@@ -48,7 +48,7 @@ html {
   padding: 15px;
 }
 
-.not-found-block {
+.centered-info {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -201,9 +201,6 @@ header {
   object-fit: cover;
 }
 
-.navbar-profile-image:hover {
-  opacity: 0.8;
-}
 /* ------ Navigation > buttons ------ */
 
 nav {
@@ -269,6 +266,7 @@ nav ul li {
 .content__personal-page {
   display: grid;
   grid-template-columns: auto var(--profile-size);
+  height: 100%;
 }
 
 /* ------ Content > Personal page > posts ------ */
@@ -279,7 +277,7 @@ nav ul li {
 /* ------ Content > Personal page > posts > post box ------ */
 .post__box {
   margin-bottom: 5px;
-  margin: 10px 6px 10px 10px;
+  margin: 10px 12px 10px 16px;
   display: flex;
   background-color: var(--white);
   color: var(--darker);
@@ -301,6 +299,10 @@ nav ul li {
   flex-basis: 60%;
   display: flex;
   flex-direction: column;
+}
+
+.post__box--content-only {
+  width: 100%;
 }
 
 .post__box--content-header {
@@ -683,6 +685,8 @@ nav ul li {
   -------------------------------- */
   header {
     grid-row-start: 2;
+  }
+  .navbar {
     grid-template-columns: 60px auto 50px;
     grid-template-rows: auto;
   }
@@ -716,6 +720,13 @@ nav ul li {
     align-items: stretch;
   }
 
+  .settings {
+    margin-bottom: 0;
+  }
+
+  .navbar-profile-image {
+    width: auto;
+  }
   /* --------------------------------
     Content
   -------------------------------- */
@@ -757,9 +768,6 @@ nav ul li {
 
   .person--photo img {
     border-radius: 50%;
-    width: 100%;
-    height: auto;
-    margin: auto 0;
   }
 
   .person--name {

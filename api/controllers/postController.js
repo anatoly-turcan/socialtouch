@@ -44,7 +44,6 @@ exports.getAllPosts = catchError(
         'images.location',
         'user.username',
         'user.link',
-        'user.imgId',
         'img.location',
       ])
       .offset(filter.offset)

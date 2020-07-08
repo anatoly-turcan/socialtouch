@@ -8,6 +8,7 @@ const User = ({ history, match }) => {
   const { user } = useContext(UserContext);
   const [linkedUser, setLinkedUser] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [friends, setFriends] = useState([]);
   const [loader, setLoader] = useState(true);
 
   useEffect(() => {
@@ -24,10 +25,12 @@ const User = ({ history, match }) => {
             history.replace('/not-found');
         }
 
-      // Get posts
+      // Get posts, friends
       try {
+        setFriends(await api.getFriends(link));
         setPosts(await api.getPosts(link));
       } catch (error) {
+        setFriends([]);
         setPosts([]);
       }
 
@@ -48,7 +51,7 @@ const User = ({ history, match }) => {
           <div className="centered-info">No posts</div>
         )}
       </div>
-      <ProfileBox user={linkedUser} />
+      <ProfileBox user={linkedUser} friends={friends} />
     </div>
   );
 };

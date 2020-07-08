@@ -3,7 +3,7 @@ import avatar from '../img/no-avatar.png';
 import UserContext from './../context/userContext';
 import { Link } from 'react-router-dom';
 
-const Navbar = (props) => {
+const Navbar = () => {
   const { user } = useContext(UserContext);
 
   return (

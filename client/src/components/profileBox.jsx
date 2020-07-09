@@ -1,5 +1,5 @@
 import React from 'react';
-import avatar from '../../img/no-avatar.png';
+import avatar from '../img/no-avatar.png';
 import { Link } from 'react-router-dom';
 
 const ProfileBox = ({ user, friends }) => {

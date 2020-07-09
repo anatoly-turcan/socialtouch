@@ -1,57 +1,72 @@
 import React, { useContext, useState, useEffect } from 'react';
 import UserContext from '../context/userContext';
 import api from '../services/apiService';
-import PostBox from '../components/common/postBox';
-import ProfileBox from '../components/common/profileBox';
+import ProfileBox from '../components/profileBox';
+import Posts from '../components/common/posts';
+import { useParams, Link } from 'react-router-dom';
 
-const User = ({ history, match }) => {
+const User = ({ history }) => {
+  const params = useParams();
   const { user } = useContext(UserContext);
+  const [link, setLink] = useState(params.link);
   const [linkedUser, setLinkedUser] = useState(null);
-  const [posts, setPosts] = useState([]);
   const [friends, setFriends] = useState([]);
-  const [loader, setLoader] = useState(true);
+  const [page, setPage] = useState(1);
+  const [posts, setPosts] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    const { link } = match.params;
+    if (params.link !== link) {
+      setLoader(true);
+      setLink(params.link);
+    }
+  }, [params]);
 
-    const fetchData = async () => {
-      // Get user
-      if (link === user.link) setLinkedUser(user);
-      else
-        try {
-          setLinkedUser(await api.getUser(link));
-        } catch (error) {
-          if (error.response && error.response.status === 404)
-            history.replace('/not-found');
-        }
-
-      // Get posts, friends
+  useEffect(() => {
+    setPage(1);
+    const fetchUser = async () => {
       try {
-        setFriends(await api.getFriends(link));
-        setPosts(await api.getPosts(link));
+        setLinkedUser(await api.getUser(link));
       } catch (error) {
-        setFriends([]);
-        setPosts([]);
+        console.log(error);
       }
-
-      setLoader(false);
     };
 
-    fetchData();
-  }, [user, history, match.params]);
+    if (user.link === link) setLinkedUser(user);
+    else fetchUser();
+  }, [link]);
+
+  useEffect(() => {
+    if (linkedUser) {
+      const fetchFriendsPosts = async () => {
+        setFriends(await api.getFriends(linkedUser.link));
+        setPosts(await api.getPosts(linkedUser.link, page));
+        setLoader(false);
+      };
+      fetchFriendsPosts();
+    }
+  }, [linkedUser]);
+
+  useEffect(() => {
+    if (linkedUser) {
+      const fetchPosts = async () => {
+        setPosts([...posts, ...(await api.getPosts(linkedUser.link, page))]);
+      };
+      fetchPosts();
+    }
+  }, [page]);
+
+  const handleLoadMore = (event) => {
+    event.preventDefault();
+    setPage(page + 1);
+  };
 
   if (loader) return <div className="global-loader">Loading...</div>;
 
   return (
     <div className="content__personal-page">
-      <div className="posts">
-        {posts.length ? (
-          posts.map((post) => <PostBox post={post} key={post.link} />)
-        ) : (
-          <div className="centered-info">No posts</div>
-        )}
-      </div>
-      <ProfileBox user={linkedUser} friends={friends} />
+      <Posts posts={posts} handleLoadMore={handleLoadMore} />
+      {linkedUser && <ProfileBox user={linkedUser} friends={friends} />}
     </div>
   );
 };

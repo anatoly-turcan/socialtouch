@@ -46,8 +46,8 @@ exports.getAllPosts = catchError(
         'user.link',
         'img.location',
       ])
-      .offset(filter.offset)
-      .limit(filter.limit)
+      .skip(filter.offset)
+      .take(filter.limit)
       .orderBy(...filter.order)
       .getMany();
 

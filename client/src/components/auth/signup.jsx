@@ -1,7 +1,7 @@
 import React, { useContext, Fragment } from 'react';
 import Form from './form';
 import AuthPage from '../../pages/auth';
-import Input from './input';
+import Input from '../common/input';
 import api from '../../services/apiService';
 import UserContext from '../../context/userContext';
 import { Redirect } from 'react-router-dom';

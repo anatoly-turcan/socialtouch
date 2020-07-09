@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import friendlyTime from './../../utils/friendlyTime';
 import avatar from '../../img/no-avatar.png';
+import Time from './time';
 
 const PostBox = ({ post }) => {
   const { content, createdAt, images, user } = post;
@@ -31,7 +31,9 @@ const PostBox = ({ post }) => {
               <span className="post__box--author-name">{user.username}</span>
             </Link>
 
-            <span className="post__box--at">{friendlyTime(createdAt)}</span>
+            <span className="post__box--at">
+              <Time data={createdAt} />
+            </span>
 
             <Link to="" className="post__box--action">
               <i className="icon-md ri-more-fill"></i>

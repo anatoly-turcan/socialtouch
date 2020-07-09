@@ -52,6 +52,7 @@ const User = ({ history }) => {
           fetchMethod={async (page) =>
             await api.getPosts(linkedUser.link, page)
           }
+          isMe={user.link === linkedUser.link}
         />
       )}
       {linkedUser && <ProfileBox user={linkedUser} friends={friends} />}

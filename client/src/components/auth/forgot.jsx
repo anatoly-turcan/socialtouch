@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import AuthPage from '../../pages/auth';
 import Form from './form';
-import Input from './input';
+import Input from '../common/input';
 import api from '../../services/apiService';
 import UserContext from './../../context/userContext';
 import { Redirect } from 'react-router-dom';

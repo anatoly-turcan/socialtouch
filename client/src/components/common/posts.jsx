@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PostBox from './postBox';
+import CreatePost from './createPost';
 
-const Posts = ({ fetchMethod }) => {
+const Posts = ({ fetchMethod, isMe }) => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [loader, setLoader] = useState(true);
@@ -25,6 +26,8 @@ const Posts = ({ fetchMethod }) => {
 
   return (
     <div className="posts">
+      {isMe && <CreatePost />}
+
       {posts.length ? (
         posts.map((post) => <PostBox post={post} key={Math.random()} />)
       ) : (

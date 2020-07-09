@@ -50,6 +50,11 @@ const getFriends = async (userLink, limit = 5) => {
   return result.data.data.friends;
 };
 
+const createPost = async (content) => {
+  const result = await http.post(`${api}/posts`, { content });
+  return result.data.data.post;
+};
+
 export default {
   signin,
   signup,
@@ -59,4 +64,5 @@ export default {
   getUser,
   getPosts,
   getFriends,
+  createPost,
 };

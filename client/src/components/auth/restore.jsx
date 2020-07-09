@@ -1,6 +1,6 @@
 import React from 'react';
 import Form from './form';
-import Input from './input';
+import Input from '../common/input';
 import AuthPage from '../../pages/auth';
 
 const Restore = (props) => {

@@ -48,6 +48,17 @@ html {
   padding: 15px;
 }
 
+.loading-animation {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
 .centered {
   display: flex;
   justify-content: center;
@@ -128,11 +139,16 @@ a {
 /* --------------------------------
   Buttons
 -------------------------------- */
-button {
+button,
+input[type='button'] {
   border: none;
   padding: 0;
   font: inherit;
   cursor: pointer;
+  outline: inherit;
+}
+
+input {
   outline: inherit;
 }
 
@@ -295,6 +311,62 @@ nav ul li {
   display: flex;
   background-color: var(--white);
   color: var(--darker);
+}
+
+.create-new-post {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  border: 2px solid var(--dark-blue);
+}
+
+.create-new-post__title {
+  color: var(--white);
+  padding: 0 10px;
+  background-color: var(--darker);
+}
+
+.create-new-post__content {
+  height: 100%;
+  flex-grow: 2;
+  flex-shrink: 2;
+  flex-basis: 10%;
+}
+
+.create-new-post__content > input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0 5px;
+  font-size: 100%;
+}
+
+.create-new-post__photo {
+  display: inline-block;
+  width: 100%;
+  padding: 0 5px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.create-new-post__photo input {
+  display: none;
+}
+
+.create-new-post__button {
+  font-size: 130%;
+  color: var(--darker);
+  background-color: var(--light-blue);
+  padding: 0 15px;
+}
+
+.create-new-post__add-photo {
+  font-size: 130%;
+  color: var(--darker);
+  background-color: var(--light-blue);
 }
 
 .post__box--load-more {

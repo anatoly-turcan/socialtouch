@@ -48,6 +48,12 @@ html {
   padding: 15px;
 }
 
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .centered-info {
   display: flex;
   justify-content: center;

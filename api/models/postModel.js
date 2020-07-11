@@ -8,7 +8,6 @@ module.exports = class Post {
   }
 
   prepare() {
-    this.salt = crypto.randomBytes(8).toString('hex');
     this.link = crypto.randomBytes(12).toString('hex');
 
     return this;

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const multer = require('multer');
 const postRouter = require('./routes/postRoutes.js');
 const AppError = require('./utils/appError.js');
 const globalErrorHandler = require('./controllers/errorController');
@@ -9,6 +10,12 @@ const authController = require('./controllers/authController');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const groupRouter = require('./routes/groupRoutes');
+
+const upload = multer({
+  limits: {
+    fieldSize: 10485760,
+  },
+});
 
 module.exports = (connection) => {
   const app = express();
@@ -27,6 +34,8 @@ module.exports = (connection) => {
   app.use(cookieParser());
 
   app.use('/api/v1/auth', authRouter);
+
+  app.use(upload.any());
 
   // Only for logged users
   app.use(authController.protect);

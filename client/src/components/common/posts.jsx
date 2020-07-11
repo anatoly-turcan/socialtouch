@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PostBox from './postBox';
 import CreatePost from './createPost';
+import Loader from './loader';
 
 const Posts = ({ fetchMethod, isMe }) => {
   const [posts, setPosts] = useState([]);
@@ -24,9 +25,13 @@ const Posts = ({ fetchMethod, isMe }) => {
     setPage(page + 1);
   };
 
+  const refresh = async () => {
+    setPosts(await fetchMethod(page));
+  };
+
   return (
     <div className="posts">
-      {isMe && <CreatePost />}
+      {isMe && <CreatePost refresh={refresh} />}
 
       {posts.length ? (
         posts.map((post) => <PostBox post={post} key={Math.random()} />)
@@ -36,7 +41,9 @@ const Posts = ({ fetchMethod, isMe }) => {
 
       {loader && (
         <div className="post__box">
-          <div className="post__box--load-more centered">Loading...</div>
+          <div className="post__box--load-more">
+            <Loader h100 size={3} />
+          </div>
         </div>
       )}
 

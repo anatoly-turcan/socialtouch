@@ -28,6 +28,10 @@ module.exports = new EntitySchema({
       type: 'int',
       default: 0,
     },
+    imgId: {
+      type: 'int',
+      nullable: true,
+    },
     link: {
       type: 'varchar',
       unique: true,
@@ -45,7 +49,6 @@ module.exports = new EntitySchema({
     user: {
       target: 'Users',
       type: 'many-to-one',
-      cascade: true,
       onDelete: 'CASCADE',
     },
     comments: {
@@ -53,21 +56,27 @@ module.exports = new EntitySchema({
       type: 'one-to-many',
       inverseSide: 'post',
     },
-    images: {
+    // images: {
+    //   target: 'Images',
+    //   type: 'many-to-many',
+    //   inverseSide: 'post',
+    //   joinTable: {
+    //     name: 'post_images',
+    //     joinColumn: {
+    //       name: 'post_id',
+    //       referencedColumnName: 'id',
+    //     },
+    //     inverseJoinColumn: {
+    //       name: 'img_id',
+    //       referencedColumnName: 'id',
+    //     },
+    //   },
+    // },
+    image: {
       target: 'Images',
-      type: 'many-to-many',
+      type: 'one-to-one',
       inverseSide: 'post',
-      joinTable: {
-        name: 'post_images',
-        joinColumn: {
-          name: 'post_id',
-          referencedColumnName: 'id',
-        },
-        inverseJoinColumn: {
-          name: 'img_id',
-          referencedColumnName: 'id',
-        },
-      },
+      joinColumn: { name: 'img_id', referencedColumnName: 'id' },
     },
   },
 });

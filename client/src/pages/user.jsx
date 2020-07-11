@@ -4,13 +4,13 @@ import api from '../services/apiService';
 import ProfileBox from '../components/profileBox';
 import Posts from '../components/common/posts';
 import { useParams } from 'react-router-dom';
+import Loader from '../components/common/loader';
 
 const User = ({ history }) => {
   const params = useParams();
   const { user } = useContext(UserContext);
   const [link, setLink] = useState(params.link);
   const [linkedUser, setLinkedUser] = useState(null);
-  const [friends, setFriends] = useState([]);
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
@@ -34,16 +34,10 @@ const User = ({ history }) => {
   }, [link]);
 
   useEffect(() => {
-    if (linkedUser) {
-      const fetchFriendsPosts = async () => {
-        setFriends(await api.getFriends(linkedUser.link));
-        setLoader(false);
-      };
-      fetchFriendsPosts();
-    }
+    setLoader(false);
   }, [linkedUser]);
 
-  if (loader) return <div className="global-loader">Loading...</div>;
+  if (loader) return <Loader h100 size={6} />;
 
   return (
     <div className="content__personal-page">
@@ -55,7 +49,7 @@ const User = ({ history }) => {
           isMe={user.link === linkedUser.link}
         />
       )}
-      {linkedUser && <ProfileBox user={linkedUser} friends={friends} />}
+      {linkedUser && <ProfileBox user={linkedUser} />}
     </div>
   );
 };

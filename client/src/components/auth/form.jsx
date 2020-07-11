@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import constraints from './constraints';
 import validate from '../../utils/validate';
+import Loader from '../common/loader';
 
 const Form = ({ title, reverse, handleSubmit, btn, init, children }) => {
   const [data, setData] = useState(init);
@@ -42,7 +43,7 @@ const Form = ({ title, reverse, handleSubmit, btn, init, children }) => {
       {error && <div className="block__error">{error}</div>}
 
       <div className="block__content">
-        {loader && <div className="loader">Loading...</div>}
+        {loader && <Loader size={5} />}
 
         {!loader && (
           <form className="form" onSubmit={onSubmit}>

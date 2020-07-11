@@ -72,26 +72,26 @@ module.exports = new EntitySchema({
       type: 'many-to-many',
       inverseSide: 'subscribers',
     },
-    images: {
-      target: 'Images',
-      type: 'many-to-many',
-      inverseSide: 'userMany',
-      joinTable: {
-        name: 'user_images',
-        joinColumn: {
-          name: 'user_id',
-          referencedColumnName: 'id',
-        },
-        inverseJoinColumn: {
-          name: 'img_id',
-          referencedColumnName: 'id',
-        },
-      },
-    },
+    // images: {
+    //   target: 'Images',
+    //   type: 'many-to-many',
+    //   inverseSide: 'userMany',
+    //   joinTable: {
+    //     name: 'user_images',
+    //     joinColumn: {
+    //       name: 'user_id',
+    //       referencedColumnName: 'id',
+    //     },
+    //     inverseJoinColumn: {
+    //       name: 'img_id',
+    //       referencedColumnName: 'id',
+    //     },
+    //   },
+    // },
     image: {
       target: 'Images',
       type: 'one-to-one',
-      inverseSide: 'userOne',
+      inverseSide: 'user',
       joinColumn: { name: 'img_id', referencedColumnName: 'id' },
     },
   },

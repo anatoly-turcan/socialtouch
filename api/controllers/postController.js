@@ -1,15 +1,18 @@
 // const apiFilter = require('../utils/apiFilter');
 const catchError = require('../utils/catchError');
 const apiFilter = require('../utils/apiFilter');
+const AppError = require('../utils/appError');
+const validate = require('../utils/validate');
+const cloud = require('../utils/cloud');
 const postConstraints = require('../validators/postConstraints');
 const commentConstraints = require('../validators/commentConstraints');
 const Post = require('../entities/postSchema');
 const User = require('../entities/userSchema');
 const Comment = require('../entities/commentSchema');
+const Image = require('../entities/imageSchema');
 const PostModel = require('../models/postModel');
 const CommentModel = require('../models/commentModel');
 const handlerFactory = require('./handlerFactory');
-const AppError = require('../utils/appError');
 
 const alias = 'post';
 
@@ -37,11 +40,11 @@ exports.getAllPosts = catchError(
 
     const posts = await builder
       .leftJoinAndSelect(`${alias}.user`, 'user')
-      .leftJoinAndSelect(`${alias}.images`, 'images')
+      .leftJoinAndSelect(`${alias}.image`, 'image')
       .leftJoinAndSelect('user.image', 'img')
       .select([
         ...filter.fields,
-        'images.location',
+        'image.location',
         'user.username',
         'user.link',
         'img.location',
@@ -68,12 +71,12 @@ exports.getPost = handlerFactory.getOne({
   whereSelectors: [['link', 'params', 'link']],
   join: [
     [`${alias}.user`, 'user'],
-    [`${alias}.images`, 'images'],
+    [`${alias}.image`, 'image'],
     ['user.image', 'img'],
   ],
   joinSelectors: [
     alias,
-    'images.location',
+    'image.location',
     'user.username',
     'user.link',
     'user.imgId',
@@ -81,14 +84,47 @@ exports.getPost = handlerFactory.getOne({
   ],
 });
 
-exports.createPost = handlerFactory.createOne({
-  Entity: Post,
-  Model: PostModel,
-  bodyFields: ['content'],
-  userId: 'userId',
-  constraints: postConstraints,
-  responseName: 'post',
-});
+// exports.createPost = handlerFactory.createOne({
+//   Entity: Post,
+//   Model: PostModel,
+//   bodyFields: ['content'],
+//   userId: 'userId',
+//   constraints: postConstraints,
+//   responseName: 'post',
+// });
+
+exports.createPost = catchError(
+  async ({ connection, user, body, files }, res, next) => {
+    const postModel = new PostModel(user.id, body.content);
+
+    const validation = validate(postModel, postConstraints);
+    if (validation) return next(new AppError(validation, 400));
+
+    let imgId;
+
+    if (files.length > 0) {
+      const location = await cloud.uploadImage(files[0]);
+
+      const newImage = await connection
+        .getRepository(Image)
+        .createQueryBuilder()
+        .insert()
+        .values({ location })
+        .execute();
+
+      imgId = newImage.identifiers[0].id;
+    }
+
+    await connection
+      .getRepository(Post)
+      .save({ ...postModel.prepare(), imgId });
+
+    res.status(201).json({
+      status: 'success',
+      data: null,
+    });
+  }
+);
 
 exports.updatePost = handlerFactory.updateOne({
   Entity: Post,

@@ -4,22 +4,20 @@ import avatar from '../../img/no-avatar.png';
 import Time from './time';
 
 const PostBox = ({ post }) => {
-  const { content, createdAt, images, user } = post;
+  const { content, createdAt, image, user } = post;
 
-  const contentclassName = `post__box--content${
-    images.length > 0 ? '' : '-only'
-  }`;
+  const contentClassName = `post__box--content${image ? '' : '-only'}`;
 
   return (
     <div>
       <div className="post__box">
-        {images.length > 0 && (
+        {image && (
           <div className="post__box--image">
-            <img src={images[0].location} alt="Post image" />
+            <img src={image.location} alt="Post image" />
           </div>
         )}
 
-        <div className={contentclassName}>
+        <div className={contentClassName}>
           <div className="post__box--content-header">
             <Link to={`/${user.link}`} className="post__box--author">
               <div className="post__box--author-img">

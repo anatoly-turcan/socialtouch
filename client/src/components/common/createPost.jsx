@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import Input from './input';
 import api from '../../services/apiService';
+import Loader from './loader';
+import { toast } from 'react-toastify';
 
-const CreatePost = ({ addPost }) => {
+const CreatePost = ({ refresh }) => {
   const [content, setContent] = useState('');
   const [loader, setLoader] = useState(false);
+  const [photo, setPhoto] = useState([]);
+
+  const handleChangeImage = (event) => {
+    setPhoto(event.target.files[0]);
+  };
 
   const handleChange = ({ currentTarget: input }) => {
     setContent(input.value);
@@ -12,12 +19,22 @@ const CreatePost = ({ addPost }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoader(true);
+
+    const data = new FormData();
+    data.append('content', content);
+    data.append('photo', photo);
+
     try {
-      const post = await api.createPost(content);
-    } catch (error) {}
-    setContent('');
-    setLoader(false);
+      setLoader(true);
+      const success = await api.createPost(data);
+      if (success) refresh();
+    } catch ({ response }) {
+      toast.error(response.data.message);
+    } finally {
+      setContent('');
+      setPhoto([]);
+      setLoader(false);
+    }
   };
 
   return (
@@ -31,7 +48,7 @@ const CreatePost = ({ addPost }) => {
 
         <div className="create-new-post__add-photo ">
           <label htmlFor="photo" className="create-new-post__photo">
-            <Input name="photo" type="file" />
+            <Input name="photo" type="file" onChange={handleChangeImage} />
             <i className="ri-image-add-fill"></i>
           </label>
         </div>
@@ -49,7 +66,7 @@ const CreatePost = ({ addPost }) => {
 
         <button type="submit" className="create-new-post__button centered">
           {!loader && <i className="ri-send-plane-fill"></i>}
-          {loader && <i className="ri-loader-4-fill loading-animation"></i>}
+          {loader && <Loader />}
         </button>
       </form>
     </div>

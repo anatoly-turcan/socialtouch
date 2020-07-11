@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import avatar from '../img/no-avatar.png';
+import { getFriends } from '../services/apiService';
 import { Link } from 'react-router-dom';
+import Loader from './common/loader';
 
-const ProfileBox = ({ user, friends }) => {
+const ProfileBox = ({ user }) => {
+  const [friends, setFriends] = useState([]);
+  const [loader, setLoader] = useState(false);
+
+  useEffect(() => {
+    const fetchFriendsPosts = async () => {
+      setLoader(true);
+      setFriends(await getFriends(user.link));
+      setLoader(false);
+    };
+    fetchFriendsPosts();
+  }, []);
+
   return (
     <div className="person">
       <div className="person__element person--photo">
@@ -29,7 +43,8 @@ const ProfileBox = ({ user, friends }) => {
             Friends <span className="person--data-counter">*</span>
           </a>
           <div className="person--data--el-container">
-            {friends.length
+            {loader && <Loader size={3} />}
+            {!loader && friends.length
               ? friends.map((friend) => (
                   <Link
                     to={`/${friend.link}`}

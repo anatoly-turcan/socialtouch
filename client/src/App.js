@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import api from './services/apiService';
 import NotFound from './pages/notFound';
 import Signin from './components/auth/signin';
@@ -10,8 +11,9 @@ import Signout from './components/auth/signout';
 import Navbar from './components/navbar';
 import UserContext from './context/userContext';
 import UserPage from './pages/user';
-import './App.css';
 import ProtectedRoute from './components/common/protectedRoute';
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -45,6 +47,10 @@ const App = () => {
             <Route path="/forgot" component={Forgot} />
             <Route path="/restore" component={Restore} />
             <ProtectedRoute path="/signout" component={Signout} />
+            <ProtectedRoute path="/news" component={NotFound} />
+            <ProtectedRoute path="/chat" component={NotFound} />
+            <ProtectedRoute path="/friends" component={NotFound} />
+            <ProtectedRoute path="/groups" component={NotFound} />
             <ProtectedRoute path="/not-found" component={NotFound} />
             {user && <Redirect from="/" exact to={`/${user.link}`} />}
             <ProtectedRoute path="/:link" component={UserPage} />
@@ -52,6 +58,7 @@ const App = () => {
           </Switch>
         </div>
       </div>
+      <ToastContainer autoClose={2000} />
     </UserContext.Provider>
   );
 };

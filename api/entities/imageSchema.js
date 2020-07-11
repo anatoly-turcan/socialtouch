@@ -29,25 +29,28 @@ module.exports = new EntitySchema({
     },
   },
   relations: {
-    userOne: {
+    user: {
       target: 'Users',
       type: 'one-to-one',
       inverseSide: 'image',
+      onDelete: 'CASCADE',
     },
-    userMany: {
-      target: 'Users',
-      type: 'many-to-many',
-      inverseSide: 'images',
-    },
+    // userMany: {
+    //   target: 'Users',
+    //   type: 'many-to-many',
+    //   inverseSide: 'images',
+    // },
     group: {
       target: 'Groups',
       type: 'one-to-one',
       inverseSide: 'image',
+      onDelete: 'CASCADE',
     },
     post: {
       target: 'Posts',
-      type: 'many-to-many',
-      inverseSide: 'images',
+      type: 'one-to-one',
+      inverseSide: 'image',
+      onDelete: 'CASCADE',
     },
   },
 });

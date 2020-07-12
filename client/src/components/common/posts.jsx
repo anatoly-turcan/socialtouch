@@ -38,20 +38,18 @@ const Posts = ({ fetchMethod, isMe }) => {
     <div className="posts">
       {isMe && <CreatePost refresh={refresh} />}
 
+      {posts.length
+        ? posts.map((post) => (
+            <PostBox post={post} refresh={refresh} key={Math.random()} />
+          ))
+        : !loader && <div className="centered-info">No posts</div>}
+
       {loader && (
         <div className="post__box">
           <div className="post__box--load-more">
             <Loader h100 size={5} />
           </div>
         </div>
-      )}
-
-      {!loader && posts.length ? (
-        posts.map((post) => (
-          <PostBox post={post} refresh={refresh} key={Math.random()} />
-        ))
-      ) : (
-        <div className="centered-info">No posts</div>
       )}
 
       {!loader && !isAll && posts.length > 0 && posts.length % 10 === 0 && (

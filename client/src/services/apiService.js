@@ -1,6 +1,5 @@
 import { api } from '../config.json';
-import http, { transport } from './httpService';
-import axios from 'axios';
+import http from './httpService';
 
 export const signin = async ({ email, password }) => {
   const result = await http.post(`${api}/auth/signin`, { email, password });
@@ -61,6 +60,16 @@ export const createPost = async (formData) => {
   return result.data.status === 'success';
 };
 
+export const deletePost = async (link) => {
+  const result = await http.delete(`${api}/posts/${link}`);
+  return result.status === 204;
+};
+
+export const updatePost = async (link, content) => {
+  const result = await http.patch(`${api}/posts/${link}`, { content });
+  return result.status === 204;
+};
+
 export default {
   signin,
   signup,
@@ -71,4 +80,5 @@ export default {
   getPosts,
   getFriends,
   createPost,
+  deletePost,
 };

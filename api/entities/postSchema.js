@@ -26,7 +26,7 @@ module.exports = new EntitySchema({
     },
     previewLimit: {
       type: 'int',
-      default: 0,
+      default: 2000,
     },
     imgId: {
       type: 'int',

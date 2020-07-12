@@ -101,23 +101,27 @@ exports.createPost = catchError(
     if (validation) return next(new AppError(validation, 400));
 
     let imgId;
+    let previewLimit;
 
     if (files.length > 0) {
-      const location = await cloud.uploadImage(files[0]);
+      const data = await cloud.uploadImage(files[0]);
 
       const newImage = await connection
         .getRepository(Image)
         .createQueryBuilder()
         .insert()
-        .values({ location })
+        .values(data)
         .execute();
 
       imgId = newImage.identifiers[0].id;
+      previewLimit = Math.floor((data.height / data.width) * 1200);
     }
 
-    await connection
-      .getRepository(Post)
-      .save({ ...postModel.prepare(), imgId });
+    await connection.getRepository(Post).save({
+      ...postModel.prepare(),
+      imgId,
+      previewLimit,
+    });
 
     res.status(201).json({
       status: 'success',

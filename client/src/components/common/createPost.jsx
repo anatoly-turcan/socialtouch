@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import Input from './input';
 import api from '../../services/apiService';
 import Loader from './loader';
@@ -44,30 +44,34 @@ const CreatePost = ({ refresh }) => {
         encType="multipart/form-data"
         onSubmit={handleSubmit}
       >
-        <div className="create-new-post__title centered">New post</div>
+        {loader && <Loader size={5} w100 />}
+        {!loader && (
+          <Fragment>
+            <div className="create-new-post__title centered">New post</div>
 
-        <div className="create-new-post__add-photo ">
-          <label htmlFor="photo" className="create-new-post__photo">
-            <Input name="photo" type="file" onChange={handleChangeImage} />
-            <i className="ri-image-add-fill"></i>
-          </label>
-        </div>
+            <div className="create-new-post__add-photo ">
+              <label htmlFor="photo" className="create-new-post__photo">
+                <Input name="photo" type="file" onChange={handleChangeImage} />
+                <i className="ri-image-add-fill"></i>
+              </label>
+            </div>
 
-        <div className="create-new-post__content">
-          <Input
-            name="content"
-            type="text"
-            placeholder="What's new?"
-            autoComplete="off"
-            value={content}
-            onChange={handleChange}
-          />
-        </div>
+            <div className="create-new-post__content">
+              <Input
+                name="content"
+                type="text"
+                placeholder="What's new?"
+                autoComplete="off"
+                value={content}
+                onChange={handleChange}
+              />
+            </div>
 
-        <button type="submit" className="create-new-post__button centered">
-          {!loader && <i className="ri-send-plane-fill"></i>}
-          {loader && <Loader />}
-        </button>
+            <button type="submit" className="create-new-post__button centered">
+              <i className="ri-send-plane-fill"></i>
+            </button>
+          </Fragment>
+        )}
       </form>
     </div>
   );

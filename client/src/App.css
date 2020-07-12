@@ -16,6 +16,7 @@
   --light-blue: #8ed2ff; /* link / icon on dark */
   --light-blue-50: #8ed2ff80; /* opacity: 0.5*/
   --dark-blue: #0067ad; /* icon on white */
+  --red: #f53838;
 
   /* ------ Sizes ------ */
   --header-size: 60px;
@@ -63,6 +64,10 @@ html {
   height: 100%;
 }
 
+.w-100 {
+  width: 100%;
+}
+
 .f-1 {
   font-size: 100%;
 }
@@ -93,12 +98,65 @@ html {
   align-items: center;
 }
 
+.right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .centered-info {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
   font-size: 130%;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--darker);
+  right: 15px;
+  top: 30px;
+  border-radius: 12px 0 12px 12px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.dropdown-el {
+  padding: 6px 16px;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.d-btn-danger {
+  color: var(--red);
+  transition: 0.1s;
+}
+
+.d-btn-danger:hover {
+  background-color: var(--red);
+  color: var(--white);
+}
+
+.d-btn-default {
+  transition: 0.1s;
+}
+
+.d-btn-default:hover {
+  background-color: var(--light-blue);
+  color: var(--darker);
 }
 
 .container {
@@ -167,6 +225,7 @@ a {
 /* --------------------------------
   Buttons
 -------------------------------- */
+textarea,
 button,
 input[type='button'] {
   border: none;
@@ -190,7 +249,7 @@ input {
 
 .btn-dark {
   color: var(--white);
-  background: var(--darker);
+  background: var(--dark);
 }
 
 .btn-dark:hover {
@@ -479,9 +538,10 @@ nav ul li {
   margin-right: 30px;
 }
 
-.post__box--content-info {
+.post__box--content-message {
   flex: auto;
   padding: 15px 20px;
+  overflow-wrap: anywhere;
 }
 
 .post__box--content-actions {
@@ -531,6 +591,24 @@ nav ul li {
 .post__box-action-icon {
   font-size: 120%;
   color: var(--dark-blue);
+}
+
+.post__box__edit {
+  padding: 20px 15px 15px 15px;
+}
+
+.pb-edit-area {
+  resize: none;
+  padding: 5px 15px;
+  cursor: auto;
+  border-radius: 8px;
+}
+
+.pb-edit-save-btn {
+  padding: 4px 15px;
+  margin-top: 5px;
+  margin-left: 15px;
+  border-radius: 8px;
 }
 
 /* ------ Content > Personal page > person ------ */

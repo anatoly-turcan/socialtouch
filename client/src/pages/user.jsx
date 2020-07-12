@@ -37,17 +37,15 @@ const User = ({ history }) => {
     setLoader(false);
   }, [linkedUser]);
 
+  const fetchPosts = async (page, limit = 10) =>
+    await api.getPosts(linkedUser.link, page, limit);
+
   if (loader) return <Loader h100 size={6} />;
 
   return (
     <div className="content__personal-page">
       {linkedUser && (
-        <Posts
-          fetchMethod={async (page) =>
-            await api.getPosts(linkedUser.link, page)
-          }
-          isMe={user.link === linkedUser.link}
-        />
+        <Posts fetchMethod={fetchPosts} isMe={user.link === linkedUser.link} />
       )}
       {linkedUser && <ProfileBox user={linkedUser} />}
     </div>

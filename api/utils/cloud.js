@@ -13,7 +13,10 @@ exports.uploadImage = async (file, square = 0) => {
     .jpeg({ quality: 90 });
   if (square) prepareImage.resize(square, square);
 
-  const buffer = await prepareImage.toBuffer();
+  const { data: buffer, info } = await prepareImage.toBuffer({
+    resolveWithObject: true,
+  });
+
   const filename = crypto.randomBytes(12).toString('hex');
 
   const data = await s3
@@ -23,5 +26,5 @@ exports.uploadImage = async (file, square = 0) => {
       Body: buffer,
     })
     .promise();
-  return data.Location;
+  return { location: data.Location, width: info.width, height: info.height };
 };

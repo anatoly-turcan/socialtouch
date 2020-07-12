@@ -26,7 +26,12 @@ const Posts = ({ fetchMethod, isMe }) => {
   };
 
   const refresh = async () => {
-    setPosts(await fetchMethod(page));
+    if (page !== 1) {
+      setPosts([]);
+      setPage(1);
+    } else {
+      setPosts(await fetchMethod(page));
+    }
   };
 
   return (
@@ -34,7 +39,9 @@ const Posts = ({ fetchMethod, isMe }) => {
       {isMe && <CreatePost refresh={refresh} />}
 
       {posts.length ? (
-        posts.map((post) => <PostBox post={post} key={Math.random()} />)
+        posts.map((post) => (
+          <PostBox post={post} refresh={refresh} key={Math.random()} />
+        ))
       ) : (
         <div className="centered-info">No posts</div>
       )}
@@ -42,7 +49,7 @@ const Posts = ({ fetchMethod, isMe }) => {
       {loader && (
         <div className="post__box">
           <div className="post__box--load-more">
-            <Loader h100 size={3} />
+            <Loader h100 size={5} />
           </div>
         </div>
       )}

@@ -51,6 +51,35 @@ exports.getMe = catchError(async ({ connection, user }, res, next) => {
   });
 });
 
+exports.getUserSettings = catchError(
+  async ({ connection, params }, res, next) => {
+    const settings = await connection
+      .getRepository(UserSettings)
+      .createQueryBuilder('settings')
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('user.id')
+          .from(User, alias)
+          .where('user.link = :link')
+          .getQuery();
+        return `settings.userId = ${subQuery}`;
+      })
+      .setParameter('link', params.link)
+      .getOne();
+
+    settings.id = undefined;
+    settings.userId = undefined;
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        settings,
+      },
+    });
+  }
+);
+
 exports.getMySettings = catchError(async ({ connection, user }, res, next) => {
   const settings = await connection
     .getRepository(UserSettings)
@@ -116,17 +145,9 @@ exports.getGroups = catchError(
       .getRepository(User)
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.groups', 'groups')
-      .where((qb) => {
-        const subQuery = qb
-          .subQuery()
-          .select('u.id')
-          .from(User, 'u')
-          .where('u.link = :link')
-          .getQuery();
-        return `user.id = ${subQuery}`;
-      })
-      .setParameter('link', params.link)
-      .select(['user.id', 'groups.name', 'groups.link', 'groups.imgId'])
+      .leftJoinAndSelect('groups.image', 'image')
+      .where('user.link = :link', { link: params.link })
+      .select(['user.id', 'groups.name', 'groups.link', 'image.location'])
       .offset(offset)
       .limit(limit)
       .getOne();
@@ -137,6 +158,25 @@ exports.getGroups = catchError(
       status: 'success',
       data: {
         groups: result.groups,
+      },
+    });
+  }
+);
+
+exports.getGroupsCount = catchError(
+  async ({ connection, params }, res, next) => {
+    const { count } = await connection
+      .getRepository(User)
+      .createQueryBuilder(alias)
+      .leftJoinAndSelect(`${alias}.groups`, 'groups')
+      .where('user.link = :link', { link: params.link })
+      .select('COUNT(groups.id)', 'count')
+      .getRawOne();
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        count,
       },
     });
   }
@@ -241,6 +281,33 @@ exports.getFriends = catchError(
       results: result.length,
       data: {
         friends,
+      },
+    });
+  }
+);
+
+exports.getFriendsCount = catchError(
+  async ({ connection, params }, res, next) => {
+    const { count } = await connection
+      .getRepository(Friends)
+      .createQueryBuilder('friends')
+      .where((qb) => {
+        const id = qb
+          .subQuery()
+          .select('user.id')
+          .from(User, 'user')
+          .where('user.link = :link')
+          .getQuery();
+        return `friends.friendId = ${id} OR friends.targetId = ${id}`;
+      })
+      .setParameter('link', params.link)
+      .select('COUNT(*)', 'count')
+      .getRawOne();
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        count,
       },
     });
   }

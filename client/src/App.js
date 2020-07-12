@@ -50,7 +50,7 @@ const App = () => {
             <ProtectedRoute path="/news" component={NotFound} />
             <ProtectedRoute path="/chat" component={NotFound} />
             <ProtectedRoute path="/friends" component={NotFound} />
-            <ProtectedRoute path="/groups" component={NotFound} />
+            <ProtectedRoute path="/group/:link" component={NotFound} />
             <ProtectedRoute path="/not-found" component={NotFound} />
             {user && <Redirect from="/" exact to={`/${user.link}`} />}
             <ProtectedRoute path="/:link" component={UserPage} />

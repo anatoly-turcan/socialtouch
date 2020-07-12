@@ -49,10 +49,18 @@ export const getPosts = async (userLink, page = 1, limit = 10) => {
 
 export const getFriends = async (userLink, limit = 5) => {
   let query = `${api}/users/${userLink}/friends`;
-  if (limit) query = `${query}/?limit=${limit}`;
+  if (limit) query = `${query}?limit=${limit}`;
   const result = await http.get(query);
 
   return result.data.data.friends;
+};
+
+export const getUserGroups = async (userLink, limit = 5) => {
+  let query = `${api}/users/${userLink}/groups`;
+  if (limit) query = `${query}?limit=${limit}`;
+  const result = await http.get(query);
+
+  return result.data.data.groups;
 };
 
 export const createPost = async (formData) => {
@@ -70,6 +78,21 @@ export const updatePost = async (link, content) => {
   return result.status === 204;
 };
 
+export const getSettings = async (userLink) => {
+  const result = await http.get(`${api}/users/${userLink}/settings`);
+  return result.data.data.settings;
+};
+
+export const getFriendsCount = async (userLink) => {
+  const result = await http.get(`${api}/users/${userLink}/friendsCount`);
+  return result.data.data.count;
+};
+
+export const getGroupsCount = async (userLink) => {
+  const result = await http.get(`${api}/users/${userLink}/groupsCount`);
+  return result.data.data.count;
+};
+
 export default {
   signin,
   signup,
@@ -81,4 +104,8 @@ export default {
   getFriends,
   createPost,
   deletePost,
+  getSettings,
+  getUserGroups,
+  getFriendsCount,
+  getGroupsCount,
 };

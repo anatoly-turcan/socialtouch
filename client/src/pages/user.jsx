@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import UserContext from '../context/userContext';
-import api from '../services/apiService';
 import ProfileBox from '../components/profile/box';
 import Posts from '../components/posts';
-import { useParams } from 'react-router-dom';
 import Loader from '../components/common/loader';
+import api from '../services/apiService';
 
 const User = () => {
   const params = useParams();

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { getFriends } from '../../services/apiService';
-import Loader from '../common/loader';
-import avatar from '../../img/no-avatar.png';
 import { Link } from 'react-router-dom';
+import Loader from '../common/loader';
+import { getFriends } from '../../services/apiService';
+import avatar from '../../img/no-avatar.png';
 
 const ProfileFriends = ({ link, limit }) => {
   const [friends, setFriends] = useState(null);

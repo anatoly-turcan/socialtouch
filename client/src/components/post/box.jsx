@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deletePost } from '../../services/apiService';
 import UserContext from '../../context/userContext';
 import Time from '../common/time';
 import EditPost from './edit';
-import avatar from '../../img/no-avatar.png';
 import PostMore from './more';
 import PostComments from './comments';
 import PostFull from './full';
+import { deletePost } from '../../services/apiService';
+import avatar from '../../img/no-avatar.png';
 
 const PostBox = ({ post, refresh }) => {
   const { content, createdAt, image, user, previewLimit, link } = post;

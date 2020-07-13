@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import WebFont from 'webfontloader';
 import { BrowserRouter } from 'react-router-dom';
+import WebFont from 'webfontloader';
+import App from './App';
 import 'remixicon/fonts/remixicon.css';
 
 WebFont.load({

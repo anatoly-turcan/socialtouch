@@ -1,8 +1,8 @@
 import React, { useState, Fragment } from 'react';
-import Input from '../common/input';
-import api from '../../services/apiService';
-import Loader from '../common/loader';
 import { toast } from 'react-toastify';
+import Input from '../common/input';
+import Loader from '../common/loader';
+import api from '../../services/apiService';
 
 const CreatePost = ({ refresh }) => {
   const [content, setContent] = useState('');

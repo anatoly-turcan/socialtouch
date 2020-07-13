@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
-import api from '../../services/apiService';
 import UserContext from './../../context/userContext';
+import api from '../../services/apiService';
 
 const Signout = ({ history }) => {
   const { setUser } = useContext(UserContext);

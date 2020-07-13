@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
+import { Redirect } from 'react-router-dom';
+import UserContext from './../../context/userContext';
 import AuthPage from '../../pages/auth';
 import Form from './form';
 import Input from '../common/input';
 import api from '../../services/apiService';
-import UserContext from './../../context/userContext';
-import { Redirect } from 'react-router-dom';
 
 const Forgot = (props) => {
   const { user } = useContext(UserContext);

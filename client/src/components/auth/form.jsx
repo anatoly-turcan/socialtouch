@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
-import constraints from './constraints';
-import validate from '../../utils/validate';
 import Loader from '../common/loader';
+import validate from '../../utils/validate';
+import constraints from './constraints';
 
 const Form = ({ title, reverse, handleSubmit, btn, init, children }) => {
   const [data, setData] = useState(init);

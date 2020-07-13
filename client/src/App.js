@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import api from './services/apiService';
-import NotFound from './pages/notFound';
+import UserContext from './context/userContext';
 import Signin from './components/auth/signin';
 import Signup from './components/auth/signup';
 import Forgot from './components/auth/forgot';
 import Restore from './components/auth/restore';
 import Signout from './components/auth/signout';
 import Navbar from './components/navbar';
-import UserContext from './context/userContext';
-import UserPage from './pages/user';
 import ProtectedRoute from './components/common/protectedRoute';
+import NotFound from './pages/notFound';
+import UserPage from './pages/user';
+import api from './services/apiService';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 

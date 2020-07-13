@@ -32,6 +32,9 @@ module.exports = new EntitySchema({
       updateDate: true,
     },
   },
+  orderBy: {
+    id: 'DESC',
+  },
   relations: {
     post: {
       target: 'Posts',

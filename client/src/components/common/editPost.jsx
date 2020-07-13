@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { updatePost } from '../../services/apiService';
 
-const EditPost = ({ post, refresh, cancel }) => {
+const EditPost = ({ post, refresh }) => {
   const [content, setContent] = useState(post.content);
 
   const handleChange = ({ currentTarget: textarea }) => {
@@ -26,12 +26,6 @@ const EditPost = ({ post, refresh, cancel }) => {
           autoFocus
         ></textarea>
         <div className="right">
-          <button
-            className="btn-light centered pb-edit-save-btn"
-            onClick={cancel}
-          >
-            Cancel
-          </button>
           <button type="submit" className="btn-dark centered pb-edit-save-btn">
             Save
           </button>

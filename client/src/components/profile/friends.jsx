@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getFriends } from '../services/apiService';
-import Loader from './common/loader';
-import avatar from '../img/no-avatar.png';
+import { getFriends } from '../../services/apiService';
+import Loader from '../common/loader';
+import avatar from '../../img/no-avatar.png';
 import { Link } from 'react-router-dom';
 
 const ProfileFriends = ({ link, limit }) => {

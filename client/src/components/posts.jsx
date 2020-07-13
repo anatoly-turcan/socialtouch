@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import PostBox from './postBox';
-import CreatePost from './createPost';
-import Loader from './loader';
+import PostBox from './post/box';
+import Loader from './common/loader';
+import CreatePost from './post/create';
 
 const Posts = ({ fetchMethod, isMe }) => {
   const [posts, setPosts] = useState([]);

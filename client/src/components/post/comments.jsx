@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../common/loader';
+import CommentBox from './commentBox';
 import {
   getPostComments,
   createComment,
   deleteComment,
 } from '../../services/apiService';
-import CommentBox from './commentBox';
 
 const PostComments = ({ link }) => {
   const [comments, setComments] = useState([]);

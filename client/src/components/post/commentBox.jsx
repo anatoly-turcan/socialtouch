@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import avatar from '../../img/no-avatar.png';
 import { Link } from 'react-router-dom';
-import Time from '../common/time';
 import UserContext from '../../context/userContext';
+import Time from '../common/time';
+import avatar from '../../img/no-avatar.png';
 
 const CommentBox = ({ user, comment, handleDelete }) => {
   const { user: currentUser } = useContext(UserContext);

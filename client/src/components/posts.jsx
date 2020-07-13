@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import PostBox from './post/box';
 import Loader from './common/loader';
+import PostBox from './post/box';
 import CreatePost from './post/create';
 
 const Posts = ({ fetchMethod, isMe }) => {

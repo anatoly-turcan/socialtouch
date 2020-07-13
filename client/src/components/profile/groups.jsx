@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { getUserGroups } from '../../services/apiService';
-import Loader from '../common/loader';
-import noGroup from '../../img/no-group.png';
 import { Link } from 'react-router-dom';
+import Loader from '../common/loader';
+import { getUserGroups } from '../../services/apiService';
+import noGroup from '../../img/no-group.png';
 
 const ProfileGroups = ({ link, limit }) => {
   const [groups, setGroups] = useState(null);

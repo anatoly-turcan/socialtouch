@@ -420,6 +420,13 @@ nav ul li {
   padding: 15px;
 }
 
+.post__full--content {
+  font-size: 110%;
+  margin: 5px 30px 15px 30px;
+  max-height: 500px;
+  overflow: auto;
+}
+
 .comment {
   display: flex;
   margin-bottom: 10px;
@@ -666,6 +673,14 @@ nav ul li {
 }
 
 .pb-edit-area {
+  resize: none;
+  padding: 5px 15px;
+  cursor: auto;
+  border-radius: 8px;
+  min-height: 200px;
+}
+
+.pb-comments-area {
   resize: none;
   padding: 5px 15px;
   cursor: auto;

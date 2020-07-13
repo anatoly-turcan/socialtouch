@@ -95,7 +95,7 @@ const PostComments = ({ link }) => {
     <form className="create-comment-form" onSubmit={handleSubmit}>
       <textarea
         name="content"
-        className="w-100 pb-edit-area"
+        className="w-100 pb-comments-area"
         value={content}
         placeholder="Your comment"
         onChange={handleChange}

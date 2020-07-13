@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getSettings } from '../services/apiService';
-import Loader from './common/loader';
+import { getSettings } from '../../services/apiService';
+import Loader from '../common/loader';
 
 const ProfileInfo = ({ link }) => {
   const [settings, setSettings] = useState(null);

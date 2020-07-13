@@ -1,18 +1,18 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import avatar from '../img/no-avatar.png';
-import noGroup from '../img/no-group.png';
+import avatar from '../../img/no-avatar.png';
+import noGroup from '../../img/no-group.png';
 import { Link } from 'react-router-dom';
-import Loader from './common/loader';
-import ProfileInfo from './profileInfo';
-import ProfileMore from './profileMore';
-import ProfileFriends from './profileFriends';
-import ProfileGroups from './profileGroups';
+import Loader from '../common/loader';
+import ProfileInfo from './info';
+import ProfileMore from './more';
+import ProfileFriends from './friends';
+import ProfileGroups from './groups';
 import {
   getFriends,
   getUserGroups,
   getFriendsCount,
   getGroupsCount,
-} from '../services/apiService';
+} from '../../services/apiService';
 
 const ProfileBox = ({ user, isMe }) => {
   const [friends, setFriends] = useState([]);

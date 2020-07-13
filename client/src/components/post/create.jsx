@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from 'react';
-import Input from './input';
+import Input from '../common/input';
 import api from '../../services/apiService';
-import Loader from './loader';
+import Loader from '../common/loader';
 import { toast } from 'react-toastify';
 
 const CreatePost = ({ refresh }) => {

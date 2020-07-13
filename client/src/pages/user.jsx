@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import UserContext from '../context/userContext';
 import api from '../services/apiService';
-import ProfileBox from '../components/profileBox';
-import Posts from '../components/common/posts';
+import ProfileBox from '../components/profile/box';
+import Posts from '../components/posts';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/common/loader';
 
-const User = ({ history }) => {
+const User = () => {
   const params = useParams();
   const { user } = useContext(UserContext);
   const [link, setLink] = useState(params.link);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Loader from './loader';
+import Loader from '../common/loader';
 import {
   getPostComments,
   createComment,

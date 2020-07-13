@@ -12,22 +12,24 @@ const PostComments = ({ link }) => {
   const [loader, setLoader] = useState(true);
   const [content, setContent] = useState('');
   const [page, setPage] = useState(1);
-  const [isAll, setIsAll] = useState(true);
+  const [isAll, setIsAll] = useState(false);
 
   useEffect(() => {
     const fetchComments = async () => {
       const newComments = await getPostComments(link, page);
 
-      setComments([...comments, ...newComments]);
+      if (newComments.length === 0) setIsAll(true);
+      else setComments([...comments, ...newComments]);
+
       setLoader(false);
     };
     fetchComments();
   }, [page]);
 
   useEffect(() => {
-    if (comments.length === 0 || (comments.length && comments.length % 10))
-      setIsAll(true);
-    else setIsAll(false);
+    if (comments.length)
+      if (comments.length % 10) setIsAll(true);
+      else if (comments.length % 10 === 0) setIsAll(false);
   }, [comments]);
 
   const handleChange = ({ currentTarget: textarea }) => {
@@ -39,10 +41,19 @@ const PostComments = ({ link }) => {
     const success = await createComment(link, content);
 
     if (success) {
-      const newComments = [...(await getPostComments(link, 1, 1)), ...comments];
-      if (comments.length && comments.length % 10 === 0) newComments.pop();
+      if (page === 1) {
+        const newComments = [
+          ...(await getPostComments(link, 1, 1)),
+          ...comments,
+        ];
+        if (comments.length && comments.length % 10 === 0) newComments.pop();
 
-      setComments(newComments);
+        setComments(newComments);
+      } else {
+        setComments([]);
+        setPage(1);
+      }
+
       setContent('');
     }
   };

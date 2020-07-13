@@ -98,11 +98,11 @@ const PostBox = ({ post, refresh }) => {
               onClick={handleComments}
             >
               <i className="icon ri-message-3-line"></i>
-              <span>14</span>
+              {/* <span>14</span> */}
             </button>
             <Link to="" className="post__box--action post__box--action-share">
               <i className="icon ri-share-forward-line"></i>
-              <span>7</span>
+              {/* <span>7</span> */}
             </Link>
           </div>
 

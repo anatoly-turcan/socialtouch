@@ -7,6 +7,7 @@ import EditPost from './editPost';
 import avatar from '../../img/no-avatar.png';
 import PostMore from './postMore';
 import PostComments from './postComments';
+import PostFull from './postFull';
 
 const PostBox = ({ post, refresh }) => {
   const { content, createdAt, image, user, previewLimit, link } = post;
@@ -23,6 +24,7 @@ const PostBox = ({ post, refresh }) => {
 
   const handleEdit = () => setMore('edit');
   const handleComments = () => setMore('comments');
+  const handleFull = () => setMore('full');
 
   const handleBack = () => setMore(false);
 
@@ -33,6 +35,7 @@ const PostBox = ({ post, refresh }) => {
           <EditPost post={post} refresh={refresh} cancel={handleBack} />
         )}
         {more === 'comments' && <PostComments link={post.link} />}
+        {more === 'full' && <PostFull post={post} />}
       </PostMore>
     );
 
@@ -100,15 +103,14 @@ const PostBox = ({ post, refresh }) => {
               <i className="icon ri-message-3-line"></i>
               {/* <span>14</span> */}
             </button>
-            <Link to="" className="post__box--action post__box--action-share">
-              <i className="icon ri-share-forward-line"></i>
-              {/* <span>7</span> */}
-            </Link>
           </div>
 
-          <Link to="" className="post__box--action">
-            <i className="icon ri-fullscreen-line"></i>
-          </Link>
+          <button
+            className="post__box--action btn-transparent"
+            onClick={handleFull}
+          >
+            <i class="ri-file-list-2-line"></i>
+          </button>
         </div>
       </div>
     </div>

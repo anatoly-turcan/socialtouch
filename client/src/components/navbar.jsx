@@ -49,6 +49,7 @@ const Navbar = () => {
               <Link
                 to="/signout"
                 className="btn-nav icon-lg ri-logout-box-r-fill"
+                style={{ color: 'var(--red)' }}
               ></Link>
             </li>
           </ul>

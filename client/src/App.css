@@ -408,6 +408,66 @@ nav ul li {
   color: var(--darker);
 }
 
+.post__box-more {
+  flex-direction: column;
+}
+
+.post__box-more-btn {
+  margin: 8px 15px 0 auto;
+}
+
+.post__box--comments {
+  padding: 15px;
+}
+
+.comment {
+  display: flex;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--light-blue-50);
+}
+
+.comment__data {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5px;
+  width: 100%;
+}
+
+.comment__content {
+  font-size: 90%;
+}
+
+.comment__header {
+  display: flex;
+  width: 100%;
+}
+.comment__header a {
+  margin-right: 5px;
+}
+.comment__header a:hover {
+  text-decoration: underline;
+}
+
+.create-comment-form {
+  display: flex;
+  border-radius: 8px;
+  border: 1px solid var(--dark);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.comment-at {
+  align-self: center;
+}
+
+.create-comment-form > button {
+  margin-left: 10px;
+  width: 40px;
+  margin: 0;
+  border-radius: 0;
+}
+
 .create-new-post {
   height: 50px;
   width: 100%;
@@ -602,7 +662,7 @@ nav ul li {
 }
 
 .post__box__edit {
-  padding: 20px 15px 15px 15px;
+  padding: 8px 15px 15px 15px;
 }
 
 .pb-edit-area {

@@ -5,11 +5,13 @@ import UserContext from './../../context/userContext';
 import Time from './time';
 import EditPost from './editPost';
 import avatar from '../../img/no-avatar.png';
+import PostMore from './postMore';
+import PostComments from './postComments';
 
 const PostBox = ({ post, refresh }) => {
   const { content, createdAt, image, user, previewLimit, link } = post;
   const { user: currentUser } = useContext(UserContext);
-  const [edit, setEdit] = useState(false);
+  const [more, setMore] = useState(false);
   const isMine = currentUser.link === user.link;
 
   const contentClassName = `post__box--content${image ? '' : '-only'}`;
@@ -19,19 +21,19 @@ const PostBox = ({ post, refresh }) => {
     if (success) refresh();
   };
 
-  const handleEdit = () => {
-    setEdit(true);
-  };
+  const handleEdit = () => setMore('edit');
+  const handleComments = () => setMore('comments');
 
-  const handleCancel = () => {
-    setEdit(false);
-  };
+  const handleBack = () => setMore(false);
 
-  if (edit)
+  if (more)
     return (
-      <div className="post__box">
-        <EditPost post={post} refresh={refresh} cancel={handleCancel} />
-      </div>
+      <PostMore goBack={handleBack}>
+        {more === 'edit' && (
+          <EditPost post={post} refresh={refresh} cancel={handleBack} />
+        )}
+        {more === 'comments' && <PostComments link={post.link} />}
+      </PostMore>
     );
 
   return (
@@ -91,10 +93,13 @@ const PostBox = ({ post, refresh }) => {
               <i className="icon ri-heart-line"></i>
               <span>152</span>
             </Link>
-            <Link to="" className="post__box--action post__box--action-comment">
+            <button
+              className="post__box--action post__box--action-comment btn-transparent"
+              onClick={handleComments}
+            >
               <i className="icon ri-message-3-line"></i>
               <span>14</span>
-            </Link>
+            </button>
             <Link to="" className="post__box--action post__box--action-share">
               <i className="icon ri-share-forward-line"></i>
               <span>7</span>

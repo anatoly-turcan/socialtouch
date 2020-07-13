@@ -223,7 +223,6 @@ exports.getAllComments = catchError(
         'comments.createdAt',
         'user.username',
         'user.link',
-        'user.imgId',
         'image.location',
       ])
       .limit(limit)

@@ -93,6 +93,36 @@ export const getGroupsCount = async (userLink) => {
   return result.data.data.count;
 };
 
+export const getPostComments = async (postLink, page = 1, limit = 10) => {
+  let query = `${api}/posts/${postLink}/comments`;
+  if (page && limit) query = `${query}?page=${page}&limit=${limit}`;
+  const result = await http.get(query);
+
+  return result.data.data.comments;
+};
+
+export const createComment = async (postLink, content) => {
+  const result = await http.post(`${api}/posts/${postLink}/comments`, {
+    content,
+  });
+  return result.data.status === 'success';
+};
+
+export const deleteComment = async (postLink, commentLink) => {
+  const result = await http.delete(
+    `${api}/posts/${postLink}/comments/${commentLink}`
+  );
+  return result.status === 204;
+};
+
+export const updateComment = async (postLink, commentLink, content) => {
+  const result = await http.patch(
+    `${api}/posts/${postLink}/comments/${commentLink}`,
+    { content }
+  );
+  return result.status === 204;
+};
+
 export default {
   signin,
   signup,
@@ -108,4 +138,7 @@ export default {
   getUserGroups,
   getFriendsCount,
   getGroupsCount,
+  getPostComments,
+  createComment,
+  deleteComment,
 };

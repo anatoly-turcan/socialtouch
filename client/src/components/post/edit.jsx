@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import { updatePost } from '../../services/apiService';
 
 const EditPost = ({ post, refresh }) => {
@@ -9,9 +10,13 @@ const EditPost = ({ post, refresh }) => {
   };
 
   const handleSave = async (event) => {
-    event.preventDefault();
-    const success = await updatePost(post.link, content);
-    if (success) refresh();
+    try {
+      event.preventDefault();
+      const success = await updatePost(post.link, content);
+      if (success) refresh();
+    } catch ({ response }) {
+      if (response) toast.error(response.data.message);
+    }
   };
 
   return (

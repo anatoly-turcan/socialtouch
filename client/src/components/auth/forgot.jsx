@@ -4,7 +4,7 @@ import UserContext from './../../context/userContext';
 import AuthPage from '../../pages/auth';
 import Form from './form';
 import Input from '../common/input';
-import api from '../../services/apiService';
+import { forgotPassword } from '../../services/apiService';
 
 const Forgot = (props) => {
   const { user } = useContext(UserContext);
@@ -13,7 +13,7 @@ const Forgot = (props) => {
   if (user) return <Redirect to="/" />;
 
   const handleSubmit = async (data) => {
-    setMessage(await api.forgotPassword(data));
+    setMessage(await forgotPassword(data));
   };
 
   return (

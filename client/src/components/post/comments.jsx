@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import Loader from '../common/loader';
 import CommentBox from './commentBox';
 import {
@@ -16,12 +17,16 @@ const PostComments = ({ link }) => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      const newComments = await getPostComments(link, page);
+      try {
+        const newComments = await getPostComments(link, page);
 
-      if (newComments.length === 0) setIsAll(true);
-      else setComments([...comments, ...newComments]);
-
-      setLoader(false);
+        if (newComments.length === 0) setIsAll(true);
+        else setComments([...comments, ...newComments]);
+      } catch ({ response }) {
+        if (response) toast.error(response.data.message);
+      } finally {
+        setLoader(false);
+      }
     };
     fetchComments();
   }, [page]);
@@ -37,24 +42,28 @@ const PostComments = ({ link }) => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const success = await createComment(link, content);
+    try {
+      event.preventDefault();
+      const success = await createComment(link, content);
 
-    if (success) {
-      if (page === 1) {
-        const newComments = [
-          ...(await getPostComments(link, 1, 1)),
-          ...comments,
-        ];
-        if (comments.length && comments.length % 10 === 0) newComments.pop();
+      if (success) {
+        if (page === 1) {
+          const newComments = [
+            ...(await getPostComments(link, 1, 1)),
+            ...comments,
+          ];
+          if (comments.length && comments.length % 10 === 0) newComments.pop();
 
-        setComments(newComments);
-      } else {
-        setComments([]);
-        setPage(1);
+          setComments(newComments);
+        } else {
+          setComments([]);
+          setPage(1);
+        }
+
+        setContent('');
       }
-
-      setContent('');
+    } catch ({ response }) {
+      if (response) toast.error(response.data.message);
     }
   };
 
@@ -64,17 +73,21 @@ const PostComments = ({ link }) => {
   };
 
   const handleDelete = async (commentLink) => {
-    const success = await deleteComment(link, commentLink);
+    try {
+      const success = await deleteComment(link, commentLink);
 
-    if (success) {
-      const clearComments = comments.filter(
-        (comment) => comment.link !== commentLink
-      );
+      if (success) {
+        const clearComments = comments.filter(
+          (comment) => comment.link !== commentLink
+        );
 
-      setComments([
-        ...clearComments,
-        ...(await getPostComments(link, comments.length, 1)),
-      ]);
+        setComments([
+          ...clearComments,
+          ...(await getPostComments(link, comments.length, 1)),
+        ]);
+      }
+    } catch ({ response }) {
+      if (response) toast.error(response.data.message);
     }
   };
 

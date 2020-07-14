@@ -14,6 +14,7 @@ import UserPage from './pages/user';
 import Friends from './pages/friends';
 import Groups from './pages/groups';
 import News from './pages/news';
+import Settings from './pages/settings';
 import { getMe } from './services/apiService';
 import './App.css';
 
@@ -49,6 +50,7 @@ const App = () => {
             <Route path="/forgot" component={Forgot} />
             <Route path="/restore" component={Restore} />
             <ProtectedRoute path="/signout" component={Signout} />
+            <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute path="/news" component={News} />
             <ProtectedRoute path="/chat" component={NotFound} />
             <ProtectedRoute path="/friends" component={Friends} />

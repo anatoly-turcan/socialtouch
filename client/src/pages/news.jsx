@@ -7,7 +7,7 @@ const News = () => {
 
   return (
     <div className="content__news">
-      <div className="content__title centered">News</div>
+      <div className="content__title">News</div>
       <Posts fetchMethod={fetchNews} isMe={false} />
     </div>
   );

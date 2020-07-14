@@ -1,10 +1,4 @@
-module.exports = {
-  age: {
-    type: {
-      type: 'number',
-      message: 'Age must be a number',
-    },
-  },
+export default {
   gender: {
     format: {
       pattern: '^(male|female)$',

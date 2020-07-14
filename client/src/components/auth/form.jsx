@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Loader from '../common/loader';
 import validate from '../../utils/validate';
-import constraints from './constraints';
+import userConstraints from '../../validators/userConstraints';
 
 const Form = ({ title, reverse, handleSubmit, btn, init, children }) => {
   const [data, setData] = useState(init);
@@ -16,7 +16,7 @@ const Form = ({ title, reverse, handleSubmit, btn, init, children }) => {
   const onSubmit = async (event) => {
     event.preventDefault();
 
-    const validation = validate(data, constraints);
+    const validation = validate(data, userConstraints);
     if (validation) return setError(validation);
 
     try {

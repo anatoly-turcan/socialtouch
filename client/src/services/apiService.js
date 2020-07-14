@@ -139,3 +139,18 @@ export const findGroups = async (query) => {
   const result = await http.get(`${api}/groups/search?query=${query}`);
   return result.data.data.groups;
 };
+
+export const updatePassword = async (data) => {
+  const result = await http.patch(`${api}/auth/updatePassword`, data);
+  return result.data.status === 'success';
+};
+
+export const updateMe = async (data) => {
+  const result = await http.patch(`${api}/users/me`, data);
+  return result.status === 204;
+};
+
+export const updateMySettings = async (data) => {
+  const result = await http.patch(`${api}/users/me/settings`, data);
+  return result.status === 204;
+};

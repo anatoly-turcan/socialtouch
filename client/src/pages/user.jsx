@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import UserContext from '../context/userContext';
 import ProfileBox from '../components/profile/box';
@@ -8,6 +8,7 @@ import Loader from '../components/common/loader';
 import { getUser, getPosts } from '../services/apiService';
 
 const User = () => {
+  const history = useHistory();
   const params = useParams();
   const { user } = useContext(UserContext);
   const [link, setLink] = useState(params.link);
@@ -26,7 +27,7 @@ const User = () => {
       try {
         setLinkedUser(await getUser(link));
       } catch ({ response }) {
-        if (response) toast.error(response.data.message);
+        if (response.status === 404) history.push('/not-found');
       }
     };
 
@@ -40,7 +41,7 @@ const User = () => {
 
   const isMe = () => user.link === linkedUser.link;
 
-  const fetchPosts = async (page, limit = 10) =>
+  const fetchPosts = (page, limit = 10) =>
     getPosts(linkedUser.link, page, limit);
 
   if (loader) return <Loader h100 size={6} />;

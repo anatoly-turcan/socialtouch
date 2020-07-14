@@ -8,6 +8,8 @@ router
   .get(postController.getAllPosts)
   .post(postController.createPost);
 
+router.route('/news').get(postController.getNews);
+
 router
   .route('/:link')
   .get(postController.getPost)

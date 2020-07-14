@@ -123,22 +123,9 @@ export const updateComment = async (postLink, commentLink, content) => {
   return result.status === 204;
 };
 
-export default {
-  signin,
-  signup,
-  signout,
-  forgotPassword,
-  getMe,
-  getUser,
-  getPosts,
-  getFriends,
-  createPost,
-  deletePost,
-  getSettings,
-  getUserGroups,
-  getFriendsCount,
-  getGroupsCount,
-  getPostComments,
-  createComment,
-  deleteComment,
+export const getNews = async (page = 1, limit = 20) => {
+  const result = await http.get(
+    `${api}/posts/news?page=${page}&limit=${limit}`
+  );
+  return result.data.data.news;
 };

@@ -4,7 +4,7 @@ import UserContext from '../../context/userContext';
 import Form from './form';
 import AuthPage from '../../pages/auth';
 import Input from '../common/input';
-import api from '../../services/apiService';
+import { signin } from '../../services/apiService';
 
 const Signin = ({ history }) => {
   const { user: currentUse, setUser } = useContext(UserContext);
@@ -12,7 +12,7 @@ const Signin = ({ history }) => {
   if (currentUse) return <Redirect to="/" />;
 
   const handleSubmit = async (data) => {
-    const user = await api.signin(data);
+    const user = await signin(data);
     setUser(user);
     history.replace(`/${user.link}`);
   };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Loader from '../common/loader';
 import { getUserGroups } from '../../services/apiService';
 import noGroup from '../../img/no-group.png';
@@ -10,8 +11,13 @@ const ProfileGroups = ({ link, limit }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setGroups(await getUserGroups(link, limit));
-      setLoader(false);
+      try {
+        setGroups(await getUserGroups(link, limit));
+      } catch ({ response }) {
+        if (response) toast.error(response.data.message);
+      } finally {
+        setLoader(false);
+      }
     };
     fetchData();
   }, []);

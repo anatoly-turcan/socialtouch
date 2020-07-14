@@ -2,7 +2,7 @@ import React, { useState, Fragment } from 'react';
 import { toast } from 'react-toastify';
 import Input from '../common/input';
 import Loader from '../common/loader';
-import api from '../../services/apiService';
+import { createPost } from '../../services/apiService';
 
 const CreatePost = ({ refresh }) => {
   const [content, setContent] = useState('');
@@ -26,13 +26,15 @@ const CreatePost = ({ refresh }) => {
 
     try {
       setLoader(true);
-      const success = await api.createPost(data);
+
+      const success = await createPost(data);
       if (success) refresh();
+
+      setContent('');
+      setPhoto([]);
     } catch ({ response }) {
       toast.error(response.data.message);
     } finally {
-      setContent('');
-      setPhoto([]);
       setLoader(false);
     }
   };

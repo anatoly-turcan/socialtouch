@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import Loader from './common/loader';
 import PostBox from './post/box';
 import CreatePost from './post/create';
@@ -11,11 +12,17 @@ const Posts = ({ fetchMethod, isMe }) => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      setLoader(true);
-      const newPosts = await fetchMethod(page);
-      if (!newPosts.length) setIsAll(true);
-      else setPosts([...posts, ...newPosts]);
-      setLoader(false);
+      try {
+        setLoader(true);
+        const newPosts = await fetchMethod(page);
+
+        if (!newPosts.length) setIsAll(true);
+        else setPosts([...posts, ...newPosts]);
+      } catch ({ response }) {
+        if (response) toast.error(response.data.message);
+      } finally {
+        setLoader(false);
+      }
     };
     fetchPosts();
   }, [page]);
@@ -26,11 +33,15 @@ const Posts = ({ fetchMethod, isMe }) => {
   };
 
   const refresh = async () => {
-    if (page !== 1) {
-      setPosts([]);
-      setPage(1);
-    } else {
-      setPosts(await fetchMethod(page));
+    try {
+      if (page !== 1) {
+        setPosts([]);
+        setPage(1);
+      } else {
+        setPosts(await fetchMethod(page));
+      }
+    } catch ({ response }) {
+      if (response) toast.error(response.data.message);
     }
   };
 

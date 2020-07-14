@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Loader from '../common/loader';
 import ProfileInfo from './info';
 import ProfileMore from './more';
@@ -24,12 +25,17 @@ const ProfileBox = ({ user, isMe }) => {
 
   useEffect(() => {
     const fetchFriendsGroups = async () => {
-      setLoader(true);
-      setFriends(await getFriends(user.link));
-      setGroups(await getUserGroups(user.link));
-      setFriendsCount(await getFriendsCount(user.link));
-      setGroupsCount(await getGroupsCount(user.link));
-      setLoader(false);
+      try {
+        setLoader(true);
+        setFriends(await getFriends(user.link));
+        setGroups(await getUserGroups(user.link));
+        setFriendsCount(await getFriendsCount(user.link));
+        setGroupsCount(await getGroupsCount(user.link));
+      } catch ({ response }) {
+        if (response) toast.error(response.data.message);
+      } finally {
+        setLoader(false);
+      }
     };
     fetchFriendsGroups();
   }, []);

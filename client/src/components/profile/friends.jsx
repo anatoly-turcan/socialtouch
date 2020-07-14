@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Loader from '../common/loader';
 import { getFriends } from '../../services/apiService';
 import avatar from '../../img/no-avatar.png';
@@ -10,8 +11,13 @@ const ProfileFriends = ({ link, limit }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setFriends(await getFriends(link, limit));
-      setLoader(false);
+      try {
+        setFriends(await getFriends(link, limit));
+      } catch ({ response }) {
+        if (response) toast.error(response.data.message);
+      } finally {
+        setLoader(false);
+      }
     };
     fetchData();
   }, []);

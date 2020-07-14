@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from 'react';
+import { toast } from 'react-toastify';
 import UserContext from './../../context/userContext';
-import api from '../../services/apiService';
+import { signout } from '../../services/apiService';
 
 const Signout = ({ history }) => {
   const { setUser } = useContext(UserContext);
@@ -8,10 +9,12 @@ const Signout = ({ history }) => {
   useEffect(() => {
     const sendSignoutRequest = async () => {
       try {
-        await api.signout();
+        await signout();
         setUser(null);
         history.replace('/signin');
-      } catch (error) {}
+      } catch ({ response }) {
+        if (response) toast.error(response.data.message);
+      }
     };
 
     sendSignoutRequest();

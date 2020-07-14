@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import UserContext from './context/userContext';
 import Signin from './components/auth/signin';
 import Signup from './components/auth/signup';
@@ -11,8 +11,7 @@ import Navbar from './components/navbar';
 import ProtectedRoute from './components/common/protectedRoute';
 import NotFound from './pages/notFound';
 import UserPage from './pages/user';
-import api from './services/apiService';
-import 'react-toastify/dist/ReactToastify.css';
+import { getMe } from './services/apiService';
 import './App.css';
 
 const App = () => {
@@ -23,9 +22,9 @@ const App = () => {
     const fetchData = async () => {
       try {
         setLoader(true);
-        setUser(await api.getMe());
-      } catch (error) {
-        setUser(null);
+        setUser(await getMe());
+      } catch ({ response }) {
+        if (response) toast.error(response.data.message);
       } finally {
         setLoader(false);
       }
@@ -58,7 +57,6 @@ const App = () => {
           </Switch>
         </div>
       </div>
-      <ToastContainer autoClose={2000} />
     </UserContext.Provider>
   );
 };

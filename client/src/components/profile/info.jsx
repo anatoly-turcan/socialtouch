@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { getSettings } from '../../services/apiService';
 import Loader from '../common/loader';
 
@@ -8,8 +9,13 @@ const ProfileInfo = ({ link }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setSettings(await getSettings(link));
-      setLoader(false);
+      try {
+        setSettings(await getSettings(link));
+      } catch ({ response }) {
+        if (response) toast.error(response.data.message);
+      } finally {
+        setLoader(false);
+      }
     };
     fetchData();
   }, []);

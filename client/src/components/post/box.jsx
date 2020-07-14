@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import UserContext from '../../context/userContext';
 import Time from '../common/time';
 import EditPost from './edit';
@@ -18,8 +19,12 @@ const PostBox = ({ post, refresh }) => {
   const contentClassName = `post__box--content${image ? '' : '-only'}`;
 
   const handleDelete = async () => {
-    const success = await deletePost(link);
-    if (success) refresh();
+    try {
+      const success = await deletePost(link);
+      if (success) refresh();
+    } catch ({ response }) {
+      if (response) toast.error(response.data.message);
+    }
   };
 
   const handleEdit = () => setMore('edit');
@@ -109,7 +114,7 @@ const PostBox = ({ post, refresh }) => {
             className="post__box--action btn-transparent"
             onClick={handleFull}
           >
-            <i class="ri-file-list-2-line"></i>
+            <i className="ri-file-list-2-line"></i>
           </button>
         </div>
       </div>

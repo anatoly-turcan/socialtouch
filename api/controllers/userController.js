@@ -38,7 +38,7 @@ exports.getMe = catchError(async ({ connection, user }, res, next) => {
     .getRepository(User)
     .createQueryBuilder('user')
     .leftJoinAndSelect('user.image', 'image')
-    .select(['user.username', 'user.link', 'image.location'])
+    .select(['user.username', 'user.link', 'user.email', 'image.location'])
     .where('user.id = :id', { id: user.id })
     .getOne();
 
@@ -83,6 +83,8 @@ exports.getMySettings = catchError(async ({ connection, user }, res, next) => {
   const settings = await connection
     .getRepository(UserSettings)
     .findOne({ where: { userId: user.id } });
+
+  settings.userId = undefined;
 
   res.status(200).json({
     status: 'success',

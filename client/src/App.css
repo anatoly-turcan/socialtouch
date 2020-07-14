@@ -411,7 +411,61 @@ nav ul li {
 }
 
 .content__fg {
-  margin: 10px;
+  padding: 10px;
+  height: 100%;
+  overflow: auto;
+}
+
+.content__settings {
+  height: 100%;
+  overflow: auto;
+}
+
+.settings-container {
+  padding: 0 15px 15px 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.settings-el {
+  border: 2px solid var(--dark-blue);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--white);
+  color: var(--darker);
+  margin: 0 10px 10px 10px;
+  width: 400px;
+}
+
+.settings-el-title {
+  background: var(--dark-blue);
+  color: var(--white);
+  padding: 4px 10px;
+  font-size: 110%;
+}
+
+.settings-el-body {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 10px;
+}
+
+.settings-el-body > label {
+  margin-top: 5px;
+}
+
+.settings-el-body > input {
+  font-size: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+
+.settings-el-body > button {
+  margin: 8px 0 0 auto;
+  font-size: 110%;
 }
 
 /* --------------------------------

@@ -191,3 +191,23 @@ exports.getSubscribers = catchError(
     });
   }
 );
+
+exports.searchGroups = catchError(async ({ connection, query }, res, next) => {
+  if (!query.query)
+    return next(new AppError('Please specify search query', 400));
+
+  const groups = await connection
+    .getRepository(Group)
+    .createQueryBuilder(alias)
+    .leftJoinAndSelect(`${alias}.image`, 'image')
+    .where(`${alias}.name REGEXP :r`, { r: query.query })
+    .select([`${alias}.id`, `${alias}.name`, `${alias}.link`, 'image.location'])
+    .getMany();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      groups,
+    },
+  });
+});

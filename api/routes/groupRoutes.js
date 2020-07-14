@@ -12,6 +12,8 @@ router
   .get(groupController.getAllGroups)
   .post(groupController.createGroup);
 
+router.route('/search').get(groupController.searchGroups);
+
 router
   .route('/:link')
   .get(groupController.getGroup)

@@ -273,6 +273,19 @@ input {
   background: transparent;
 }
 
+.active {
+  font-weight: 500;
+  cursor: context-menu;
+  background: transparent;
+  color: var(--darker);
+  box-shadow: 0px 0px 0px 2px var(--darker-50);
+}
+
+.active:hover {
+  border: none;
+  box-shadow: 0px 0px 0px 2px var(--darker-50);
+}
+
 /* --------------------------------
   Icons
 -------------------------------- */
@@ -396,6 +409,32 @@ nav ul li {
   font-size: 150%;
   color: var(--light-blue);
 }
+
+.content__fg {
+  margin: 10px;
+}
+
+/* --------------------------------
+  Content friends
+-------------------------------- */
+.fg__header {
+  padding: 10px 15px;
+  background-color: var(--white);
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.find__users--search {
+  color: var(--darker);
+}
+
+.search__input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  font-size: 100%;
+}
+
 /* --------------------------------
   Content > Personal page
 -------------------------------- */

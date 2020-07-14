@@ -2,10 +2,10 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loader from '../common/loader';
+import AllFriends from '../common/allFriends';
+import AllGroups from '../common/allGroups';
 import ProfileInfo from './info';
 import ProfileMore from './more';
-import ProfileFriends from './friends';
-import ProfileGroups from './groups';
 import {
   getFriends,
   getUserGroups,
@@ -85,12 +85,8 @@ const ProfileBox = ({ user, isMe }) => {
     return (
       <ProfileMore goBack={handleBack}>
         {showMore === 'info' && <ProfileInfo link={user.link} />}
-        {showMore === 'friends' && (
-          <ProfileFriends link={user.link} limit={friendsCount} />
-        )}
-        {showMore === 'groups' && (
-          <ProfileGroups link={user.link} limit={groupsCount} />
-        )}
+        {showMore === 'friends' && <AllFriends link={user.link} />}
+        {showMore === 'groups' && <AllGroups link={user.link} />}
       </ProfileMore>
     );
 

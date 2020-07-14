@@ -5,7 +5,6 @@ const userSettingsConstraints = require('../validators/userSettingsConstraints')
 const User = require('../entities/userSchema');
 const UserSettings = require('../entities/userSettingsSchema');
 const Friends = require('../entities/friendsSchema');
-const Images = require('../entities/imageSchema');
 const handlerFactory = require('./handlerFactory');
 const AppError = require('../utils/appError');
 
@@ -341,32 +340,59 @@ exports.confirmFriendship = catchError(
   }
 );
 
-exports.updateImage = catchError(async (req, res, next) => {
-  res.status(200).json({
-    status: 'success',
-    data: req.file.originalname,
-  });
-});
+// exports.updateImage = catchError(async (req, res, next) => {
+//   res.status(200).json({
+//     status: 'success',
+//     data: req.file.originalname,
+//   });
+// });
 
-exports.getImages = catchError(async ({ connection, params }, res, next) => {
-  const linkedUser = await connection
+// exports.getImages = catchError(async ({ connection, params }, res, next) => {
+//   const linkedUser = await connection
+//     .getRepository(User)
+//     .findOne({ where: { link: params.link } });
+
+//   if (!linkedUser) return next(new AppError('User not found', 404));
+
+//   const images = await connection
+//     .getRepository(Images)
+//     .createQueryBuilder('image')
+//     .leftJoinAndSelect('image.userMany', 'user')
+//     .where('user.id = :id', { id: linkedUser.id })
+//     .select(['image.location'])
+//     .getMany();
+
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       images,
+//     },
+//   });
+// });
+
+exports.searchUsers = catchError(async ({ connection, query }, res, next) => {
+  if (!query.query)
+    return next(new AppError('Please specify search query', 400));
+
+  const users = await connection
     .getRepository(User)
-    .findOne({ where: { link: params.link } });
-
-  if (!linkedUser) return next(new AppError('User not found', 404));
-
-  const images = await connection
-    .getRepository(Images)
-    .createQueryBuilder('image')
-    .leftJoinAndSelect('image.userMany', 'user')
-    .where('user.id = :id', { id: linkedUser.id })
-    .select(['image.location'])
+    .createQueryBuilder(alias)
+    .leftJoinAndSelect(`${alias}.image`, 'image')
+    .where(`${alias}.active = 1 AND ${alias}.username REGEXP :r`, {
+      r: query.query,
+    })
+    .select([
+      `${alias}.id`,
+      `${alias}.username`,
+      `${alias}.link`,
+      'image.location',
+    ])
     .getMany();
 
   res.status(200).json({
     status: 'success',
     data: {
-      images,
+      users,
     },
   });
 });

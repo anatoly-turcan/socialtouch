@@ -129,3 +129,13 @@ export const getNews = async (page = 1, limit = 20) => {
   );
   return result.data.data.news;
 };
+
+export const findUsers = async (query) => {
+  const result = await http.get(`${api}/users/search?query=${query}`);
+  return result.data.data.users;
+};
+
+export const findGroups = async (query) => {
+  const result = await http.get(`${api}/groups/search?query=${query}`);
+  return result.data.data.groups;
+};

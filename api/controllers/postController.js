@@ -13,6 +13,7 @@ const Image = require('../entities/imageSchema');
 const PostModel = require('../models/postModel');
 const CommentModel = require('../models/commentModel');
 const handlerFactory = require('./handlerFactory');
+const Friends = require('../entities/friendsSchema');
 
 const alias = 'post';
 
@@ -238,3 +239,53 @@ exports.getAllComments = catchError(
     });
   }
 );
+
+exports.getNews = catchError(async ({ connection, user, query }, res, next) => {
+  const friends = await connection
+    .getRepository(Friends)
+    .createQueryBuilder('f')
+    .leftJoinAndSelect(User, 'u', 'f.friendId = u.id OR f.targetId = u.id')
+    .where(
+      'u.id != :id AND f.active = 1 AND (f.friendId = :id OR f.targetId = :id)',
+      {
+        id: user.id,
+      }
+    )
+    .select(['u.id'])
+    .getRawMany();
+
+  const ids = friends.reduce((acc, friend) => [...acc, friend.u_id], []);
+
+  const filter = apiFilter(query, alias);
+
+  const news = await connection
+    .getRepository(Post)
+    .createQueryBuilder(alias)
+    .leftJoinAndSelect(`${alias}.user`, 'user')
+    .leftJoinAndSelect(`${alias}.image`, 'image')
+    .leftJoinAndSelect('user.image', 'img')
+    .where(`${alias}.userId IN (:...ids)`, { ids })
+    .select([
+      `${alias}.id`,
+      `${alias}.content`,
+      `${alias}.previewLimit`,
+      `${alias}.link`,
+      `${alias}.createdAt`,
+      'image.location',
+      'user.username',
+      'user.link',
+      'img.location',
+    ])
+    .skip(filter.offset)
+    .take(filter.limit)
+    .orderBy(...filter.order)
+    .getMany();
+
+  res.status(200).json({
+    status: 'success',
+    results: news.length,
+    data: {
+      news,
+    },
+  });
+});

@@ -385,6 +385,17 @@ nav ul li {
   align-items: center;
 }
 
+.content__news {
+  height: 100%;
+  overflow: auto;
+}
+
+.content__title {
+  height: 50px;
+  padding: 4px 15px;
+  font-size: 150%;
+  color: var(--light-blue);
+}
 /* --------------------------------
   Content > Personal page
 -------------------------------- */

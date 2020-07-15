@@ -256,6 +256,12 @@ exports.getNews = catchError(async ({ connection, user, query }, res, next) => {
 
   const ids = friends.reduce((acc, friend) => [...acc, friend.u_id], []);
 
+  if (!ids.length)
+    return res.status(200).json({
+      status: 'success',
+      data: [],
+    });
+
   const filter = apiFilter(query, alias);
 
   const news = await connection

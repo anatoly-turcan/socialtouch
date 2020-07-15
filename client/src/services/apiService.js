@@ -1,5 +1,6 @@
 import { api } from '../config.json';
 import http from './httpService';
+import { async } from 'validate.js';
 
 export const signin = async ({ email, password }) => {
   const result = await http.post(`${api}/auth/signin`, { email, password });
@@ -152,5 +153,15 @@ export const updateMe = async (data) => {
 
 export const updateMySettings = async (data) => {
   const result = await http.patch(`${api}/users/me/settings`, data);
+  return result.status === 204;
+};
+
+export const updateMyImage = async (data) => {
+  const result = await http.patch(`${api}/users/me/updateImage`, data);
+  return result.status === 204;
+};
+
+export const deleteMe = async () => {
+  const result = await http.delete(`${api}/users/me`);
   return result.status === 204;
 };

@@ -14,8 +14,6 @@ router
   .get(userController.getMySettings)
   .patch(userController.updateMySettings);
 
-// router
-//   .route('/updateImage')
-//   .post(upload.single('photo'), userController.updateImage);
+router.route('/updateImage').patch(userController.updateImage);
 
 module.exports = router;

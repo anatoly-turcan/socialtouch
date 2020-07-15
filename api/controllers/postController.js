@@ -18,7 +18,7 @@ const Friends = require('../entities/friendsSchema');
 const alias = 'post';
 
 exports.getAllPosts = catchError(
-  async ({ connection, query, params, group }, res, next) => {
+  async ({ connection, query, params, group, user }, res, next) => {
     const filter = apiFilter(query, alias);
     const builder = connection.getRepository(Post).createQueryBuilder(alias);
 
@@ -36,12 +36,14 @@ exports.getAllPosts = catchError(
           return `${alias}.userId = ${subQuery}`;
         })
         .setParameter('link', params.link);
-    else if (group)
-      builder.select(filter.fields).where(`${alias}.groupId = ${group.id}`);
+    else if (group) builder.where(`${alias}.groupId = ${group.id}`);
 
     const posts = await builder
       .leftJoinAndSelect(`${alias}.user`, 'user')
       .leftJoinAndSelect(`${alias}.image`, 'image')
+      .leftJoinAndSelect(`${alias}.group`, 'group')
+      .leftJoinAndSelect(`group.creator`, 'groupCreator')
+      .leftJoinAndSelect(`group.image`, 'groupImg')
       .leftJoinAndSelect('user.image', 'img')
       .select([
         ...filter.fields,
@@ -49,17 +51,31 @@ exports.getAllPosts = catchError(
         'user.username',
         'user.link',
         'img.location',
+        'group.name',
+        'group.link',
+        'groupCreator.id',
+        'groupImg.location',
       ])
       .skip(filter.offset)
       .take(filter.limit)
       .orderBy(...filter.order)
       .getMany();
 
+    const result = posts.map((post) => {
+      if (post.group) {
+        if (post.group.creator.id === user.id) {
+          post.group.isMine = true;
+        }
+        delete post.group.creator;
+      }
+      return post;
+    });
+
     res.status(200).json({
       status: 'success',
       results: posts.length,
       data: {
-        posts,
+        posts: result,
       },
     });
   }
@@ -75,7 +91,7 @@ exports.getPost = handlerFactory.getOne({
     [`${alias}.image`, 'image'],
     ['user.image', 'img'],
   ],
-  joinSelectors: [
+  select: [
     alias,
     'image.location',
     'user.username',
@@ -95,7 +111,7 @@ exports.getPost = handlerFactory.getOne({
 // });
 
 exports.createPost = catchError(
-  async ({ connection, user, body, files }, res, next) => {
+  async ({ connection, user, body, files, group }, res, next) => {
     const postModel = new PostModel(user.id, body.content);
 
     const validation = validate(postModel, postConstraints);
@@ -104,7 +120,7 @@ exports.createPost = catchError(
     let imgId;
     let previewLimit;
 
-    if (files.length > 0) {
+    if (files && files.length) {
       const data = await cloud.uploadImage(files[0]);
 
       const newImage = await connection
@@ -118,13 +134,20 @@ exports.createPost = catchError(
       previewLimit = Math.floor((data.height / data.width) * 1200);
     }
 
+    const prepared = postModel.prepare();
+
+    if (group) {
+      prepared.groupId = group.id;
+      prepared.userId = undefined;
+    }
+
     await connection.getRepository(Post).save({
-      ...postModel.prepare(),
+      ...prepared,
       imgId,
       previewLimit,
     });
 
-    res.status(201).json({
+    res.status(204).json({
       status: 'success',
       data: null,
     });

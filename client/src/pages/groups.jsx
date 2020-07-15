@@ -1,41 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AllGroups from '../components/common/allGroups';
 import FindGroups from '../components/groups/find';
+import CreateGroup from '../components/groups/create';
+import LinearNav from '../components/common/linearNav';
 
 const Groups = () => {
-  const [selection, setSelection] = useState('groups');
-
-  const classes = 'btn btn-dark';
-
-  const handleSelectFriends = () => {
-    setSelection('groups');
-  };
-
-  const handleSelectFind = () => {
-    setSelection('find');
-  };
-
   return (
-    <div className="content__fg">
-      <div className="fg__header">
-        <button
-          className={selection === 'groups' ? `${classes} active` : classes}
-          onClick={handleSelectFriends}
-        >
-          My groups
-        </button>
-        <button
-          className={selection === 'find' ? `${classes} active` : classes}
-          onClick={handleSelectFind}
-        >
-          Find groups
-        </button>
-      </div>
-      <div className="fg_content">
-        {selection === 'groups' && <AllGroups />}
-        {selection === 'find' && <FindGroups />}
-      </div>
-    </div>
+    <LinearNav
+      title="Groups"
+      data={[
+        {
+          name: 'groups',
+          label: 'My groups',
+          Component: AllGroups,
+        },
+        {
+          name: 'find',
+          label: 'Find groups',
+          Component: FindGroups,
+        },
+        {
+          name: 'create',
+          label: 'Create a group',
+          Component: CreateGroup,
+        },
+      ]}
+    />
   );
 };
 

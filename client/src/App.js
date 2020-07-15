@@ -17,6 +17,7 @@ import News from './pages/news';
 import Settings from './pages/settings';
 import { getMe } from './services/apiService';
 import './App.css';
+import Group from './pages/group';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -55,7 +56,7 @@ const App = () => {
             <ProtectedRoute path="/chat" component={NotFound} />
             <ProtectedRoute path="/friends" component={Friends} />
             <ProtectedRoute path="/groups" component={Groups} />
-            <ProtectedRoute path="/group/:link" component={NotFound} />
+            <ProtectedRoute path="/group/:link" component={Group} />
             <ProtectedRoute path="/not-found" component={NotFound} />
             {user && <Redirect from="/" exact to={`/${user.link}`} />}
             <ProtectedRoute path="/:link" component={UserPage} />

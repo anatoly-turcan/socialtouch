@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useContext } from 'react';
 import { toast } from 'react-toastify';
-import SettingsForm from './form';
+import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userConstraints from '../../validators/userConstraints';
@@ -33,7 +33,7 @@ const MeForm = () => {
   };
 
   return (
-    <SettingsForm
+    <Form
       title="Me"
       doSubmit={doSubmit}
       init={init}
@@ -48,13 +48,7 @@ const MeForm = () => {
                 <label htmlFor={name}>
                   {name.charAt(0).toUpperCase() + name.slice(1)}
                 </label>
-                <Input
-                  name={name}
-                  type="text"
-                  placeholder={name}
-                  value={data[name]}
-                  onChange={handleChange}
-                />
+                <Input name={name} value={data[name]} onChange={handleChange} />
               </Fragment>
             );
           })}
@@ -63,7 +57,7 @@ const MeForm = () => {
           </button>
         </Fragment>
       )}
-    </SettingsForm>
+    </Form>
   );
 };
 

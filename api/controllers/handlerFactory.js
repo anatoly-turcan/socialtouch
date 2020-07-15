@@ -87,9 +87,6 @@ exports.deleteOne = (options) =>
   catchError(async (req, res, next) => {
     const selectors = extractSelectors(options.whereSelectors, req);
 
-    if (req.group)
-      options.where = `${options.where} AND groupId = ${req.group.id}`;
-
     const { affected } = await req.connection
       .getRepository(options.Entity)
       .createQueryBuilder()
@@ -141,14 +138,15 @@ exports.getOne = (options) =>
       .where(options.where, selectors);
 
     if (options.join.length)
-      join(query, options.join).select([...options.joinSelectors]);
+      join(query, options.join).select([...options.select]);
     else query.select();
 
     const document = await query.getOne();
 
     if (!document) return next(new AppError('Document not found', 404));
-    if (process.env.NODE_ENV === 'production') delete document.id;
     if (options.add) await options.add(document, req);
+
+    document.id = undefined;
 
     res.status(200).json({
       status: 'success',

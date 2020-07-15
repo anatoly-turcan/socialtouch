@@ -2,9 +2,8 @@ import React, { useState, Fragment } from 'react';
 import { toast } from 'react-toastify';
 import Input from '../common/input';
 import Loader from '../common/loader';
-import { createPost } from '../../services/apiService';
 
-const CreatePost = ({ refresh }) => {
+const CreatePost = ({ refresh, createMethod }) => {
   const [content, setContent] = useState('');
   const [loader, setLoader] = useState(false);
   const [photo, setPhoto] = useState([]);
@@ -27,7 +26,8 @@ const CreatePost = ({ refresh }) => {
     try {
       setLoader(true);
 
-      const success = await createPost(data);
+      // const success = await createPost(data);
+      const success = await createMethod(data);
       if (success) refresh();
 
       setContent('');

@@ -66,7 +66,8 @@ export const getUserGroups = async (userLink, limit = 5) => {
 
 export const createPost = async (formData) => {
   const result = await http.post(`${api}/posts`, formData);
-  return result.data.status === 'success';
+  console.log({ result });
+  return result.status === 204;
 };
 
 export const deletePost = async (link) => {
@@ -163,5 +164,34 @@ export const updateMyImage = async (data) => {
 
 export const deleteMe = async () => {
   const result = await http.delete(`${api}/users/me`);
+  return result.status === 204;
+};
+
+export const createGroup = async (data) => {
+  const result = await http.post(`${api}/groups`, data);
+  return result.data.data.group.link;
+};
+
+export const getGroupPosts = async (groupLink, page = 1, limit = 20) => {
+  const result = await http.get(
+    `${api}/groups/${groupLink}/posts?page=${page}&limit=${limit}&fields=link,content,previewLimit,createdAt`
+  );
+  return result.data.data.posts;
+};
+
+export const createGroupPost = async (groupLink, formData) => {
+  const result = await http.post(`${api}/groups/${groupLink}/posts`, formData);
+  return result.status === 204;
+};
+
+export const getGroup = async (groupLink) => {
+  const result = await http.get(`${api}/groups/${groupLink}`);
+  return result.data.data.group;
+};
+
+export const deleteGroupPost = async (groupLink, postLink) => {
+  const result = await http.delete(
+    `${api}/groups/${groupLink}/posts/${postLink}`
+  );
   return result.status === 204;
 };

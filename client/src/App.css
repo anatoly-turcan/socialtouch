@@ -6,16 +6,16 @@
 
 :root {
   /* ------ Colors ------ */
-  --white: #ecf0f1; /* text, post/chat bg-color, link:hover */
-  --dark: #0d1621; /* main bg-color */
-  --dark-50: #0d162180; /* main bg-color */
-  --darker: #080e15; /* opacity: 0.5*/
-  --darker-50: #080e1580; /* header bg-color */
-  --light-dark: #1b2f46; /* btn bg-color */
-  --lighter-dark: #243f5f; /* btn bg-color:hover */
-  --light-blue: #8ed2ff; /* link / icon on dark */
-  --light-blue-50: #8ed2ff80; /* opacity: 0.5*/
-  --dark-blue: #0067ad; /* icon on white */
+  --white: #ecf0f1;
+  --dark: #0d1621;
+  --dark-50: #0d162180;
+  --darker: #080e15;
+  --darker-50: #080e1580;
+  --light-dark: #1b2f46;
+  --lighter-dark: #243f5f;
+  --light-blue: #8ed2ff;
+  --light-blue-50: #8ed2ff80;
+  --dark-blue: #0067ad;
   --red: #f53838;
   --red-50: #f5383880;
 
@@ -284,7 +284,6 @@ input {
 }
 
 .active {
-  font-weight: 500;
   cursor: context-menu;
   background: transparent;
   color: var(--darker);
@@ -439,43 +438,53 @@ nav ul li {
   align-items: flex-start;
 }
 
-.settings-el {
+.form__box {
   border: 2px solid var(--dark-blue);
   border-radius: 8px;
-  overflow: hidden;
   background: var(--white);
   color: var(--darker);
   margin: 0 10px 10px 10px;
-  width: 400px;
+  max-width: 400px;
 }
 
-.settings-el-title {
+.form__box-title {
   background: var(--dark-blue);
   color: var(--white);
   padding: 4px 10px;
   font-size: 110%;
+  border-radius: 2px 2px 0 0;
 }
 
-.settings-el-body {
+.form__box-body {
   display: flex;
   flex-direction: column;
   padding: 5px 10px;
 }
 
-.settings-el-body > label {
+.form__box-body > label {
   margin-top: 5px;
 }
 
-.settings-el-body > input {
+.form__box-body > input {
   font-size: 100%;
   border: none;
   border-radius: 8px;
   padding: 4px 10px;
+  border: 1px solid var(--dark-blue);
 }
 
-.settings-el-body > button {
+.form__box-body > button {
   margin: 8px 0 0 auto;
   font-size: 110%;
+}
+
+.form__box-body > textarea {
+  max-width: 100%;
+  border-radius: 8px;
+  padding: 4px 10px;
+  min-height: 100px;
+  border: 1px solid var(--dark-blue);
+  cursor: auto;
 }
 
 .settings__image,
@@ -493,14 +502,36 @@ nav ul li {
   Content friends
 -------------------------------- */
 .fg__header {
-  padding: 10px 15px;
   background-color: var(--white);
   margin-bottom: 10px;
   border-radius: 8px;
+  display: flex;
+  border: 2px solid var(--dark-blue);
 }
 
-.find__users--search {
+.fg__title {
+  background: var(--darker);
+  border-radius: 5px 0 0 5px;
+  padding: 10px 15px;
+}
+
+.fg__buttons {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  flex-wrap: wrap;
+}
+
+.fg__buttons > button {
+  margin: 3px;
+}
+
+.fg__find {
   color: var(--darker);
+  border: none;
+  font-size: 100%;
+  border-radius: 8px;
+  padding: 8px 10px;
 }
 
 .search__input {
@@ -513,7 +544,8 @@ nav ul li {
 /* --------------------------------
   Content > Personal page
 -------------------------------- */
-.content__personal-page {
+.content__personal-page,
+.content__group-page {
   display: grid;
   grid-template-columns: auto var(--profile-size);
   height: 100%;

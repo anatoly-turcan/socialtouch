@@ -102,7 +102,7 @@ exports.getUser = handlerFactory.getOne({
   where: `${alias}.active = 1 AND ${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
   join: [[`${alias}.image`, 'image']],
-  joinSelectors: [alias, 'image.location'],
+  select: [alias, 'image.location'],
   add: async (doc, req) => {
     const { count } = await req.connection
       .getRepository(Friends)

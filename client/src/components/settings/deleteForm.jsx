@@ -1,5 +1,5 @@
 import React from 'react';
-import SettingsForm from './form';
+import Form from '../common/form';
 import Loader from '../common/loader';
 import { useState } from 'react';
 import { deleteMe } from '../../services/apiService';
@@ -26,7 +26,7 @@ const DeleteForm = () => {
   };
 
   return (
-    <SettingsForm title="Delete account" doSubmit={doSubmit}>
+    <Form title="Delete account" doSubmit={doSubmit}>
       {() => (
         <div className="settings__delete">
           <span>Are you sure?</span>
@@ -35,7 +35,7 @@ const DeleteForm = () => {
           </button>
         </div>
       )}
-    </SettingsForm>
+    </Form>
   );
 };
 

@@ -7,20 +7,27 @@ import EditPost from './edit';
 import PostMore from './more';
 import PostComments from './comments';
 import PostFull from './full';
-import { deletePost } from '../../services/apiService';
+import { deletePost, deleteGroupPost } from '../../services/apiService';
 import avatar from '../../img/no-avatar.png';
 
 const PostBox = ({ post, refresh }) => {
-  const { content, createdAt, image, user, previewLimit, link } = post;
+  const { content, createdAt, image, user, group, previewLimit, link } = post;
   const { user: currentUser } = useContext(UserContext);
   const [more, setMore] = useState(false);
-  const isMine = currentUser.link === user.link;
+  const author = group || user;
+  const isMine = group
+    ? group.isMine || false
+    : currentUser.link === author.link;
 
   const contentClassName = `post__box--content${image ? '' : '-only'}`;
 
   const handleDelete = async () => {
     try {
-      const success = await deletePost(link);
+      const deleteMethod = post.group
+        ? (postLink) => deleteGroupPost(post.group.link, postLink)
+        : deletePost;
+
+      const success = deleteMethod(link);
       if (success) refresh();
     } catch ({ response }) {
       if (response) toast.error(response.data.message);
@@ -54,14 +61,19 @@ const PostBox = ({ post, refresh }) => {
 
       <div className={contentClassName}>
         <div className="post__box--content-header">
-          <Link to={`/${user.link}`} className="post__box--author">
+          <Link
+            to={group ? `/group/${author.link}` : `/${author.link}`}
+            className="post__box--author"
+          >
             <div className="post__box--author-img">
               <img
-                src={(user.image && user.image.location) || avatar}
+                src={(author.image && author.image.location) || avatar}
                 alt="Author image"
               />
             </div>
-            <span className="post__box--author-name">{user.username}</span>
+            <span className="post__box--author-name">
+              {author.username || author.name}
+            </span>
           </Link>
 
           <span className="post__box--at">

@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import { toast } from 'react-toastify';
-import SettingsForm from './form';
+import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userConstraints from '../../validators/userConstraints';
@@ -33,7 +33,7 @@ const PasswordForm = () => {
   userConstraints.passwordConfirm.equality.attribute = 'newPassword';
 
   return (
-    <SettingsForm
+    <Form
       title="New password"
       doSubmit={doSubmit}
       init={init}
@@ -45,7 +45,6 @@ const PasswordForm = () => {
           <Input
             name="password"
             type="password"
-            placeholder="Current password"
             value={data.password}
             onChange={handleChange}
           />
@@ -53,7 +52,6 @@ const PasswordForm = () => {
           <Input
             name="newPassword"
             type="password"
-            placeholder="New password"
             value={data.newPassword}
             onChange={handleChange}
           />
@@ -61,7 +59,6 @@ const PasswordForm = () => {
           <Input
             name="passwordConfirm"
             type="password"
-            placeholder="Confirm new password"
             value={data.passwordConfirm}
             onChange={handleChange}
           />
@@ -70,7 +67,7 @@ const PasswordForm = () => {
           </button>
         </Fragment>
       )}
-    </SettingsForm>
+    </Form>
   );
 };
 

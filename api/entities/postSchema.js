@@ -12,7 +12,7 @@ module.exports = new EntitySchema({
     },
     userId: {
       type: 'int',
-      nullable: false,
+      nullable: true,
       // select,
     },
     groupId: {
@@ -50,6 +50,12 @@ module.exports = new EntitySchema({
       target: 'Users',
       type: 'many-to-one',
       onDelete: 'CASCADE',
+    },
+    group: {
+      target: 'Groups',
+      type: 'many-to-one',
+      onDelete: 'CASCADE',
+      joinColumn: { name: 'group_id', referencedColumnName: 'id' },
     },
     comments: {
       target: 'Comments',

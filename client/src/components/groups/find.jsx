@@ -49,7 +49,7 @@ const FindGroups = () => {
     <Fragment>
       <Input
         name="search"
-        className="search__input find__users--search fg__header"
+        className="search__input fg__find"
         placeholder="Write group name here"
         value={query}
         onChange={handleChange}

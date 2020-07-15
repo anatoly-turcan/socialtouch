@@ -10,7 +10,7 @@ const name = {
 const description = {
   length: {
     minimum: 1,
-    tooShort: 'Please indicate the post message',
+    tooShort: 'Please indicate the group description',
   },
 };
 

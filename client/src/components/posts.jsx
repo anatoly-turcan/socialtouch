@@ -3,8 +3,9 @@ import { toast } from 'react-toastify';
 import Loader from './common/loader';
 import PostBox from './post/box';
 import CreatePost from './post/create';
+import { createPost } from '../services/apiService';
 
-const Posts = ({ fetchMethod, isMe }) => {
+const Posts = ({ fetchMethod, isMe, createMethod }) => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [loader, setLoader] = useState(true);
@@ -47,7 +48,12 @@ const Posts = ({ fetchMethod, isMe }) => {
 
   return (
     <div className="posts">
-      {isMe && <CreatePost refresh={refresh} />}
+      {isMe && (
+        <CreatePost
+          refresh={refresh}
+          createMethod={createMethod || createPost}
+        />
+      )}
 
       {posts.length
         ? posts.map((post) => (

@@ -1,7 +1,7 @@
 import React, { useState, Fragment, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import UserContext from '../../context/userContext';
-import SettingsForm from './form';
+import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userSettingsConstraints from '../../validators/userSettingsConstraints';
@@ -40,7 +40,7 @@ const InfoForm = () => {
 
   if (settings)
     return (
-      <SettingsForm
+      <Form
         title="Info"
         doSubmit={doSubmit}
         init={settings}
@@ -57,8 +57,6 @@ const InfoForm = () => {
                   </label>
                   <Input
                     name={name}
-                    type="text"
-                    placeholder={name}
                     value={data[name]}
                     onChange={handleChange}
                   />
@@ -70,7 +68,7 @@ const InfoForm = () => {
             </button>
           </Fragment>
         )}
-      </SettingsForm>
+      </Form>
     );
 
   return null;

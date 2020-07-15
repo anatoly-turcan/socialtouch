@@ -58,12 +58,12 @@ exports.getGroup = handlerFactory.getOne({
     [`${alias}.creator`, 'creator'],
     ['creator.image', 'creatorImage'],
   ],
-  joinSelectors: [
-    alias,
+  select: [
+    `${alias}.name`,
+    `${alias}.description`,
+    `${alias}.link`,
     'img.location',
-    'creator.username',
     'creator.link',
-    'creatorImage.location',
   ],
 });
 
@@ -88,6 +88,7 @@ exports.deleteGroup = handlerFactory.deactivateOne({
 });
 
 exports.groupProtect = catchError(async (req, res, next) => {
+  console.log(req.params);
   if (req.params.gLink) {
     const group = await req.connection
       .getRepository(Group)

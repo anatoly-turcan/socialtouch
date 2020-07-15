@@ -1,6 +1,6 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import SettingsForm from './form';
+import Form from '../common/form';
 import Input from '../common/input';
 import { updateMyImage } from '../../services/apiService';
 import Loader from '../common/loader';
@@ -34,7 +34,7 @@ const ImageForm = () => {
   const init = {};
 
   return (
-    <SettingsForm title="Update profile image" doSubmit={doSubmit} init={init}>
+    <Form title="Update profile image" doSubmit={doSubmit} init={init}>
       {() => (
         <div className="settings__image">
           <label htmlFor="image" className="btn btn-light clickable">
@@ -46,7 +46,7 @@ const ImageForm = () => {
           </button>
         </div>
       )}
-    </SettingsForm>
+    </Form>
   );
 };
 

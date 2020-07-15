@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import validate from '../../utils/validate';
 
-const SettingsForm = ({ title, children, doSubmit, init, constraints }) => {
+const Form = ({ title, children, doSubmit, init, constraints }) => {
   const [data, setData] = useState(init);
 
   const handleSubmit = (event) => {
@@ -20,13 +20,13 @@ const SettingsForm = ({ title, children, doSubmit, init, constraints }) => {
   };
 
   return (
-    <div className="settings-el">
-      <div className="settings-el-title">{title}</div>
-      <form className="settings-el-body" onSubmit={handleSubmit}>
+    <div className="form__box">
+      <div className="form__box-title">{title}</div>
+      <form className="form__box-body" onSubmit={handleSubmit}>
         {children(handleChange, data)}
       </form>
     </div>
   );
 };
 
-export default SettingsForm;
+export default Form;

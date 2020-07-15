@@ -33,6 +33,7 @@ const createSendToken = (user, statusCode, res) => {
     data: {
       user: {
         username: user.username,
+        email: user.email,
         link: user.link,
         image: user.image || undefined,
       },

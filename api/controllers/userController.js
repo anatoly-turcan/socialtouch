@@ -5,8 +5,10 @@ const userSettingsConstraints = require('../validators/userSettingsConstraints')
 const User = require('../entities/userSchema');
 const UserSettings = require('../entities/userSettingsSchema');
 const Friends = require('../entities/friendsSchema');
+const Image = require('../entities/imageSchema');
 const handlerFactory = require('./handlerFactory');
 const AppError = require('../utils/appError');
+const cloud = require('../utils/cloud');
 
 const alias = 'user';
 
@@ -342,12 +344,35 @@ exports.confirmFriendship = catchError(
   }
 );
 
-// exports.updateImage = catchError(async (req, res, next) => {
-//   res.status(200).json({
-//     status: 'success',
-//     data: req.file.originalname,
-//   });
-// });
+exports.updateImage = catchError(
+  async ({ connection, user, files }, res, next) => {
+    if (!files.length) return next(new AppError('No image', 400));
+
+    const data = await cloud.uploadImage(files[0], 400);
+
+    const newImage = await connection
+      .getRepository(Image)
+      .createQueryBuilder()
+      .insert()
+      .values(data)
+      .execute();
+
+    const imgId = newImage.identifiers[0].id;
+
+    await connection
+      .getRepository(User)
+      .createQueryBuilder()
+      .update()
+      .set({ imgId })
+      .where(`id = :id`, { id: user.id })
+      .execute();
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  }
+);
 
 // exports.getImages = catchError(async ({ connection, params }, res, next) => {
 //   const linkedUser = await connection

@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-export const transport = axios.create({ withCredentials: true });
+export const transport = axios.create({
+  withCredentials: true,
+  sameSate: false,
+});
 
 export default {
   http: axios,

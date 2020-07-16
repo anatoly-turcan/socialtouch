@@ -1,10 +1,12 @@
 const catchError = require('../utils/catchError');
 const apiFilter = require('../utils/apiFilter');
 const Group = require('../entities/groupSchema');
+const Image = require('../entities/imageSchema');
 const GroupModel = require('../models/groupModel');
 const groupConstraints = require('../validators/groupConstraints');
 const handlerFactory = require('./handlerFactory');
 const AppError = require('../utils/appError');
+const cloud = require('../utils/cloud');
 
 const alias = 'group';
 
@@ -59,12 +61,27 @@ exports.getGroup = handlerFactory.getOne({
     ['creator.image', 'creatorImage'],
   ],
   select: [
+    `${alias}.id`,
     `${alias}.name`,
     `${alias}.description`,
     `${alias}.link`,
     'img.location',
     'creator.link',
   ],
+  add: async (document, req) => {
+    const { count } = await req.connection
+      .getRepository(Group)
+      .createQueryBuilder(alias)
+      .leftJoinAndSelect('group.subscribers', 'subscribers')
+      .where(`${alias}.id = :id AND subscribers.id = :userId`, {
+        id: document.id,
+        userId: req.user.id,
+      })
+      .select('COUNT(subscribers.id)', 'count')
+      .getRawOne();
+
+    if (count !== '0') document.isSubscribed = true;
+  },
 });
 
 exports.updateGroup = handlerFactory.updateOne({
@@ -95,7 +112,6 @@ exports.groupProtect = catchError(async (req, res, next) => {
 
     if (group) req.group = group;
     else return next(new AppError('Group not found', 404));
-    console.log({ group: req.group });
   }
 
   next();
@@ -193,6 +209,25 @@ exports.getSubscribers = catchError(
   }
 );
 
+exports.getSubscribersCount = catchError(
+  async ({ connection, group }, res, next) => {
+    const { count } = await connection
+      .getRepository(Group)
+      .createQueryBuilder(alias)
+      .leftJoinAndSelect('group.subscribers', 'subscribers')
+      .where(`${alias}.id = :id`, { id: group.id })
+      .select('COUNT(subscribers.id)', 'count')
+      .getRawOne();
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        count,
+      },
+    });
+  }
+);
+
 exports.searchGroups = catchError(async ({ connection, query }, res, next) => {
   if (!query.query)
     return next(new AppError('Please specify search query', 400));
@@ -212,3 +247,35 @@ exports.searchGroups = catchError(async ({ connection, query }, res, next) => {
     },
   });
 });
+
+exports.updateImage = catchError(
+  async ({ connection, group, user, files }, res, next) => {
+    if (!files.length) return next(new AppError('No image', 400));
+    if (group.creatorId !== user.id)
+      return next(new AppError('You do not have permissions', 400));
+
+    const data = await cloud.uploadImage(files[0], 400);
+
+    const newImage = await connection
+      .getRepository(Image)
+      .createQueryBuilder()
+      .insert()
+      .values(data)
+      .execute();
+
+    const imgId = newImage.identifiers[0].id;
+
+    await connection
+      .getRepository(Group)
+      .createQueryBuilder()
+      .update()
+      .set({ imgId })
+      .where(`id = :id`, { id: group.id })
+      .execute();
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  }
+);

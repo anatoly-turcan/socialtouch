@@ -9,6 +9,7 @@ import PostComments from './comments';
 import PostFull from './full';
 import { deletePost, deleteGroupPost } from '../../services/apiService';
 import avatar from '../../img/no-avatar.png';
+import noGroup from '../../img/no-group.png';
 
 const PostBox = ({ post, refresh }) => {
   const { content, createdAt, image, user, group, previewLimit, link } = post;
@@ -67,7 +68,11 @@ const PostBox = ({ post, refresh }) => {
           >
             <div className="post__box--author-img">
               <img
-                src={(author.image && author.image.location) || avatar}
+                src={
+                  group
+                    ? (author.image && author.image.location) || noGroup
+                    : (author.image && author.image.location) || avatar
+                }
                 alt="Author image"
               />
             </div>

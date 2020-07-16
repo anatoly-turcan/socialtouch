@@ -10,6 +10,7 @@ const Post = require('../entities/postSchema');
 const User = require('../entities/userSchema');
 const Comment = require('../entities/commentSchema');
 const Image = require('../entities/imageSchema');
+const Group = require('../entities/groupSchema');
 const PostModel = require('../models/postModel');
 const CommentModel = require('../models/commentModel');
 const handlerFactory = require('./handlerFactory');
@@ -301,9 +302,31 @@ exports.getNews = catchError(async ({ connection, user, query }, res, next) => {
     .select(['u.id'])
     .getRawMany();
 
-  const ids = friends.reduce((acc, friend) => [...acc, friend.u_id], []);
+  const groups = await connection
+    .getRepository(Group)
+    .createQueryBuilder('group')
+    .leftJoinAndSelect('group.subscribers', 'subscribers')
+    .where('subscribers.id = :id AND subscribers.active = 1', {
+      id: user.id,
+    })
+    .select(['group.id'])
+    .getRawMany();
 
-  if (!ids.length)
+  const friendsIds = friends.reduce((acc, friend) => [...acc, friend.u_id], []);
+  const groupsIds = groups.reduce((acc, group) => [...acc, group.group_id], []);
+
+  const where = { options: [], selectors: {} };
+
+  if (friendsIds.length) {
+    where.options.push(`${alias}.userId IN (:...friendsIds)`);
+    where.selectors.friendsIds = friendsIds;
+  }
+  if (groupsIds.length) {
+    where.options.push(`${alias}.groupId IN (:...groupsIds)`);
+    where.selectors.groupsIds = groupsIds;
+  }
+
+  if (!where.options.length)
     return res.status(200).json({
       status: 'success',
       data: [],
@@ -316,8 +339,10 @@ exports.getNews = catchError(async ({ connection, user, query }, res, next) => {
     .createQueryBuilder(alias)
     .leftJoinAndSelect(`${alias}.user`, 'user')
     .leftJoinAndSelect(`${alias}.image`, 'image')
+    .leftJoinAndSelect(`${alias}.group`, 'group')
     .leftJoinAndSelect('user.image', 'img')
-    .where(`${alias}.userId IN (:...ids)`, { ids })
+    .leftJoinAndSelect(`group.image`, 'groupImg')
+    .where(where.options.join(' OR '), where.selectors)
     .select([
       `${alias}.id`,
       `${alias}.content`,
@@ -328,6 +353,9 @@ exports.getNews = catchError(async ({ connection, user, query }, res, next) => {
       'user.username',
       'user.link',
       'img.location',
+      'group.name',
+      'group.link',
+      'groupImg.location',
     ])
     .skip(filter.offset)
     .take(filter.limit)

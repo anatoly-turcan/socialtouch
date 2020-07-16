@@ -205,3 +205,36 @@ export const updateGroupPost = async (groupLink, postLink, content) => {
   );
   return result.status === 204;
 };
+
+export const getSubscribersCount = async (groupLink) => {
+  const result = await http.get(`${api}/groups/${groupLink}/subscribersCount`);
+  return result.data.data.count;
+};
+
+export const subscribe = async (groupLink) => {
+  const result = await http.post(`${api}/groups/${groupLink}/subscribe`);
+  return result.status === 204;
+};
+
+export const unsubscribe = async (groupLink) => {
+  const result = await http.post(`${api}/groups/${groupLink}/unsubscribe`);
+  return result.status === 204;
+};
+
+export const updateGroupImage = async (groupLink, data) => {
+  const result = await http.patch(
+    `${api}/groups/${groupLink}/updateImage`,
+    data
+  );
+  return result.status === 204;
+};
+
+export const updateGroup = async (groupLink, data) => {
+  const result = await http.patch(`${api}/groups/${groupLink}`, data);
+  return result.status === 204;
+};
+
+export const deleteGroup = async (groupLink) => {
+  const result = await http.delete(`${api}/groups/${groupLink}`);
+  return result.status === 204;
+};

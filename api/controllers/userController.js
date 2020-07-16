@@ -149,7 +149,7 @@ exports.getGroups = catchError(
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.groups', 'groups')
       .leftJoinAndSelect('groups.image', 'image')
-      .where('user.link = :link', { link: params.link })
+      .where('user.link = :link AND groups.active = 1', { link: params.link })
       .select(['user.id', 'groups.name', 'groups.link', 'image.location'])
       .offset(offset)
       .limit(limit)

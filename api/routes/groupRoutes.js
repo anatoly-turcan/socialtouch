@@ -30,5 +30,11 @@ router.route('/:link/subscribe').post(groupController.subscribe);
 router.route('/:link/unsubscribe').post(groupController.unsubscribe);
 
 router.route('/:link/subscribers').get(groupController.getSubscribers);
+router
+  .route('/:gLink/subscribersCount')
+  .get(groupController.groupProtect, groupController.getSubscribersCount);
+router
+  .route('/:gLink/updateImage')
+  .patch(groupController.groupProtect, groupController.updateImage);
 
 module.exports = router;

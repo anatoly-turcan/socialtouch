@@ -165,12 +165,36 @@ exports.updatePost = handlerFactory.updateOne({
   ],
 });
 
+exports.updateGroupPost = handlerFactory.updateOne({
+  Entity: Post,
+  bodyFields: ['content'],
+  constraints: postConstraints,
+  where: 'link = :link AND groupId = :id AND :creatorId = :userId',
+  whereSelectors: [
+    ['link', 'params', 'link'],
+    ['id', 'group', 'id'],
+    ['creatorId', 'group', 'creatorId'],
+    ['userId', 'user', 'id'],
+  ],
+});
+
 exports.deletePost = handlerFactory.deleteOne({
   Entity: Post,
   where: 'link = :link AND user = :id',
   whereSelectors: [
     ['link', 'params', 'link'],
     ['id', 'user', 'id'],
+  ],
+});
+
+exports.deleteGroupPost = handlerFactory.deleteOne({
+  Entity: Post,
+  where: 'link = :link AND groupId = :groupId AND :creatorId = :userId',
+  whereSelectors: [
+    ['link', 'params', 'link'],
+    ['groupId', 'group', 'id'],
+    ['creatorId', 'group', 'creatorId'],
+    ['userId', 'user', 'id'],
   ],
 });
 

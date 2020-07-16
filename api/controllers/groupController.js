@@ -88,7 +88,6 @@ exports.deleteGroup = handlerFactory.deactivateOne({
 });
 
 exports.groupProtect = catchError(async (req, res, next) => {
-  console.log(req.params);
   if (req.params.gLink) {
     const group = await req.connection
       .getRepository(Group)
@@ -96,6 +95,7 @@ exports.groupProtect = catchError(async (req, res, next) => {
 
     if (group) req.group = group;
     else return next(new AppError('Group not found', 404));
+    console.log({ group: req.group });
   }
 
   next();

@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Form from '../common/form';
+import GroupContext from '../../context/groupContext';
 import Loader from '../common/loader';
-import { deleteMe } from '../../services/apiService';
+import Form from '../common/form';
+import { deleteGroup } from '../../services/apiService';
 
-const DeleteForm = () => {
+const DeleteGroup = () => {
   const history = useHistory();
+  const { group } = useContext(GroupContext);
   const [loader, setLoader] = useState(false);
 
   const doSubmit = async () => {
     try {
       setLoader(true);
-      const success = await deleteMe();
+      const success = await deleteGroup(group.link);
       if (success) {
-        toast.success('Your account has been successfully deleted');
-        history.replace('/signout');
+        toast.success('Your group has been successfully deleted');
+        history.replace('/groups');
       }
     } catch ({ response }) {
       if (response) toast.error(response.data.message);
@@ -25,7 +27,7 @@ const DeleteForm = () => {
   };
 
   return (
-    <Form title="Delete account" doSubmit={doSubmit}>
+    <Form title="Delete group" doSubmit={doSubmit}>
       {() => (
         <div className="settings__delete">
           <span>Are you sure?</span>
@@ -38,4 +40,4 @@ const DeleteForm = () => {
   );
 };
 
-export default DeleteForm;
+export default DeleteGroup;

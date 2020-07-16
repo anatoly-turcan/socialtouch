@@ -201,6 +201,14 @@ a {
   color: var(--darker);
 }
 
+.white {
+  color: var(--white);
+}
+
+.t-50 {
+  opacity: 0.5;
+}
+
 .link-light {
   color: var(--light-blue);
   transition: all 0.1s;
@@ -421,7 +429,7 @@ nav ul li {
 
 .content__fg {
   padding: 10px;
-  height: 100%;
+  /* height: 100%; */
   overflow: auto;
 }
 
@@ -471,6 +479,14 @@ nav ul li {
   border-radius: 8px;
   padding: 4px 10px;
   border: 1px solid var(--dark-blue);
+  margin-top: 4px;
+}
+
+.form__box-body > textarea {
+  margin-top: 4px;
+  width: 100%;
+  min-width: 100%;
+  max-height: 200px;
 }
 
 .form__box-body > button {
@@ -539,6 +555,75 @@ nav ul li {
   height: 100%;
   border: none;
   font-size: 100%;
+}
+/* --------------------------------
+  Content > Group > box
+-------------------------------- */
+
+.group {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 300px 44px 40px auto;
+  overflow: auto;
+}
+
+.group__edit__box {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-go-back {
+  margin: 20px 4px 0 4px;
+}
+
+.group__image {
+  display: flex;
+}
+
+.group__image > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.group__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 10px;
+}
+
+.group__name,
+.group__info {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 10px;
+}
+
+.group__actions > button {
+  font-weight: 500;
+}
+
+.group__subscribers {
+  font-size: 80%;
+  opacity: 0.8;
+}
+
+.group__edit {
+  align-self: flex-end;
+  margin-top: auto;
+  padding: 5px;
+  font-size: 130%;
+}
+
+.group__edit > button {
+  background: transparent;
+  color: var(--light-blue-50);
+  transition: 0.2s;
+}
+
+.group__edit > button:hover {
+  color: var(--light-blue);
 }
 
 /* --------------------------------
@@ -1267,13 +1352,19 @@ nav ul li {
     padding-bottom: 100px;
   }
 
-  .content__personal-page {
+  .content__personal-page,
+  .content__group-page {
     grid-template-columns: none;
   }
 
-  .person-info {
+  .person-info,
+  .group__edit__box {
     grid-row-start: 1;
     height: 210px;
+  }
+
+  .group__edit__box {
+    overflow: auto;
   }
 
   .person {
@@ -1341,6 +1432,47 @@ nav ul li {
     font-size: 80%;
   }
 
+  .group {
+    grid-row-start: 1;
+    height: 210px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 1fr 1fr auto;
+
+    grid-template-areas:
+      'photo name name '
+      'photo actions actions'
+      'photo info info';
+  }
+
+  .group__image {
+    grid-area: photo;
+  }
+
+  .group__image img {
+    border-radius: 50%;
+    margin: auto;
+  }
+
+  .group__name {
+    grid-area: name;
+    align-items: center;
+    align-self: end;
+  }
+
+  .group__actions {
+    grid-area: actions;
+    justify-content: space-around;
+    text-align: center;
+  }
+
+  .group__info {
+    grid-area: info;
+  }
+
+  .group__description {
+    display: none;
+  }
+
   /* --------------------------------
     Post box
   -------------------------------- */
@@ -1375,21 +1507,25 @@ nav ul li {
     font-size: 95%;
   }
 
-  .person--photo {
+  .person--photo,
+  .group__image {
     height: 100%;
     width: 100%;
   }
 
-  .person--photo img {
+  .person--photo img,
+  .group__image img {
     width: auto;
     max-width: 100%;
     height: auto;
+    max-height: 100%;
   }
 }
 
 @media only screen and (min-width: 500px) and (max-width: 700px) {
   .person--btn,
-  .person--name {
+  .person--name,
+  .group__name {
     font-size: 115%;
   }
 }

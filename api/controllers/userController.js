@@ -3,6 +3,7 @@ const apiFilter = require('../utils/apiFilter');
 const userConstraints = require('../validators/userConstraints');
 const userSettingsConstraints = require('../validators/userSettingsConstraints');
 const User = require('../entities/userSchema');
+const Group = require('../entities/groupSchema');
 const UserSettings = require('../entities/userSettingsSchema');
 const Friends = require('../entities/friendsSchema');
 const Image = require('../entities/imageSchema');
@@ -144,23 +145,30 @@ exports.getGroups = catchError(
   async ({ connection, params, query }, res, next) => {
     const { offset, limit } = apiFilter(query);
 
-    const result = await connection
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.groups', 'groups')
-      .leftJoinAndSelect('groups.image', 'image')
-      .where('user.link = :link AND groups.active = 1', { link: params.link })
-      .select(['user.id', 'groups.name', 'groups.link', 'image.location'])
-      .offset(offset)
-      .limit(limit)
-      .getOne();
-
-    if (!result) return next(new AppError('Document not found', 404));
+    const groups = await connection
+      .getRepository(Group)
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.image', 'image')
+      .leftJoinAndSelect('group.subscribers', 'subscribers')
+      .where((qb) => {
+        const userId = qb
+          .subQuery()
+          .select('user.id')
+          .from(User, 'user')
+          .where('user.link = :link')
+          .getQuery();
+        return `group.active = 1 AND subscribers.id = ${userId}`;
+      })
+      .setParameter('link', params.link)
+      .select(['group.id', 'group.name', 'group.link', 'image.location'])
+      .skip(offset)
+      .take(limit)
+      .getMany();
 
     res.status(200).json({
       status: 'success',
       data: {
-        groups: result.groups,
+        groups,
       },
     });
   }

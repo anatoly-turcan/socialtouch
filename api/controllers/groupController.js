@@ -236,7 +236,9 @@ exports.searchGroups = catchError(async ({ connection, query }, res, next) => {
     .getRepository(Group)
     .createQueryBuilder(alias)
     .leftJoinAndSelect(`${alias}.image`, 'image')
-    .where(`${alias}.name REGEXP :r`, { r: query.query })
+    .where(`${alias}.active = 1 and ${alias}.name REGEXP :r`, {
+      r: query.query,
+    })
     .select([`${alias}.id`, `${alias}.name`, `${alias}.link`, 'image.location'])
     .getMany();
 

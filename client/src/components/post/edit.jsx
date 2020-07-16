@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { updatePost } from '../../services/apiService';
+import { updatePost, updateGroupPost } from '../../services/apiService';
 
 const EditPost = ({ post, refresh }) => {
   const [content, setContent] = useState(post.content);
@@ -12,7 +12,11 @@ const EditPost = ({ post, refresh }) => {
   const handleSave = async (event) => {
     try {
       event.preventDefault();
-      const success = await updatePost(post.link, content);
+      const update = post.group
+        ? () => updateGroupPost(post.group.link, post.link, content)
+        : () => updatePost(post.link, content);
+
+      const success = await update();
       if (success) refresh();
     } catch ({ response }) {
       if (response) toast.error(response.data.message);

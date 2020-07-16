@@ -24,10 +24,10 @@ const PostBox = ({ post, refresh }) => {
   const handleDelete = async () => {
     try {
       const deleteMethod = post.group
-        ? (postLink) => deleteGroupPost(post.group.link, postLink)
-        : deletePost;
+        ? () => deleteGroupPost(post.group.link, post.link)
+        : () => deletePost(post.link);
 
-      const success = deleteMethod(link);
+      const success = deleteMethod();
       if (success) refresh();
     } catch ({ response }) {
       if (response) toast.error(response.data.message);

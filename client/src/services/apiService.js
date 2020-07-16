@@ -195,3 +195,13 @@ export const deleteGroupPost = async (groupLink, postLink) => {
   );
   return result.status === 204;
 };
+
+export const updateGroupPost = async (groupLink, postLink, content) => {
+  const result = await http.patch(
+    `${api}/groups/${groupLink}/posts/${postLink}`,
+    {
+      content,
+    }
+  );
+  return result.status === 204;
+};

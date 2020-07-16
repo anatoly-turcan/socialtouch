@@ -1,11 +1,17 @@
 const { Router } = require('express');
 const groupController = require('../controllers/groupController');
-const postRouter = require('./postRoutes');
+const postController = require('../controllers/postController');
 
 const router = Router();
 
-router.use('/:gLink/posts', groupController.groupProtect, postRouter);
-router.use('/:gLink/posts/:link', groupController.groupProtect, postRouter);
+router
+  .route('/:gLink/posts')
+  .get(groupController.groupProtect, postController.getAllPosts)
+  .post(groupController.groupProtect, postController.createPost);
+router
+  .route('/:gLink/posts/:link')
+  .patch(groupController.groupProtect, postController.updateGroupPost)
+  .delete(groupController.groupProtect, postController.deleteGroupPost);
 
 router
   .route('/')

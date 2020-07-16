@@ -180,7 +180,7 @@ exports.getGroupsCount = catchError(
       .getRepository(User)
       .createQueryBuilder(alias)
       .leftJoinAndSelect(`${alias}.groups`, 'groups')
-      .where('user.link = :link', { link: params.link })
+      .where('user.link = :link AND groups.active = 1', { link: params.link })
       .select('COUNT(groups.id)', 'count')
       .getRawOne();
 
@@ -309,7 +309,7 @@ exports.getFriendsCount = catchError(
           .from(User, 'user')
           .where('user.link = :link')
           .getQuery();
-        return `friends.friendId = ${id} OR friends.targetId = ${id}`;
+        return `friends.active = 1 AND friends.friendId = ${id} OR friends.targetId = ${id}`;
       })
       .setParameter('link', params.link)
       .select('COUNT(*)', 'count')

@@ -14,6 +14,8 @@ router
   .get(userController.getMySettings)
   .patch(userController.updateMySettings);
 
+router.route('/friendRequests').get(userController.getFriendRequests);
+
 router.route('/updateImage').patch(userController.updateImage);
 
 module.exports = router;

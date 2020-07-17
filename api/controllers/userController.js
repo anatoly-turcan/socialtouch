@@ -309,7 +309,7 @@ exports.getFriendsCount = catchError(
           .from(User, 'user')
           .where('user.link = :link')
           .getQuery();
-        return `friends.active = 1 AND friends.friendId = ${id} OR friends.targetId = ${id}`;
+        return `friends.active = 1 AND (friends.friendId = ${id} OR friends.targetId = ${id})`;
       })
       .setParameter('link', params.link)
       .select('COUNT(*)', 'count')
@@ -348,6 +348,35 @@ exports.confirmFriendship = catchError(
     res.status(204).json({
       status: 'success',
       data: null,
+    });
+  }
+);
+
+exports.getFriendRequests = catchError(
+  async ({ connection, user }, res, next) => {
+    const result = await connection
+      .getRepository(Friends)
+      .createQueryBuilder('f')
+      .leftJoinAndSelect(User, 'u', 'f.friendId = u.id OR f.targetId = u.id')
+      .leftJoinAndSelect('u.image', 'img')
+      .where(
+        `u.id != :id AND f.active = 0 AND f.by != :id AND (f.friendId = :id OR f.targetId = :id)`,
+        { id: user.id }
+      )
+      .select(['u.username', 'u.link', 'img.location'])
+      .getRawMany();
+
+    const requests = result.map((el) => {
+      return Object.keys(el).reduce((acc, key) => {
+        return { ...acc, [key.replace('u_', '')]: el[key] };
+      }, {});
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        requests,
+      },
     });
   }
 );

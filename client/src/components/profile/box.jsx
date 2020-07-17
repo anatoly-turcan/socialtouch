@@ -11,6 +11,8 @@ import {
   getUserGroups,
   getFriendsCount,
   getGroupsCount,
+  addFriend,
+  unfriend,
 } from '../../services/apiService';
 import avatar from '../../img/no-avatar.png';
 import noGroup from '../../img/no-group.png';
@@ -22,6 +24,7 @@ const ProfileBox = ({ user, isMe }) => {
   const [groupsCount, setGroupsCount] = useState(null);
   const [loader, setLoader] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [isFriend, setIsFriend] = useState(user.isFriend || false);
 
   useEffect(() => {
     const fetchFriendsGroups = async () => {
@@ -44,6 +47,24 @@ const ProfileBox = ({ user, isMe }) => {
   const handleAllFriends = () => setShowMore('friends');
   const handleAllGroups = () => setShowMore('groups');
   const handleBack = () => setShowMore(false);
+
+  const handleAddFriend = async () => {
+    try {
+      const success = await addFriend(user.link);
+      if (success) setIsFriend(true);
+    } catch ({ response }) {
+      if (response) toast.error(response.data.message);
+    }
+  };
+
+  const handleUnfriend = async () => {
+    try {
+      const success = await unfriend(user.link);
+      if (success) setIsFriend(false);
+    } catch ({ response }) {
+      if (response) toast.error(response.data.message);
+    }
+  };
 
   const renderFriends = () =>
     friends.length
@@ -73,10 +94,17 @@ const ProfileBox = ({ user, isMe }) => {
   const renderButtons = () => (
     <Fragment>
       <button className="btn btn-light person--btn">Send message</button>
-      {!user.isFriend ? (
-        <button className="btn btn-light person--btn">Add friend</button>
+      {!isFriend ? (
+        <button className="btn btn-light person--btn" onClick={handleAddFriend}>
+          Add friend
+        </button>
       ) : (
-        <span className="person--btn is-friend">Friend</span>
+        <button
+          className="person--btn btn-transparent t-50 white"
+          onClick={handleUnfriend}
+        >
+          Unfriend
+        </button>
       )}
     </Fragment>
   );

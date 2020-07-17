@@ -238,3 +238,25 @@ export const deleteGroup = async (groupLink) => {
   const result = await http.delete(`${api}/groups/${groupLink}`);
   return result.status === 204;
 };
+
+export const addFriend = async (friendLink) => {
+  const result = await http.post(`${api}/users/${friendLink}/friends`);
+  return result.status === 204;
+};
+
+export const confirmFriendship = async (friendLink) => {
+  const result = await http.post(
+    `${api}/users/${friendLink}/confirmFriendship`
+  );
+  return result.status === 204;
+};
+
+export const unfriend = async (friendLink) => {
+  const result = await http.delete(`${api}/users/${friendLink}/friends`);
+  return result.status === 204;
+};
+
+export const getFriendRequests = async () => {
+  const result = await http.get(`${api}/users/me/friendRequests`);
+  return result.data.data.requests;
+};

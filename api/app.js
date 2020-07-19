@@ -10,6 +10,7 @@ const authController = require('./controllers/authController');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const groupRouter = require('./routes/groupRoutes');
+const chatRouter = require('./routes/chatRoutes');
 
 const upload = multer({
   limits: {
@@ -42,6 +43,7 @@ module.exports = (connection) => {
   app.use('/api/v1/posts', postRouter);
   app.use('/api/v1/users', userRouter);
   app.use('/api/v1/groups', groupRouter);
+  app.use('/api/v1/chats', chatRouter);
 
   app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on the server`, 404));

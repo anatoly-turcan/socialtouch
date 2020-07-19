@@ -15,9 +15,10 @@ import Friends from './pages/friends';
 import Groups from './pages/groups';
 import News from './pages/news';
 import Settings from './pages/settings';
+import Group from './pages/group';
+import Chat from './pages/chat';
 import { getMe } from './services/apiService';
 import './App.css';
-import Group from './pages/group';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -53,7 +54,7 @@ const App = () => {
             <ProtectedRoute path="/signout" component={Signout} />
             <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute path="/news" component={News} />
-            <ProtectedRoute path="/chat" component={NotFound} />
+            <ProtectedRoute path="/chat" component={Chat} />
             <ProtectedRoute path="/friends" component={Friends} />
             <ProtectedRoute path="/groups" component={Groups} />
             <ProtectedRoute path="/group/:link" component={Group} />

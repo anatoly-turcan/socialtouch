@@ -10,10 +10,12 @@
     "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-infinite-scroller": "^1.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-toastify": "^6.0.8",
     "remixicon": "^2.5.0",
+    "socket.io-client": "^2.3.0",
     "validate.js": "^0.13.1",
     "webfontloader": "^1.6.28"
   },

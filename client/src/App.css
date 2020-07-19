@@ -515,6 +515,134 @@ nav ul li {
 }
 
 /* --------------------------------
+  Content chats
+-------------------------------- */
+.chats__list {
+  border-right: 1px solid var(--light-blue);
+  overflow: auto;
+}
+.chat__list__el {
+  display: flex;
+  border-bottom: 1px solid var(--light-blue);
+  background: transparent;
+  align-items: center;
+  padding: 4px 10px;
+  width: 100%;
+  transition: 0.2s;
+}
+
+.chat__list__el:hover {
+  background-color: var(--light-blue-50);
+}
+
+.chat__user-name {
+  color: var(--white);
+  margin-left: 10px;
+  font-size: 80%;
+}
+
+.chat__user-image {
+  display: block;
+}
+
+.content__chat {
+  display: grid;
+  grid-template-columns: 300px auto;
+  grid-template-rows: auto;
+  padding: 2px 0 0 10px;
+  height: 100vh;
+}
+
+.chat {
+  display: grid;
+  grid-template-rows: auto 46px;
+  grid-template-columns: auto;
+  padding: 10px;
+  max-height: 100vh;
+}
+
+.chat__send {
+  display: flex;
+}
+
+.chat__send button {
+  width: 50px;
+  font-size: 150%;
+  border-radius: 0 15px 15px 0;
+}
+.chat__send input {
+  width: 100%;
+  font-size: 100%;
+  padding: 10px 10px;
+  border-radius: 15px 0 0 15px;
+  cursor: auto;
+  max-width: 100%;
+  max-height: 100%;
+  resize: none;
+  background: var(--white);
+  border: none;
+}
+
+.message__box {
+  display: flex;
+  margin-top: 5px;
+  margin: 5px 5px 5px 0;
+}
+
+.my-message {
+  margin-left: auto;
+}
+
+.message-left {
+  border-radius: 14px 14px 14px 0;
+}
+
+.message-right {
+  border-radius: 14px 14px 0 14px;
+}
+
+.message {
+  display: flex;
+  background: var(--white);
+  color: var(--darker);
+  padding: 6px;
+}
+
+.message__header {
+  display: flex;
+  align-items: center;
+  font-size: 90%;
+}
+
+.message__header a {
+  opacity: 0.8;
+  transition: 0.1s;
+}
+
+.message__header a:hover {
+  opacity: 1;
+}
+
+.message__at {
+  margin: 0 10px;
+  font-size: 70%;
+  opacity: 0.5;
+}
+
+.message__content {
+  overflow-wrap: anywhere;
+}
+
+.chat__messages {
+  max-height: calc(100vh - 76px);
+  overflow: auto;
+}
+
+.noscroll {
+  overflow: hidden;
+}
+
+/* --------------------------------
   Content friends
 -------------------------------- */
 .fg__header {
@@ -1339,7 +1467,7 @@ nav ul li {
   -------------------------------- */
 
   .content {
-    /* height: calc(100vh - var(--header-size)); */
+    height: calc(100vh - var(--header-size));
     /* height: 100vh; */
     overflow: auto;
   }
@@ -1349,6 +1477,24 @@ nav ul li {
     overflow: visible;
     height: auto;
     padding-bottom: 100px;
+  }
+
+  .content__chat {
+    padding: 0;
+  }
+
+  .chat__messages {
+    max-height: calc(100vh - 250px);
+  }
+
+  .content__chat {
+    grid-template-columns: none;
+    height: calc(100vh - 100px);
+  }
+
+  .chats__list {
+    border-right: none;
+    border-bottom: 1px solid var(--dark-blue);
   }
 
   .content__personal-page,

@@ -100,19 +100,16 @@ exports.protect = catchError(async (req, res, next) => {
 
   const { id } = jwt.decode(token);
 
-  const additionalColumns =
-    process.env.NODE_ENV === 'production'
-      ? [
-          'email',
-          'salt',
-          'passwordHash',
-          'passwordResetToken',
-          'passwordChangedAt',
-          'active',
-          'createdAt',
-          'updatedAt',
-        ]
-      : [];
+  const additionalColumns = [
+    'email',
+    'salt',
+    'passwordHash',
+    'passwordResetToken',
+    'passwordChangedAt',
+    'active',
+    'createdAt',
+    'updatedAt',
+  ];
 
   const user = await req.connection
     .getRepository(User)

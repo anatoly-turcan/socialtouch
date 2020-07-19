@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loader from '../common/loader';
 import AllFriends from '../common/allFriends';
@@ -18,6 +18,7 @@ import avatar from '../../img/no-avatar.png';
 import noGroup from '../../img/no-group.png';
 
 const ProfileBox = ({ user, isMe }) => {
+  const history = useHistory();
   const [friends, setFriends] = useState([]);
   const [groups, setGroups] = useState([]);
   const [friendsCount, setFriendsCount] = useState(null);
@@ -51,7 +52,10 @@ const ProfileBox = ({ user, isMe }) => {
   const handleAddFriend = async () => {
     try {
       const success = await addFriend(user.link);
-      if (success) setIsFriend(true);
+      if (success) {
+        toast.success('Friend request sent');
+        setIsFriend(true);
+      }
     } catch ({ response }) {
       if (response) toast.error(response.data.message);
     }
@@ -65,6 +69,12 @@ const ProfileBox = ({ user, isMe }) => {
       if (response) toast.error(response.data.message);
     }
   };
+
+  const handleChat = () =>
+    history.push({
+      pathname: '/chat',
+      state: { link: user.link },
+    });
 
   const renderFriends = () =>
     friends.length
@@ -93,7 +103,9 @@ const ProfileBox = ({ user, isMe }) => {
 
   const renderButtons = () => (
     <Fragment>
-      <button className="btn btn-light person--btn">Send message</button>
+      <button className="btn btn-light person--btn" onClick={handleChat}>
+        Send message
+      </button>
       {!isFriend ? (
         <button className="btn btn-light person--btn" onClick={handleAddFriend}>
           Add friend

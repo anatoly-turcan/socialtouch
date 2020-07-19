@@ -66,7 +66,6 @@ export const getUserGroups = async (userLink, limit = 5) => {
 
 export const createPost = async (formData) => {
   const result = await http.post(`${api}/posts`, formData);
-  console.log({ result });
   return result.status === 204;
 };
 
@@ -259,4 +258,16 @@ export const unfriend = async (friendLink) => {
 export const getFriendRequests = async () => {
   const result = await http.get(`${api}/users/me/friendRequests`);
   return result.data.data.requests;
+};
+
+export const getChats = async () => {
+  const result = await http.get(`${api}/chats`);
+  return result.data.data.chats;
+};
+
+export const getMessages = async (room, offset = 0, limit = 20) => {
+  const result = await http.get(
+    `${api}/chats/messages/${room}?offset=${offset}&limit=${limit}`
+  );
+  return result.data.data.messages;
 };

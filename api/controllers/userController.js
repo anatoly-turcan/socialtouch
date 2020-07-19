@@ -109,10 +109,13 @@ exports.getUser = handlerFactory.getOne({
       .getRepository(Friends)
       .createQueryBuilder('friend')
       .select('COUNT(*)', 'count')
-      .where('friend.friendId = :friendId AND friend.targetId = :targetId', {
-        friendId: Math.min(doc.id, req.user.id),
-        targetId: Math.max(doc.id, req.user.id),
-      })
+      .where(
+        'friend.friendId = :friendId AND friend.targetId = :targetId AND friend.active = 1',
+        {
+          friendId: Math.min(doc.id, req.user.id),
+          targetId: Math.max(doc.id, req.user.id),
+        }
+      )
       .getRawOne();
 
     doc.isFriend = count > 0;

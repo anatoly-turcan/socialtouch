@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Loader from '../common/loader';
 import { getChats } from '../../services/apiService';
-import { Link } from 'react-router-dom';
 import avatar from '../../img/no-avatar.png';
 
 const ChatList = ({ handleSelect }) => {

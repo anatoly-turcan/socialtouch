@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import UserContext from '../../context/userContext';
-import avatar from '../../img/no-avatar.png';
 import Time from '../common/time';
+import avatar from '../../img/no-avatar.png';
 
 const MessageBox = ({ message }) => {
   const { content, author, at } = message;
   const { user } = useContext(UserContext);
+
   const boxClasses = `message__box ${
     user.link === author.link ? 'my-message' : ''
   }`;
@@ -15,7 +16,6 @@ const MessageBox = ({ message }) => {
   }`;
 
   let username = author.username.split(' ')[0];
-
   if (username.length > 15) username = `${username.substr(0, 15)}...`;
 
   return (

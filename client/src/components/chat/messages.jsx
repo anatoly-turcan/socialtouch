@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { toast } from 'react-toastify';
+import InfiniteScroll from 'react-infinite-scroller';
 import ChatContext from '../../context/chatContext';
 import MessageBox from './messageBox';
-import { getMessages } from '../../services/apiService';
 import Loader from '../common/loader';
-import InfiniteScroll from 'react-infinite-scroller';
+import { getMessages } from '../../services/apiService';
 
 const ChatMessages = () => {
   const { room, incomingMessage } = useContext(ChatContext);
@@ -75,12 +75,6 @@ const ChatMessages = () => {
       toast.error('Something went wrong');
     }
   };
-
-  const renderMore = () => (
-    <button className="post__box--load-more" onClick={handleMore}>
-      Load more
-    </button>
-  );
 
   return (
     <div className="chat__messages" ref={(ref) => (scrollableTargetRef = ref)}>

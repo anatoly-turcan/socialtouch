@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { promisify } = require('util');
+const sgMail = require('@sendgrid/mail');
 const AppError = require('../utils/appError');
 const catchError = require('../utils/catchError');
 const validate = require('../utils/validate');
@@ -8,6 +9,8 @@ const userConstraints = require('../validators/userConstraints');
 const User = require('../entities/userSchema');
 const UserSettings = require('../entities/userSettingsSchema');
 const UserModel = require('../models/userModel');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signToken = (id, salt) => {
   return jwt.sign({ id }, process.env.JWT_SECRET + salt, {
@@ -167,10 +170,17 @@ exports.forgotPassword = catchError(async ({ connection, body }, res, next) => {
     .where('id = :id', { id: user.id })
     .execute();
 
-  // Sending reset url to the email
+  const link = `${process.env.CLIENT_HOST}/restore/${resetToken}`;
+
+  await sgMail.send({
+    to: user.email,
+    from: '4natoli.t@gmail.com',
+    subject: 'Reset password on socialTouch',
+    html: `<strong>Link to reset password:</strong> <a href="${link}">${link}</a>`,
+  });
+
   res.status(200).json({
     status: 'success',
-    resetToken,
     message: 'Token sent to email',
   });
 });

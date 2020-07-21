@@ -9,6 +9,7 @@
   "author": "4natoli.t@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.2.1",
     "@types/express": "^4.17.6",
     "@types/node": "^14.0.14",
     "aws-sdk": "^2.709.0",
@@ -28,6 +29,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
+    "nodemailer": "^6.4.10",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.25.4",
     "socket.io": "^2.3.0",

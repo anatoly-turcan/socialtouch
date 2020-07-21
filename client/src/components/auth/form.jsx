@@ -23,6 +23,7 @@ const Form = ({ title, reverse, handleSubmit, btn, init, children }) => {
       setLoader(true);
       setError(false);
       await handleSubmit(data);
+      setLoader(false);
     } catch ({ response }) {
       setLoader(false);
       setError(response && response.data.message);

@@ -16,8 +16,7 @@ const LinearNav = ({ data, def, title }) => {
   );
 
   const renderComponent = () => {
-    const index = data.findIndex((el) => el.name === selection);
-    const { Component } = data[index];
+    const { Component } = data.find((el) => el.name === selection);
 
     return <Component />;
   };

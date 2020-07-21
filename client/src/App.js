@@ -50,7 +50,7 @@ const App = () => {
             <Route path="/signin" component={Signin} />
             <Route path="/signup" component={Signup} />
             <Route path="/forgot" component={Forgot} />
-            <Route path="/restore" component={Restore} />
+            <Route path="/restore/:token" component={Restore} />
             <ProtectedRoute path="/signout" component={Signout} />
             <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute path="/news" component={News} />

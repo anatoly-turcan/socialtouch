@@ -69,7 +69,6 @@ exports.getChats = catchError(async ({ connection, user }, res, next) => {
 
 exports.createMessage = async ({ connection, user, message, room }) => {
   try {
-    console.log({ message });
     const createdAt = new Date().toISOString();
 
     await connection

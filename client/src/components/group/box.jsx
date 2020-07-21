@@ -83,7 +83,10 @@ const GroupBox = () => {
         </div>
         {isMine && (
           <div className="group__edit">
-            <button class="ri-settings-3-fill" onClick={handleEdit}></button>
+            <button
+              className="ri-settings-3-fill"
+              onClick={handleEdit}
+            ></button>
           </div>
         )}
       </div>

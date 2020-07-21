@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-require('dotenv').config({ path: './config/.env' });
+require('dotenv').config({ path: './.env' });
 const { createConnection } = require('typeorm');
 const http = require('http');
 const socketio = require('socket.io');

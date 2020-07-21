@@ -549,7 +549,7 @@ nav ul li {
   display: grid;
   grid-template-columns: 300px auto;
   grid-template-rows: auto;
-  padding: 2px 0 0 10px;
+  padding: 0 0 0 10px;
   height: 100vh;
 }
 
@@ -557,7 +557,7 @@ nav ul li {
   display: grid;
   grid-template-rows: auto 46px;
   grid-template-columns: auto;
-  padding: 10px;
+  padding: 0 10px 10px 10px;
   max-height: 100vh;
 }
 
@@ -587,6 +587,7 @@ nav ul li {
   display: flex;
   margin-top: 5px;
   margin: 5px 5px 5px 0;
+  max-width: 45%;
 }
 
 .my-message {
@@ -631,6 +632,7 @@ nav ul li {
 
 .message__content {
   overflow-wrap: anywhere;
+  padding-right: 10px;
 }
 
 .chat__messages {
@@ -1494,6 +1496,10 @@ nav ul li {
   .chats__list {
     border-right: none;
     border-bottom: 1px solid var(--dark-blue);
+  }
+
+  .message__box {
+    max-width: 70%;
   }
 
   .content__personal-page,

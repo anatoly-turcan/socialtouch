@@ -12,7 +12,7 @@ import avatar from '../../img/no-avatar.png';
 import noGroup from '../../img/no-group.png';
 
 const PostBox = ({ post, refresh }) => {
-  const { content, createdAt, image, user, group, previewLimit, link } = post;
+  const { content, createdAt, image, user, group, previewLimit } = post;
   const { user: currentUser } = useContext(UserContext);
   const [more, setMore] = useState(false);
   const author = group || user;
@@ -38,7 +38,6 @@ const PostBox = ({ post, refresh }) => {
   const handleEdit = () => setMore('edit');
   const handleComments = () => setMore('comments');
   const handleFull = () => setMore('full');
-
   const handleBack = () => setMore(false);
 
   if (more)
@@ -56,7 +55,7 @@ const PostBox = ({ post, refresh }) => {
     <div className="post__box">
       {image && (
         <div className="post__box--image">
-          <img src={image.location} alt="Post image" />
+          <img src={image.location} alt="Post" />
         </div>
       )}
 
@@ -73,7 +72,7 @@ const PostBox = ({ post, refresh }) => {
                     ? (author.image && author.image.location) || noGroup
                     : (author.image && author.image.location) || avatar
                 }
-                alt="Author image"
+                alt="Author"
               />
             </div>
             <span className="post__box--author-name">
@@ -114,16 +113,11 @@ const PostBox = ({ post, refresh }) => {
 
         <div className="post__box--content-actions">
           <div className="post__box--actions-part">
-            <Link to="" className="post__box--action post__box--action-like">
-              <i className="icon ri-heart-line"></i>
-              <span>152</span>
-            </Link>
             <button
               className="post__box--action post__box--action-comment btn-transparent"
               onClick={handleComments}
             >
               <i className="icon ri-message-3-line"></i>
-              {/* <span>14</span> */}
             </button>
           </div>
 

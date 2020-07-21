@@ -15,14 +15,14 @@ const Friends = () => {
           Component: AllFriends,
         },
         {
-          name: 'find',
-          label: 'Find users',
-          Component: FindUsers,
-        },
-        {
           name: 'requests',
           label: 'Friend requests',
           Component: FriendRequests,
+        },
+        {
+          name: 'find',
+          label: 'Find users',
+          Component: FindUsers,
         },
       ]}
     />

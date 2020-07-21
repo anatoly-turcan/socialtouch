@@ -965,7 +965,6 @@ nav ul li {
 
 .post__box--author-img img {
   height: 100%;
-  width: 100%;
   border-radius: 50%;
   box-shadow: 0 0 2px var(--dark-blue);
   object-fit: cover;

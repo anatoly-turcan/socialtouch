@@ -31,6 +31,11 @@ export const forgotPassword = async ({ email }) => {
   return result.data.message;
 };
 
+export const resetPassword = async (token, data) => {
+  const result = await http.patch(`${api}/auth/resetPassword/${token}`, data);
+  return result.data.status === 'success';
+};
+
 export const getMe = async () => {
   const result = await http.get(`${api}/users/me`);
   return result.data.data.user;

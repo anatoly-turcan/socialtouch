@@ -8,7 +8,7 @@ import groupConstraints from '../../validators/groupConstraints';
 import { updateGroup } from '../../services/apiService';
 
 const InfoForm = () => {
-  const { group, setGroup } = useContext(GroupContext);
+  const { group } = useContext(GroupContext);
   const [loader, setLoader] = useState(false);
 
   const doSubmit = async (data) => {

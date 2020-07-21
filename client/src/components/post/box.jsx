@@ -28,7 +28,7 @@ const PostBox = ({ post, refresh }) => {
         ? () => deleteGroupPost(post.group.link, post.link)
         : () => deletePost(post.link);
 
-      const success = deleteMethod();
+      const success = await deleteMethod();
       if (success) refresh();
     } catch ({ response }) {
       if (response) toast.error(response.data.message);

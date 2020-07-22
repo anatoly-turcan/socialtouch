@@ -1,6 +1,7 @@
 const cookie = require('cookie');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const { getConnection } = require('typeorm');
 const { joinChat, createMessage } = require('./chatController');
 const User = require('../entities/userSchema');
 
@@ -42,7 +43,8 @@ const auth = async (socket, connection) => {
   }
 };
 
-module.exports = (socket, connection, io) => {
+module.exports = (socket, io) => {
+  const connection = getConnection();
   let user;
 
   socket.on('chat', async (targetLink) => {

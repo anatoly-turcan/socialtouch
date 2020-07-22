@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "typeorm": "node ./node_modules/typeorm/cli.js",
+    "migration:run": "./node_modules/typeorm/cli.js migration:run",
+    "migration:revert": "./node_modules/typeorm/cli.js migration:revert"
   },
   "author": "4natoli.t@gmail.com",
   "license": "ISC",
@@ -25,11 +28,9 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.4.0",
-    "mongoose": "^5.9.20",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
-    "nodemailer": "^6.4.10",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.25.4",
     "socket.io": "^2.3.0",

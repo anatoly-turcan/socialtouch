@@ -88,7 +88,7 @@ exports.createMessage = async ({ connection, user, message, room }) => {
       author: {
         username: user.username,
         link: user.link,
-        image: user.image.location,
+        image: user.image ? user.image.location : null,
       },
       at: createdAt,
     };

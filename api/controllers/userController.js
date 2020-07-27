@@ -103,7 +103,12 @@ exports.getUser = handlerFactory.getOne({
   where: `${alias}.active = 1 AND ${alias}.link = :link`,
   whereSelectors: [['link', 'params', 'link']],
   join: [[`${alias}.image`, 'image']],
-  select: [alias, 'image.location'],
+  select: [
+    `${alias}.id`,
+    `${alias}.username`,
+    `${alias}.link`,
+    'image.location',
+  ],
   add: async (doc, req) => {
     const { count } = await req.connection
       .getRepository(Friends)
@@ -190,7 +195,7 @@ exports.getGroupsCount = catchError(
     res.status(200).json({
       status: 'success',
       data: {
-        count,
+        count: Number(count),
       },
     });
   }
@@ -321,7 +326,7 @@ exports.getFriendsCount = catchError(
     res.status(200).json({
       status: 'success',
       data: {
-        count,
+        count: Number(count),
       },
     });
   }
@@ -413,29 +418,6 @@ exports.updateImage = catchError(
     });
   }
 );
-
-// exports.getImages = catchError(async ({ connection, params }, res, next) => {
-//   const linkedUser = await connection
-//     .getRepository(User)
-//     .findOne({ where: { link: params.link } });
-
-//   if (!linkedUser) return next(new AppError('User not found', 404));
-
-//   const images = await connection
-//     .getRepository(Images)
-//     .createQueryBuilder('image')
-//     .leftJoinAndSelect('image.userMany', 'user')
-//     .where('user.id = :id', { id: linkedUser.id })
-//     .select(['image.location'])
-//     .getMany();
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       images,
-//     },
-//   });
-// });
 
 exports.searchUsers = catchError(async ({ connection, query }, res, next) => {
   if (!query.query)

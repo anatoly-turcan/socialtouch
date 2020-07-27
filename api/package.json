@@ -6,8 +6,9 @@
   "scripts": {
     "start": "nodemon index.js",
     "typeorm": "node ./node_modules/typeorm/cli.js",
-    "migration:run": "./node_modules/typeorm/cli.js migration:run",
-    "migration:revert": "./node_modules/typeorm/cli.js migration:revert"
+    "migration:run": "node ./node_modules/typeorm/cli.js migration:run",
+    "migration:revert": "node ./node_modules/typeorm/cli.js migration:revert",
+    "test": "(set NODE_ENV=test) & mocha"
   },
   "author": "4natoli.t@gmail.com",
   "license": "ISC",
@@ -40,6 +41,7 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^7.3.1",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -48,7 +50,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.1",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "supertest": "^4.0.2"
   },
   "engines": {
     "node": ">=14.0.0"

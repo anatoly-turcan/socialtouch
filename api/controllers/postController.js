@@ -25,7 +25,6 @@ exports.getAllPosts = catchError(
 
     if (params.link)
       builder
-        .select(filter.fields)
         .where((qb) => {
           const subQuery = qb
             .subQuery()

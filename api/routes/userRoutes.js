@@ -14,7 +14,6 @@ router.route('/search').get(userController.searchUsers);
 router.route('/:link').get(userController.getUser);
 router.route('/:link/groups').get(userController.getGroups);
 router.route('/:link/groupsCount').get(userController.getGroupsCount);
-// router.route('/:link/images').get(userController.getImages);
 router.route('/:link/settings').get(userController.getUserSettings);
 router.route('/:link/friendsCount').get(userController.getFriendsCount);
 

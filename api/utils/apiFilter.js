@@ -1,20 +1,30 @@
 const paginate = require('./paginate');
 
-module.exports = (query, prefix) => {
+exports.fieldsFilter = (alias, allowableFields, fields) => {
+  if (!fields) return allowableFields.map((field) => `${alias}.${field}`);
+
+  return fields.split(',').reduce((acc, field) => {
+    if (allowableFields.includes(field)) return [...acc, `${alias}.${field}`];
+
+    return acc;
+  }, []);
+};
+
+exports.apiFilter = (query, alias) => {
   const defaultLimit = 20;
   const result = {};
 
   if (query && query.fields) {
-    const fields = query.fields.split(',').map((field) => `${prefix}.${field}`);
-    result.fields = [`${prefix}.id`, ...fields];
-  } else result.fields = [prefix];
+    const fields = query.fields.split(',').map((field) => `${alias}.${field}`);
+    result.fields = [`${alias}.id`, ...fields];
+  } else result.fields = [alias];
 
   if (query && query.order) {
     result.order = [
-      `${prefix}.id`,
+      `${alias}.id`,
       query.order && query.order === 'asc' ? 'ASC' : 'DESC',
     ];
-  } else result.order = [`${prefix}.id`, 'DESC'];
+  } else result.order = [`${alias}.id`, 'DESC'];
 
   result.limit = query.limit ? Math.abs(Number(query.limit)) : defaultLimit;
 

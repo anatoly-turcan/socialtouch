@@ -245,7 +245,7 @@ describe('user', function () {
     });
 
     describe('GET /search', function () {
-      it('should return 200, an array of users', async function () {
+      it('with query: should return 200, an array of users', async function () {
         const res = await request(app)
           .get(`${api}/users/search`)
           .query({ query: user.username.charAt(0) })
@@ -253,6 +253,15 @@ describe('user', function () {
 
         expect(res.status).to.equal(200);
         expect(res.body.data.users).to.be.an('array');
+      });
+
+      it('without query: should return 400, status fail', async function () {
+        const res = await request(app)
+          .get(`${api}/users/search`)
+          .set('Cookie', [cookie]);
+
+        expect(res.status).to.equal(400);
+        expect(res.body.status).to.equal('fail');
       });
     });
 
@@ -365,24 +374,6 @@ describe('user', function () {
 
         expect(res.status).to.be.equal(400);
         expect(res.body.status).to.be.equal('fail');
-      });
-    });
-
-    describe('GET /settings', function () {
-      it('with cookie: should return 200, settings', async function () {
-        const res = await request(app)
-          .get(`${api}/users/me/settings`)
-          .set('Cookie', [cookie]);
-
-        expect(res.status).to.equal(200);
-        expect(res.body.data.settings).to.be.an('object');
-      });
-
-      it('no cookie: should return 401, status fail', async function () {
-        const res = await request(app).get(`${api}/users/me/settings`);
-
-        expect(res.status).to.be.equal(401);
-        expect(res.headers['set-cookie']).to.be.undefined;
       });
     });
 

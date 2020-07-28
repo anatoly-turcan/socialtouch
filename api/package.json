@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "typeorm": "node ./node_modules/typeorm/cli.js",
-    "migration:run": "node ./node_modules/typeorm/cli.js migration:run",
+    "migration": "node ./node_modules/typeorm/cli.js migration:run",
     "migration:revert": "node ./node_modules/typeorm/cli.js migration:revert",
     "test": "(set NODE_ENV=test) & mocha"
   },
@@ -19,6 +20,7 @@
     "aws-sdk": "^2.709.0",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "cookie": "^0.4.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",

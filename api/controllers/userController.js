@@ -1,5 +1,5 @@
 const catchError = require('../utils/catchError');
-const apiFilter = require('../utils/apiFilter');
+const { apiFilter, fieldsFilter } = require('../utils/apiFilter');
 const userConstraints = require('../validators/userConstraints');
 const userSettingsConstraints = require('../validators/userSettingsConstraints');
 const User = require('../entities/userSchema');
@@ -20,12 +20,18 @@ exports.getAllUsers = catchError(async ({ connection, query }, res, next) => {
     .getRepository(User)
     .createQueryBuilder(alias)
     .leftJoinAndSelect(`${alias}.image`, 'image')
-    .select([...filter.fields, 'image.location'])
+    .select([
+      `${alias}.id`,
+      ...fieldsFilter(alias, ['username', 'link'], query.fields),
+      'image.location',
+    ])
     .where(`${alias}.active = 1`)
     .offset(filter.offset)
     .limit(filter.limit)
     .orderBy(...filter.order)
     .getMany();
+
+  users.forEach((user) => delete user.id);
 
   res.status(200).json({
     status: 'success',
@@ -70,7 +76,6 @@ exports.getUserSettings = catchError(
       .setParameter('link', params.link)
       .getOne();
 
-    settings.id = undefined;
     settings.userId = undefined;
 
     res.status(200).json({
@@ -81,21 +86,6 @@ exports.getUserSettings = catchError(
     });
   }
 );
-
-exports.getMySettings = catchError(async ({ connection, user }, res, next) => {
-  const settings = await connection
-    .getRepository(UserSettings)
-    .findOne({ where: { userId: user.id } });
-
-  settings.userId = undefined;
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      settings,
-    },
-  });
-});
 
 exports.getUser = handlerFactory.getOne({
   Entity: User,
@@ -168,10 +158,16 @@ exports.getGroups = catchError(
         return `group.active = 1 AND subscribers.id = ${userId}`;
       })
       .setParameter('link', params.link)
-      .select(['group.id', 'group.name', 'group.link', 'image.location'])
+      .select([
+        'group.id',
+        ...fieldsFilter('group', ['name', 'link'], query.fields),
+        'image.location',
+      ])
       .skip(offset)
       .take(limit)
       .getMany();
+
+    groups.forEach((group) => delete group.id);
 
     res.status(200).json({
       status: 'success',
@@ -432,11 +428,12 @@ exports.searchUsers = catchError(async ({ connection, query }, res, next) => {
     })
     .select([
       `${alias}.id`,
-      `${alias}.username`,
-      `${alias}.link`,
+      ...fieldsFilter(alias, ['username', 'link'], query.fields),
       'image.location',
     ])
     .getMany();
+
+  users.forEach((user) => delete user.id);
 
   res.status(200).json({
     status: 'success',

@@ -1,6 +1,5 @@
-// const apiFilter = require('../utils/apiFilter');
 const catchError = require('../utils/catchError');
-const apiFilter = require('../utils/apiFilter');
+const { apiFilter, fieldsFilter } = require('../utils/apiFilter');
 const AppError = require('../utils/appError');
 const validate = require('../utils/validate');
 const cloud = require('../utils/cloud');
@@ -46,7 +45,12 @@ exports.getAllPosts = catchError(
       .leftJoinAndSelect(`group.image`, 'groupImg')
       .leftJoinAndSelect('user.image', 'img')
       .select([
-        ...filter.fields,
+        `${alias}.id`,
+        ...fieldsFilter(
+          alias,
+          ['content', 'previewLimit', 'link', 'createdAt'],
+          query.fields
+        ),
         'image.location',
         'user.username',
         'user.link',
@@ -68,6 +72,9 @@ exports.getAllPosts = catchError(
         }
         delete post.group.creator;
       }
+
+      delete post.id;
+
       return post;
     });
 
@@ -89,26 +96,25 @@ exports.getPost = handlerFactory.getOne({
   join: [
     [`${alias}.user`, 'user'],
     [`${alias}.image`, 'image'],
+    [`${alias}.group`, 'group'],
     ['user.image', 'img'],
+    ['group.image', 'groupImg'],
   ],
   select: [
-    alias,
+    `${alias}.id`,
+    `${alias}.content`,
+    `${alias}.previewLimit`,
+    `${alias}.link`,
+    `${alias}.createdAt`,
     'image.location',
     'user.username',
     'user.link',
-    'user.imgId',
+    'group.name',
+    'group.link',
     'img.location',
+    'groupImg.location',
   ],
 });
-
-// exports.createPost = handlerFactory.createOne({
-//   Entity: Post,
-//   Model: PostModel,
-//   bodyFields: ['content'],
-//   userId: 'userId',
-//   constraints: postConstraints,
-//   responseName: 'post',
-// });
 
 exports.createPost = catchError(
   async ({ connection, user, body, files, group }, res, next) => {
@@ -344,10 +350,11 @@ exports.getNews = catchError(async ({ connection, user, query }, res, next) => {
     .where(where.options.join(' OR '), where.selectors)
     .select([
       `${alias}.id`,
-      `${alias}.content`,
-      `${alias}.previewLimit`,
-      `${alias}.link`,
-      `${alias}.createdAt`,
+      ...fieldsFilter(
+        alias,
+        ['content', 'previewLimit', 'link', 'createdAt'],
+        query.fields
+      ),
       'image.location',
       'user.username',
       'user.link',
@@ -360,6 +367,8 @@ exports.getNews = catchError(async ({ connection, user, query }, res, next) => {
     .take(filter.limit)
     .orderBy(...filter.order)
     .getMany();
+
+  news.forEach((el) => delete el.id);
 
   res.status(200).json({
     status: 'success',

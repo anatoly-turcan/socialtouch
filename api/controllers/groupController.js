@@ -1,5 +1,5 @@
 const catchError = require('../utils/catchError');
-const apiFilter = require('../utils/apiFilter');
+const { apiFilter, fieldsFilter } = require('../utils/apiFilter');
 const Group = require('../entities/groupSchema');
 const Image = require('../entities/imageSchema');
 const GroupModel = require('../models/groupModel');
@@ -20,7 +20,8 @@ exports.getAllGroups = catchError(async ({ connection, query }, res, next) => {
     .leftJoinAndSelect(`${alias}.creator`, 'creator')
     .leftJoinAndSelect(`creator.image`, 'creatorImg')
     .select([
-      ...filter.fields,
+      `${alias}.id`,
+      ...fieldsFilter(alias, ['name', 'description', 'link'], query.fields),
       'img.location',
       'creator.username',
       'creator.link',
@@ -31,6 +32,8 @@ exports.getAllGroups = catchError(async ({ connection, query }, res, next) => {
     .offset(filter.offset)
     .limit(filter.limit)
     .getMany();
+
+  groups.forEach((group) => delete group.id);
 
   res.status(200).json({
     status: 'success',
@@ -222,7 +225,7 @@ exports.getSubscribersCount = catchError(
     res.status(200).json({
       status: 'success',
       data: {
-        count,
+        count: Number(count),
       },
     });
   }
@@ -241,6 +244,8 @@ exports.searchGroups = catchError(async ({ connection, query }, res, next) => {
     })
     .select([`${alias}.id`, `${alias}.name`, `${alias}.link`, 'image.location'])
     .getMany();
+
+  groups.forEach((group) => delete group.id);
 
   res.status(200).json({
     status: 'success',

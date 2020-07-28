@@ -9,13 +9,8 @@ router
   .patch(userController.updateMe)
   .delete(userController.deleteMe);
 
-router
-  .route('/settings')
-  .get(userController.getMySettings)
-  .patch(userController.updateMySettings);
-
+router.route('/settings').patch(userController.updateMySettings);
 router.route('/friendRequests').get(userController.getFriendRequests);
-
 router.route('/updateImage').patch(userController.updateImage);
 
 module.exports = router;

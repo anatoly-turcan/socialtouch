@@ -14,11 +14,6 @@ exports.apiFilter = (query, alias) => {
   const defaultLimit = 20;
   const result = {};
 
-  if (query && query.fields) {
-    const fields = query.fields.split(',').map((field) => `${alias}.${field}`);
-    result.fields = [`${alias}.id`, ...fields];
-  } else result.fields = [alias];
-
   if (query && query.order) {
     result.order = [
       `${alias}.id`,

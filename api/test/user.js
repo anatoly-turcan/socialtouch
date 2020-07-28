@@ -13,9 +13,9 @@ const api = '/api/v1';
 
 const connectionOptions = {
   ...ormconfig,
-  host: 'localhost',
-  username: 'root',
-  password: 'mdbrootgYs7',
+  host: 'socialtouch-db.cfoocivessmh.eu-central-1.rds.amazonaws.com',
+  username: 'admin',
+  password: '0K0YBvw0Sx41a3j',
   database: 'socialtouch_test',
 };
 

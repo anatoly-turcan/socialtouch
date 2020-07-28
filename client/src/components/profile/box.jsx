@@ -156,7 +156,7 @@ const ProfileBox = ({ user, isMe }) => {
             onClick={handleAllFriends}
           >
             Friends
-            <span className="person--data-counter">{friendsCount || '*'}</span>
+            <span className="person--data-counter">{friendsCount || '0'}</span>
           </button>
           <div className="person--data--el-container">
             {loader && <Loader size={5} />}
@@ -170,7 +170,7 @@ const ProfileBox = ({ user, isMe }) => {
             onClick={handleAllGroups}
           >
             Groups
-            <span className="person--data-counter">{groupsCount || '*'}</span>
+            <span className="person--data-counter">{groupsCount || '0'}</span>
           </button>
           <div className="person--data--el-container">
             {loader && <Loader size={5} />}

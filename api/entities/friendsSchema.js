@@ -24,20 +24,4 @@ module.exports = new EntitySchema({
       updateDate: true,
     },
   },
-  // relations: {
-  //   friends: {
-  //     target: 'User',
-  //     type: 'many-to-one',
-  //     joinColumn: { name: 'friend_id', referencedColumnName: 'id' },
-  //     cascade: true,
-  //     onDelete: 'CASCADE',
-  //   },
-  //   targets: {
-  //     target: 'User',
-  //     type: 'many-to-one',
-  //     joinColumn: { name: 'target_id', referencedColumnName: 'id' },
-  //     cascade: true,
-  //     onDelete: 'CASCADE',
-  //   },
-  // },
 });

@@ -1,7 +1,5 @@
 const { EntitySchema } = require('typeorm');
 
-// const select = process.env.NODE_ENV === 'development';
-
 module.exports = new EntitySchema({
   name: 'Groups',
   columns: {
@@ -22,12 +20,10 @@ module.exports = new EntitySchema({
     creatorId: {
       type: 'int',
       nullable: true,
-      // select,
     },
     imgId: {
       type: 'int',
       nullable: true,
-      // select,
     },
     link: {
       type: 'varchar',
@@ -38,15 +34,12 @@ module.exports = new EntitySchema({
       type: 'boolean',
       default: true,
       nullable: false,
-      // select,
     },
     createdAt: {
       createDate: true,
-      // select,
     },
     updatedAt: {
       updateDate: true,
-      // select,
     },
   },
   relations: {

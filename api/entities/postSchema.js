@@ -1,7 +1,5 @@
 const { EntitySchema } = require('typeorm');
 
-// const select = process.env.NODE_ENV === 'development';
-
 module.exports = new EntitySchema({
   name: 'Posts',
   columns: {
@@ -13,12 +11,10 @@ module.exports = new EntitySchema({
     userId: {
       type: 'int',
       nullable: true,
-      // select,
     },
     groupId: {
       type: 'int',
       nullable: true,
-      // select,
     },
     content: {
       type: 'text',
@@ -42,7 +38,6 @@ module.exports = new EntitySchema({
     },
     updatedAt: {
       updateDate: true,
-      // select,
     },
   },
   relations: {
@@ -62,22 +57,6 @@ module.exports = new EntitySchema({
       type: 'one-to-many',
       inverseSide: 'post',
     },
-    // images: {
-    //   target: 'Images',
-    //   type: 'many-to-many',
-    //   inverseSide: 'post',
-    //   joinTable: {
-    //     name: 'post_images',
-    //     joinColumn: {
-    //       name: 'post_id',
-    //       referencedColumnName: 'id',
-    //     },
-    //     inverseJoinColumn: {
-    //       name: 'img_id',
-    //       referencedColumnName: 'id',
-    //     },
-    //   },
-    // },
     image: {
       target: 'Images',
       type: 'one-to-one',

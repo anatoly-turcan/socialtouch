@@ -61,7 +61,6 @@ exports.signup = catchError(async ({ connection, body }, res, next) => {
     .getRepository(User)
     .save(await user.prepare());
 
-  // Create a record in the user_settings table
   await connection.getRepository(UserSettings).save({ userId: newUser.id });
 
   createSendToken(newUser, 201, res);

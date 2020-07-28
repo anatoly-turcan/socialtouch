@@ -35,11 +35,6 @@ module.exports = new EntitySchema({
       inverseSide: 'image',
       onDelete: 'CASCADE',
     },
-    // userMany: {
-    //   target: 'Users',
-    //   type: 'many-to-many',
-    //   inverseSide: 'images',
-    // },
     group: {
       target: 'Groups',
       type: 'one-to-one',

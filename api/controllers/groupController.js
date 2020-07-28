@@ -133,8 +133,8 @@ exports.subscribe = catchError(
     await connection
       .createQueryBuilder()
       .relation(Group, 'subscribers')
-      .of(group.id) // id | object {id: ..., ...}
-      .add(user.id); // id | object {id: ..., ...}
+      .of(group.id)
+      .add(user.id);
 
     res.status(204).json({
       status: 'success',
@@ -156,8 +156,8 @@ exports.unsubscribe = catchError(
     await connection
       .createQueryBuilder()
       .relation(Group, 'subscribers')
-      .of(group.id) // id | object {id: ..., ...}
-      .remove(user.id); // id | object {id: ..., ...}
+      .of(group.id)
+      .remove(user.id);
 
     res.status(204).json({
       status: 'success',
@@ -168,12 +168,6 @@ exports.unsubscribe = catchError(
 
 exports.getSubscribers = catchError(
   async ({ connection, params, query }, res, next) => {
-    // const subscribers = await connection
-    //   .createQueryBuilder()
-    //   .select(['link'])
-    //   .relation(Group, 'subscribers')
-    //   .of(group.id)
-    //   .loadMany();
     const { offset, limit } = apiFilter(query);
 
     const result = await connection

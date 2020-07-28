@@ -26,7 +26,6 @@ const CreatePost = ({ refresh, createMethod }) => {
     try {
       setLoader(true);
 
-      // const success = await createPost(data);
       const success = await createMethod(data);
       if (success) refresh();
 

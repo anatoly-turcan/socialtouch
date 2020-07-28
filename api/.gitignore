@@ -1,5 +1,4 @@
 node_modules/
 db_migrations/
-/ormconfig.js
 /test.js
 /.env

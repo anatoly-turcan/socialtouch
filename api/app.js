@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const multer = require('multer');
 const { getConnection } = require('typeorm');
 const postRouter = require('./routes/postRoutes.js');
@@ -20,6 +21,8 @@ const upload = multer({
 });
 
 const app = express();
+
+app.use(compression());
 
 app.use(cors({ origin: true, credentials: true }));
 app.options('*', cors());

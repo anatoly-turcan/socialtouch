@@ -6,18 +6,9 @@ const User = require('../entities/userSchema');
 const UserSettings = require('../entities/userSettingsSchema');
 const Friends = require('../entities/friendsSchema');
 const UserModel = require('../models/userModel');
-const ormconfig = require('../ormconfig');
 const app = require('../app');
 
 const api = '/api/v1';
-
-const connectionOptions = {
-  ...ormconfig,
-  host: 'socialtouch-db.cfoocivessmh.eu-central-1.rds.amazonaws.com',
-  username: 'admin',
-  password: '0K0YBvw0Sx41a3j',
-  database: 'socialtouch_test',
-};
 
 describe('user', function () {
   let connection;
@@ -26,7 +17,7 @@ describe('user', function () {
   let cookie;
 
   before('open db connection, init database', async function () {
-    connection = await createConnection(connectionOptions);
+    connection = await createConnection();
     user = await new UserModel(
       'test',
       't@es.t',

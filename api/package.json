@@ -1,11 +1,11 @@
 {
   "name": "social-touch-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple social network api",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "(set NODE_ENV=production) & node index.js",
+    "dev": "(set NODE_ENV=development) & nodemon index.js",
     "typeorm": "node ./node_modules/typeorm/cli.js",
     "migration": "node ./node_modules/typeorm/cli.js migration:run",
     "migration:revert": "node ./node_modules/typeorm/cli.js migration:revert",

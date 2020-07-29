@@ -18,19 +18,24 @@ const signToken = (id, salt) => {
   });
 };
 
+const cookieOptions =
+  process.env.NODE_ENV !== 'development'
+    ? {
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+      }
+    : {};
+
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user.id, user.salt);
 
-  const cookieOptions = {
+  res.cookie('jwt', token, {
+    ...cookieOptions,
     expires: new Date(
       Date.now() + process.env.JWTCOOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
-    httpOnly: true,
-    sameSite: 'None',
-    secure: true,
-  };
-
-  res.cookie('jwt', token, cookieOptions);
+  });
 
   res.status(statusCode).json({
     status: 'success',
@@ -260,10 +265,8 @@ exports.updatePassword = catchError(
 
 exports.signout = (req, res) => {
   res.cookie('jwt', 'logged-out', {
+    ...cookieOptions,
     expires: new Date(Date.now() - 10000),
-    httpOnly: true,
-    sameSite: 'None',
-    secure: true,
   });
 
   res.status(200).json({

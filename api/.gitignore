@@ -1,4 +1,2 @@
 node_modules/
-db_migrations/
-/test.js
 /.env

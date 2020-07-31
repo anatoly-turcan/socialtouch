@@ -33,7 +33,7 @@ const createSendToken = (user, statusCode, res) => {
   res.cookie('jwt', token, {
     ...cookieOptions,
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 86400000 // 24 * 60 * 60 * 1000
     ),
   });
 
@@ -60,8 +60,6 @@ exports.signup = catchError(async ({ connection, body }, res, next) => {
 
   const validation = validate(user, userConstraints.create);
   if (validation) return next(new AppError(validation, 400));
-
-  user.passwordConfirm = undefined;
 
   const newUser = await connection
     .getRepository(User)
@@ -108,24 +106,9 @@ exports.protect = catchError(async (req, res, next) => {
 
   const { id } = jwt.decode(token);
 
-  const additionalColumns = [
-    'email',
-    'salt',
-    'passwordHash',
-    'passwordResetToken',
-    'passwordChangedAt',
-    'active',
-    'createdAt',
-    'updatedAt',
-  ];
-
   const user = await req.connection
     .getRepository(User)
-    .createQueryBuilder()
-    .select()
-    .addSelect(...additionalColumns)
-    .where('active = 1 AND id = :id', { id })
-    .getOne();
+    .findOne({ active: true, id });
 
   if (!user)
     return next(
@@ -152,11 +135,7 @@ exports.forgotPassword = catchError(async ({ connection, body }, res, next) => {
 
   const repo = connection.getRepository(User);
 
-  const user = await repo
-    .createQueryBuilder()
-    .select()
-    .where('active = 1 AND email = :email', { email: body.email })
-    .getOne();
+  const user = await repo.findOne({ active: true, email: body.email });
 
   if (!user)
     return next(new AppError('There is no user with email address', 404));
@@ -199,13 +178,10 @@ exports.resetPassword = catchError(
       .update(params.token)
       .digest('hex');
 
-    const user = await repo
-      .createQueryBuilder('user')
-      .select()
-      .where('user.active = 1 AND user.passwordResetToken = :token', {
-        token: hashedToken,
-      })
-      .getOne();
+    const user = await repo.findOne({
+      active: true,
+      passwordResetToken: hashedToken,
+    });
 
     if (!user) return next(new AppError('Token has expired', 400));
 
@@ -237,11 +213,7 @@ exports.updatePassword = catchError(
     const { password, passwordConfirm, newPassword } = body;
     const repo = connection.getRepository(User);
 
-    const user = await repo
-      .createQueryBuilder()
-      .select()
-      .where('id = :id', { id: currentUser.id })
-      .getOne();
+    const user = await repo.findOne({ id: currentUser.id });
 
     if (!(await UserModel.correctPassword(password, user.passwordHash)))
       return next(new AppError('Your current password is wrong', 401));

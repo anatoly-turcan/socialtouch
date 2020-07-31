@@ -1,6 +1,5 @@
 import { api } from '../config.json';
 import http from './httpService';
-import { async } from 'validate.js';
 
 export const signin = async ({ email, password }) => {
   const result = await http.post(`${api}/auth/signin`, { email, password });

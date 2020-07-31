@@ -33,11 +33,11 @@ describe('user', function () {
     ).prepare();
 
     await connection.getRepository(User).save(user);
-    await connection.getRepository(UserSettings).save({ userId: user.id });
     await connection.getRepository(User).save(friend);
+    await connection.getRepository(UserSettings).save({ userId: user.id });
   });
 
-  after('clear database, close db connection', async function () {
+  after('clean database, close db connection', async function () {
     await connection
       .getRepository(User)
       .createQueryBuilder()

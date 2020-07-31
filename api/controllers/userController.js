@@ -76,7 +76,7 @@ exports.getUserSettings = catchError(
       .setParameter('link', params.link)
       .getOne();
 
-    settings.userId = undefined;
+    delete settings.userId;
 
     res.status(200).json({
       status: 'success',

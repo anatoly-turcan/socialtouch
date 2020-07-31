@@ -1,5 +1,5 @@
 import React from 'react';
-import Posts from './../components/posts';
+import Posts from '../components/posts';
 import { getNews } from '../services/apiService';
 
 const News = () => {

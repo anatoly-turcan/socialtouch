@@ -1,12 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
-import UserContext from './../../context/userContext';
+import UserContext from '../../context/userContext';
 import AuthPage from '../../pages/auth';
 import Form from './form';
 import Input from '../common/input';
 import { forgotPassword } from '../../services/apiService';
 
-const Forgot = (props) => {
+const Forgot = () => {
   const { user } = useContext(UserContext);
   const [message, setMessage] = useState('');
 

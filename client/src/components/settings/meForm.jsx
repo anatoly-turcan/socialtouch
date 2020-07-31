@@ -4,7 +4,7 @@ import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userConstraints from '../../validators/userConstraints';
-import { updateMe } from './../../services/apiService';
+import { updateMe } from '../../services/apiService';
 import UserContext from '../../context/userContext';
 
 const MeForm = () => {

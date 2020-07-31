@@ -5,7 +5,7 @@ import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userSettingsConstraints from '../../validators/userSettingsConstraints';
-import { getSettings, updateMySettings } from './../../services/apiService';
+import { getSettings, updateMySettings } from '../../services/apiService';
 
 const InfoForm = () => {
   const { user } = useContext(UserContext);

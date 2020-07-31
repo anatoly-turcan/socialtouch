@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import UserContext from './../context/userContext';
+import UserContext from '../context/userContext';
 import avatar from '../img/no-avatar.png';
 
 const Navbar = () => {

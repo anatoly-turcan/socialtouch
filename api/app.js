@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -14,32 +15,24 @@ const userRouter = require('./routes/userRoutes');
 const groupRouter = require('./routes/groupRoutes');
 const chatRouter = require('./routes/chatRoutes');
 
-const upload = multer({
-  limits: {
-    fieldSize: 10485760,
-  },
-});
-
 const app = express();
-
-app.use(compression());
-
-app.use(cors({ origin: true, credentials: true }));
-app.options('*', cors());
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
+app.use(helmet());
+app.use(compression());
+app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
+app.use(cors({ origin: true, credentials: true }));
+app.options('*', cors());
 app.use((req, res, next) => {
   req.connection = getConnection();
   next();
 });
 
-app.use(express.json({ limit: '10kb' }));
-app.use(cookieParser());
-
 app.use('/api/v1/auth', authRouter);
 
-app.use(upload.any());
+app.use(multer().any());
 
 // Only for logged users
 app.use(authController.protect);

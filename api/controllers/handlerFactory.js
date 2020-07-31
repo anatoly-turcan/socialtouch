@@ -146,7 +146,7 @@ exports.getOne = (options) =>
     if (!document) return next(new AppError('Document not found', 404));
     if (options.add) await options.add(document, req);
 
-    document.id = undefined;
+    delete document.id;
 
     res.status(200).json({
       status: 'success',

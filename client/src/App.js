@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import WebFont from 'webfontloader';
 import UserContext from './context/userContext';
 import Signin from './components/auth/signin';
 import Signup from './components/auth/signup';
@@ -18,7 +19,15 @@ import Settings from './pages/settings';
 import Group from './pages/group';
 import Chat from './pages/chat';
 import { getMe } from './services/apiService';
+import 'react-toastify/dist/ReactToastify.css';
+import 'remixicon/fonts/remixicon.css';
 import './App.css';
+
+WebFont.load({
+  google: {
+    families: ['Roboto:400,500,900', 'sans-serif'],
+  },
+});
 
 const App = () => {
   const [user, setUser] = useState(null);

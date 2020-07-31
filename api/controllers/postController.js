@@ -144,7 +144,7 @@ exports.createPost = catchError(
 
     if (group) {
       prepared.groupId = group.id;
-      prepared.userId = undefined;
+      delete prepared.userId;
     }
 
     await connection.getRepository(Post).save({

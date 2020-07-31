@@ -28,20 +28,21 @@ const ProfileBox = ({ user, isMe }) => {
   const [isFriend, setIsFriend] = useState(user.isFriend || false);
 
   useEffect(() => {
-    const fetchFriendsGroups = async () => {
+    (async () => {
       try {
         setLoader(true);
-        setFriends(await getFriends(user.link));
-        setGroups(await getUserGroups(user.link));
-        setFriendsCount(await getFriendsCount(user.link));
-        setGroupsCount(await getGroupsCount(user.link));
+        await Promise.all([
+          getFriends(user.link).then(setFriends),
+          getUserGroups(user.link).then(setGroups),
+          getFriendsCount(user.link).then(setFriendsCount),
+          getGroupsCount(user.link).then(setGroupsCount),
+        ]);
       } catch ({ response }) {
         if (response) toast.error(response.data.message);
       } finally {
         setLoader(false);
       }
-    };
-    fetchFriendsGroups();
+    })();
   }, []);
 
   const handleInfo = () => setShowMore('info');
@@ -150,33 +151,38 @@ const ProfileBox = ({ user, isMe }) => {
       </div>
 
       <div className="person__element person--data">
-        <div className="person--data-el person__friends">
-          <button
-            className="person--data--heading btn-transparent w-100"
-            onClick={handleAllFriends}
-          >
-            Friends
-            <span className="person--data-counter">{friendsCount || '0'}</span>
-          </button>
-          <div className="person--data--el-container">
-            {loader && <Loader size={5} />}
-            {!loader && renderFriends()}
-          </div>
-        </div>
+        {loader && <Loader size={5} />}
+        {!loader && (
+          <Fragment>
+            <div className="person--data-el person__friends">
+              <button
+                className="person--data--heading btn-transparent w-100"
+                onClick={handleAllFriends}
+              >
+                Friends
+                <span className="person--data-counter">
+                  {friendsCount || '0'}
+                </span>
+              </button>
+              <div className="person--data--el-container">
+                {renderFriends()}
+              </div>
+            </div>
 
-        <div className="person--data-el person__groups">
-          <button
-            className="person--data--heading btn-transparent w-100"
-            onClick={handleAllGroups}
-          >
-            Groups
-            <span className="person--data-counter">{groupsCount || '0'}</span>
-          </button>
-          <div className="person--data--el-container">
-            {loader && <Loader size={5} />}
-            {!loader && renderGroups()}
-          </div>
-        </div>
+            <div className="person--data-el person__groups">
+              <button
+                className="person--data--heading btn-transparent w-100"
+                onClick={handleAllGroups}
+              >
+                Groups
+                <span className="person--data-counter">
+                  {groupsCount || '0'}
+                </span>
+              </button>
+              <div className="person--data--el-container">{renderGroups()}</div>
+            </div>
+          </Fragment>
+        )}
       </div>
 
       <div className="person__element person--more">

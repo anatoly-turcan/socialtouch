@@ -13,6 +13,8 @@ module.exports = class User {
     this.salt = crypto.randomBytes(8).toString('hex');
     this.link = crypto.randomBytes(12).toString('hex');
     this.passwordHash = await bcrypt.hash(this.password, 12);
+    if (this.password) delete this.password;
+    if (this.passwordConfirm) delete this.passwordConfirm;
 
     return this;
   }

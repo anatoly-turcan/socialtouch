@@ -1,6 +1,6 @@
 import React from 'react';
 import AllFriends from '../components/common/allFriends';
-import FindUsers from './../components/friends/find';
+import FindUsers from '../components/friends/find';
 import LinearNav from '../components/common/linearNav';
 import FriendRequests from '../components/friends/requests';
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import UserContext from './../../context/userContext';
+import UserContext from '../../context/userContext';
 import Loader from '../common/loader';
 import { getUserGroups } from '../../services/apiService';
 import noGroup from '../../img/no-group.png';

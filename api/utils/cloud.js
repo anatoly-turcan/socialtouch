@@ -26,5 +26,6 @@ exports.uploadImage = async (file, square = 0) => {
       Body: buffer,
     })
     .promise();
+
   return { location: data.Location, width: info.width, height: info.height };
 };

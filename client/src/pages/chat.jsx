@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import openSocket from 'socket.io-client';
 import { ioServer } from '../config.json';
 import ChatList from '../components/chat/list';
 import ChatContainer from '../components/chat/container';
-import ChatContext from './../context/chatContext';
+import ChatContext from '../context/chatContext';
 
 const Chat = () => {
   const location = useLocation();

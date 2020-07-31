@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { toast } from 'react-toastify';
-import UserContext from './../../context/userContext';
+import UserContext from '../../context/userContext';
 import { signout } from '../../services/apiService';
 
 const Signout = ({ history }) => {

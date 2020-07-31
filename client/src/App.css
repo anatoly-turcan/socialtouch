@@ -429,7 +429,6 @@ nav ul li {
 
 .content__fg {
   padding: 10px;
-  /* height: 100%; */
   overflow: auto;
 }
 
@@ -1279,7 +1278,6 @@ nav ul li {
   flex-direction: column;
   max-width: 500px;
   width: 100%;
-  /* box-shadow: 0px 0px 0px 2px var(--light-dark); */
   color: var(--darker);
   overflow: hidden;
   align-self: center;

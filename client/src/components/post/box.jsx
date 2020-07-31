@@ -24,9 +24,10 @@ const PostBox = ({ post, refresh }) => {
 
   const handleDelete = async () => {
     try {
-      const deleteMethod = post.group
-        ? () => deleteGroupPost(post.group.link, post.link)
-        : () => deletePost(post.link);
+      const deleteMethod = () =>
+        post.group
+          ? deleteGroupPost(post.group.link, post.link)
+          : deletePost(post.link);
 
       const success = await deleteMethod();
       if (success) refresh();

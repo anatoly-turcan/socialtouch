@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import UserContext from '../context/userContext';
 import ProfileBox from '../components/profile/box';
 import Posts from '../components/posts';

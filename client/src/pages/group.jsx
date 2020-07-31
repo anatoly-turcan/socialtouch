@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import UserContext from '../context/userContext';
 import GroupContext from '../context/groupContext';
 import Posts from '../components/posts';
-import Loader from './../components/common/loader';
+import Loader from '../components/common/loader';
 import GroupBox from '../components/group/box';
 import {
   createGroupPost,

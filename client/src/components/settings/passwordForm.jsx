@@ -4,7 +4,7 @@ import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userConstraints from '../../validators/userConstraints';
-import { updatePassword } from './../../services/apiService';
+import { updatePassword } from '../../services/apiService';
 
 const PasswordForm = () => {
   const [loader, setLoader] = useState(false);

@@ -12,24 +12,12 @@ const auth = async (socket, connection) => {
     if (!token) throw new Error();
 
     const { id } = jwt.decode(token);
-    const additionalColumns = [
-      'user.email',
-      'user.salt',
-      'user.passwordHash',
-      'user.passwordResetToken',
-      'user.passwordChangedAt',
-      'user.active',
-      'user.createdAt',
-      'user.updatedAt',
-      'img.location',
-    ];
 
     const user = await connection
       .getRepository(User)
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.image', 'img')
-      .select()
-      .addSelect(...additionalColumns)
+      .select(['user', 'img.location'])
       .where('user.active = 1 AND user.id = :id', { id })
       .getOne();
 

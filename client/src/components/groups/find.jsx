@@ -1,9 +1,9 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Input from '../common/input';
 import noGroup from '../../img/no-group.png';
-import { findGroups } from '../../services/apiService';
-import { toast } from 'react-toastify';
+import { findGroups } from '../../services/groupService';
 import Loader from '../common/loader';
 
 const FindGroups = () => {
@@ -36,7 +36,10 @@ const FindGroups = () => {
       <div className="person-info-multiple-el" key={group.link}>
         <div className="round__box-b">
           <Link to={`/group/${group.link}`} className="">
-            <img src={group.image ? group.image.location : noGroup} />
+            <img
+              src={group.image ? group.image.location : noGroup}
+              alt="Group"
+            />
           </Link>
         </div>
         {group.name.length > 10
@@ -46,7 +49,7 @@ const FindGroups = () => {
     ));
 
   return (
-    <Fragment>
+    <>
       <Input
         name="search"
         className="search__input fg__find"
@@ -64,7 +67,7 @@ const FindGroups = () => {
           'No groups'
         )}
       </div>
-    </Fragment>
+    </>
   );
 };
 

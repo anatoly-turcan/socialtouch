@@ -7,7 +7,7 @@ import {
   getSubscribersCount,
   subscribe,
   unsubscribe,
-} from '../../services/apiService';
+} from '../../services/groupService';
 import noGroup from '../../img/no-group.png';
 
 const GroupBox = () => {
@@ -65,13 +65,18 @@ const GroupBox = () => {
       <div className="group__actions">
         {isSubscribed ? (
           <button
+            type="button"
             className="btn btn-transparent white t-50"
             onClick={handleUnsubscribe}
           >
             Unsubscribe
           </button>
         ) : (
-          <button className="btn btn-light" onClick={handleSubscribe}>
+          <button
+            type="button"
+            className="btn btn-light"
+            onClick={handleSubscribe}
+          >
             Subscribe
           </button>
         )}
@@ -84,9 +89,10 @@ const GroupBox = () => {
         {isMine && (
           <div className="group__edit">
             <button
+              type="button"
               className="ri-settings-3-fill"
               onClick={handleEdit}
-            ></button>
+            />
           </div>
         )}
       </div>

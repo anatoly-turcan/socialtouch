@@ -8,7 +8,7 @@ const Loader = ({ size, h100, w100 }) => {
 
   return (
     <div className={classes}>
-      <i className="ri-loader-4-fill loading-animation"></i>
+      <i className="ri-loader-4-fill loading-animation" />
     </div>
   );
 };

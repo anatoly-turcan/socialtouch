@@ -6,7 +6,7 @@ import {
   getPostComments,
   createComment,
   deleteComment,
-} from '../../services/apiService';
+} from '../../services/postService';
 
 const PostComments = ({ link }) => {
   const [comments, setComments] = useState([]);
@@ -114,7 +114,7 @@ const PostComments = ({ link }) => {
         onChange={handleChange}
       />
       <button type="submit" className="btn btn-dark">
-        <i className="ri-send-plane-fill"></i>
+        <i className="ri-send-plane-fill" />
       </button>
     </form>
   );
@@ -131,7 +131,11 @@ const PostComments = ({ link }) => {
       {renderCreateComment()}
       {renderComments()}
       {!isAll && (
-        <button className="post__box--load-more" onClick={handleLoadMore}>
+        <button
+          type="button"
+          className="post__box--load-more"
+          onClick={handleLoadMore}
+        >
           Load more
         </button>
       )}

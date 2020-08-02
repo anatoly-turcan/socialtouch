@@ -4,7 +4,7 @@ import UserContext from '../../context/userContext';
 import AuthPage from '../../pages/auth';
 import Form from './form';
 import Input from '../common/input';
-import { forgotPassword } from '../../services/apiService';
+import { forgotPassword } from '../../services/authService';
 
 const Forgot = () => {
   const { user } = useContext(UserContext);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loader from '../common/loader';
@@ -13,7 +13,7 @@ import {
   getGroupsCount,
   addFriend,
   unfriend,
-} from '../../services/apiService';
+} from '../../services/userService';
 import avatar from '../../img/no-avatar.png';
 import noGroup from '../../img/no-group.png';
 
@@ -103,23 +103,32 @@ const ProfileBox = ({ user, isMe }) => {
       : 'No groups';
 
   const renderButtons = () => (
-    <Fragment>
-      <button className="btn btn-light person--btn" onClick={handleChat}>
+    <>
+      <button
+        type="button"
+        className="btn btn-light person--btn"
+        onClick={handleChat}
+      >
         Send message
       </button>
       {!isFriend ? (
-        <button className="btn btn-light person--btn" onClick={handleAddFriend}>
+        <button
+          type="button"
+          className="btn btn-light person--btn"
+          onClick={handleAddFriend}
+        >
           Add friend
         </button>
       ) : (
         <button
+          type="button"
           className="person--btn btn-transparent t-50 white"
           onClick={handleUnfriend}
         >
           Unfriend
         </button>
       )}
-    </Fragment>
+    </>
   );
 
   if (showMore)
@@ -153,9 +162,10 @@ const ProfileBox = ({ user, isMe }) => {
       <div className="person__element person--data">
         {loader && <Loader size={5} />}
         {!loader && (
-          <Fragment>
+          <>
             <div className="person--data-el person__friends">
               <button
+                type="button"
                 className="person--data--heading btn-transparent w-100"
                 onClick={handleAllFriends}
               >
@@ -171,6 +181,7 @@ const ProfileBox = ({ user, isMe }) => {
 
             <div className="person--data-el person__groups">
               <button
+                type="button"
                 className="person--data--heading btn-transparent w-100"
                 onClick={handleAllGroups}
               >
@@ -181,12 +192,16 @@ const ProfileBox = ({ user, isMe }) => {
               </button>
               <div className="person--data--el-container">{renderGroups()}</div>
             </div>
-          </Fragment>
+          </>
         )}
       </div>
 
       <div className="person__element person--more">
-        <button className="btn btn-transparent link-light" onClick={handleInfo}>
+        <button
+          type="button"
+          className="btn btn-transparent link-light"
+          onClick={handleInfo}
+        >
           Show full information
         </button>
       </div>

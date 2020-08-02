@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Form from '../common/form';
 import Loader from '../common/loader';
-import { deleteMe } from '../../services/apiService';
+import { deleteMe } from '../../services/meService';
 
 const DeleteForm = () => {
   const history = useHistory();

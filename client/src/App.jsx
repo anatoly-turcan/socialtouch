@@ -18,7 +18,7 @@ import News from './pages/news';
 import Settings from './pages/settings';
 import Group from './pages/group';
 import Chat from './pages/chat';
-import { getMe } from './services/apiService';
+import { getMe } from './services/meService';
 import 'react-toastify/dist/ReactToastify.css';
 import 'remixicon/fonts/remixicon.css';
 import './App.css';
@@ -45,7 +45,7 @@ const App = () => {
       }
     };
 
-    !user && fetchData();
+    if (!user) fetchData();
   }, []);
 
   if (loader) return <div className="global-loader">Loading...</div>;

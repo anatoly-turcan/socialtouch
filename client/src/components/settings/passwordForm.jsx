@@ -1,10 +1,10 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userConstraints from '../../validators/userConstraints';
-import { updatePassword } from '../../services/apiService';
+import { updatePassword } from '../../services/authService';
 
 const PasswordForm = () => {
   const [loader, setLoader] = useState(false);
@@ -40,7 +40,7 @@ const PasswordForm = () => {
       constraints={userConstraints}
     >
       {(handleChange, data) => (
-        <Fragment>
+        <>
           <label htmlFor="password">Current password</label>
           <Input
             name="password"
@@ -65,7 +65,7 @@ const PasswordForm = () => {
           <button type="submit" className="btn btn-dark">
             {loader ? <Loader size={2} /> : 'Save'}
           </button>
-        </Fragment>
+        </>
       )}
     </Form>
   );

@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loader from '../common/loader';
-import {
-  getFriendRequests,
-  confirmFriendship,
-  unfriend,
-} from '../../services/apiService';
+import { getFriendRequests } from '../../services/meService';
+import { confirmFriendship, unfriend } from '../../services/userService';
 import avatar from '../../img/no-avatar.png';
 
 const FriendRequests = () => {
@@ -64,12 +61,14 @@ const FriendRequests = () => {
           : friend.username}
         <div className="friend__request__actions">
           <button
+            type="button"
             className="btn btn-light"
             onClick={() => handleAccept(friend.link)}
           >
             Accept
           </button>
           <button
+            type="button"
             className="btn btn-danger"
             onClick={() => handleDecline(friend.link)}
           >

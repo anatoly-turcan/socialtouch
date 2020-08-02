@@ -1,11 +1,11 @@
-import React, { Fragment, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import GroupContext from '../../context/groupContext';
 import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import groupConstraints from '../../validators/groupConstraints';
-import { updateGroup } from '../../services/apiService';
+import { updateGroup } from '../../services/groupService';
 
 const InfoForm = () => {
   const { group } = useContext(GroupContext);
@@ -20,7 +20,9 @@ const InfoForm = () => {
         const updatedGroup = { ...group };
         if (data.name) updatedGroup.name = data.name;
         if (data.description) updatedGroup.description = data.description;
-        setTimeout(() => (window.location = `/group/${group.link}`), 500);
+        setTimeout(() => {
+          window.location = `/group/${group.link}`;
+        }, 500);
       }
     } catch ({ response }) {
       if (response) toast.error(response.data.message);
@@ -42,7 +44,7 @@ const InfoForm = () => {
       constraints={groupConstraints}
     >
       {(handleChange, data) => (
-        <Fragment>
+        <>
           <Input
             name="name"
             value={data.name}
@@ -59,7 +61,7 @@ const InfoForm = () => {
           <button type="submit" className="btn btn-dark">
             {loader ? <Loader size={2} /> : 'Save'}
           </button>
-        </Fragment>
+        </>
       )}
     </Form>
   );

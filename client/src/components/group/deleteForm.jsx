@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import GroupContext from '../../context/groupContext';
 import Loader from '../common/loader';
 import Form from '../common/form';
-import { deleteGroup } from '../../services/apiService';
+import { deleteGroup } from '../../services/groupService';
 
 const DeleteGroup = () => {
   const history = useHistory();

@@ -4,7 +4,7 @@ import UserContext from '../context/userContext';
 import ProfileBox from '../components/profile/box';
 import Posts from '../components/posts';
 import Loader from '../components/common/loader';
-import { getUser, getPosts } from '../services/apiService';
+import { getUser, getPosts } from '../services/userService';
 
 const User = () => {
   const history = useHistory();

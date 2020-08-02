@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Form from './form';
 import Input from '../common/input';
 import AuthPage from '../../pages/auth';
-import { resetPassword } from '../../services/apiService';
+import { resetPassword } from '../../services/authService';
 
 const Restore = () => {
   const { token } = useParams();
@@ -29,7 +29,7 @@ const Restore = () => {
         handleSubmit={handleSubmit}
       >
         {(handleChange, data) => (
-          <Fragment>
+          <>
             <Input
               name="password"
               type="password"
@@ -44,7 +44,7 @@ const Restore = () => {
               onChange={handleChange}
               value={data.passwordConfirm}
             />
-          </Fragment>
+          </>
         )}
       </Form>
     </AuthPage>

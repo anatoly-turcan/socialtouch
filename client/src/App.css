@@ -133,11 +133,13 @@ html {
   right: 15px;
   top: 30px;
   border-radius: 12px 0 12px 12px;
-  overflow: hidden;
   z-index: 1;
 }
-
 .dropdown-el {
+  background: transparent;
+  text-align: left;
+  transition: 0.1s;
+  width: 100%;
   padding: 6px 16px;
 }
 
@@ -147,7 +149,7 @@ html {
 
 .d-btn-danger {
   color: var(--red);
-  transition: 0.1s;
+  border-radius: 0 0 10px 10px;
 }
 
 .d-btn-danger:hover {
@@ -156,11 +158,12 @@ html {
 }
 
 .d-btn-default {
-  transition: 0.1s;
+  color: var(--light-blue);
+  border-radius: 10px 0 0 0;
 }
 
 .d-btn-default:hover {
-  background-color: var(--light-blue);
+  background: var(--light-blue);
   color: var(--darker);
 }
 

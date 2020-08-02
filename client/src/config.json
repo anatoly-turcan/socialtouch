@@ -1,4 +1,4 @@
 {
-  "api": "http://192.168.0.8:3000/api/v1",
-  "ioServer": "http://192.168.0.8:3000"
+  "api": "https://socialtouchapi.herokuapp.com/api/v1",
+  "ioServer": "https://socialtouchapi.herokuapp.com"
 }

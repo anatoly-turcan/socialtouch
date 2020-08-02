@@ -1,6 +1,6 @@
 import React from 'react';
 import Posts from '../components/posts';
-import { getNews } from '../services/apiService';
+import { getNews } from '../services/postService';
 
 const News = () => {
   const fetchNews = (page, limit = 10) => getNews(page, limit);

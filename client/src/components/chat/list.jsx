@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getChats } from '../../services/apiService';
+import { getChats } from '../../services/chatService';
 import avatar from '../../img/no-avatar.png';
 
 const ChatList = ({ handleSelect }) => {
@@ -15,6 +15,7 @@ const ChatList = ({ handleSelect }) => {
   const renderChats = () =>
     chats.map((chat) => (
       <button
+        type="button"
         className="chat__list__el"
         onClick={() => handleSelect(chat.link)}
         key={chat.link}

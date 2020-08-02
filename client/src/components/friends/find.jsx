@@ -1,9 +1,9 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Input from '../common/input';
 import avatar from '../../img/no-avatar.png';
-import { findUsers } from '../../services/apiService';
-import { toast } from 'react-toastify';
+import { findUsers } from '../../services/userService';
 import Loader from '../common/loader';
 
 const FindUsers = () => {
@@ -36,7 +36,7 @@ const FindUsers = () => {
       <div className="person-info-multiple-el" key={user.link}>
         <div className="round__box-b">
           <Link to={`/${user.link}`} className="">
-            <img src={user.image ? user.image.location : avatar} />
+            <img src={user.image ? user.image.location : avatar} alt="User" />
           </Link>
         </div>
         {user.username.length > 10
@@ -46,7 +46,7 @@ const FindUsers = () => {
     ));
 
   return (
-    <Fragment>
+    <>
       <Input
         name="search"
         className="search__input fg__find"
@@ -64,7 +64,7 @@ const FindUsers = () => {
           'No users'
         )}
       </div>
-    </Fragment>
+    </>
   );
 };
 

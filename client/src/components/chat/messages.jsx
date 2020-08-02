@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import ChatContext from '../../context/chatContext';
 import MessageBox from './messageBox';
 import Loader from '../common/loader';
-import { getMessages } from '../../services/apiService';
+import { getMessages } from '../../services/chatService';
 
 const ChatMessages = () => {
   const { room, incomingMessage } = useContext(ChatContext);
@@ -48,22 +48,6 @@ const ChatMessages = () => {
     messagesEndRef.current.scrollIntoView();
   }, [scroll]);
 
-  const handleMore = async () => {
-    try {
-      setLoader(true);
-
-      const newMessages = (await getMessages(room, messages.length)).reverse();
-
-      if (newMessages.length === 0 || newMessages.length < 20) setIsAll(true);
-
-      setMessages([...newMessages, ...messages]);
-    } catch (error) {
-      toast.error('Something went wrong');
-    } finally {
-      setLoader(false);
-    }
-  };
-
   const loadMore = async () => {
     try {
       const newMessages = (await getMessages(room, messages.length)).reverse();
@@ -77,7 +61,12 @@ const ChatMessages = () => {
   };
 
   return (
-    <div className="chat__messages" ref={(ref) => (scrollableTargetRef = ref)}>
+    <div
+      className="chat__messages"
+      ref={(ref) => {
+        scrollableTargetRef = ref;
+      }}
+    >
       <InfiniteScroll
         pageStart={0}
         loadMore={loadMore}
@@ -89,9 +78,9 @@ const ChatMessages = () => {
         }
         useWindow={false}
         getScrollParent={() => scrollableTargetRef}
-        isReverse={true}
         threshold={100}
         initialLoad={false}
+        isReverse
       >
         {messages.length ? (
           messages.map((message) => (

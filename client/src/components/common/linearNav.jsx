@@ -3,11 +3,10 @@ import React, { useState } from 'react';
 const LinearNav = ({ data, def, title }) => {
   const [selection, setSelection] = useState(def || data[0].name);
 
-  const classes = 'btn btn-dark';
-
   const renderButton = ({ name, label }) => (
     <button
-      className={selection === name ? `${classes} active` : classes}
+      type="button"
+      className={`btn btn-dark ${selection === name ? 'active' : ''}`}
       onClick={() => setSelection(name)}
       key={name}
     >

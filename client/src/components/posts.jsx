@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import Loader from './common/loader';
 import PostBox from './post/box';
 import CreatePost from './post/create';
-import { createPost } from '../services/apiService';
+import { createPost } from '../services/postService';
 
 const Posts = ({ fetchMethod, isMe, createMethod }) => {
   const [posts, setPosts] = useState([]);
@@ -71,7 +71,11 @@ const Posts = ({ fetchMethod, isMe, createMethod }) => {
 
       {!loader && !isAll && posts.length > 0 && posts.length % 10 === 0 && (
         <div className="post__box">
-          <button className="post__box--load-more" onClick={handleLoadMore}>
+          <button
+            type="button"
+            className="post__box--load-more"
+            onClick={handleLoadMore}
+          >
             Load more
           </button>
         </div>

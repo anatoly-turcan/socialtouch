@@ -4,7 +4,7 @@ import GroupContext from '../../context/groupContext';
 import Form from '../common/form';
 import Loader from '../common/loader';
 import Input from '../common/input';
-import { updateGroupImage } from '../../services/apiService';
+import { updateGroupImage } from '../../services/groupService';
 
 const ImageForm = () => {
   const { group } = useContext(GroupContext);
@@ -24,7 +24,9 @@ const ImageForm = () => {
       const success = await updateGroupImage(group.link, formData);
       if (success) {
         toast.info('Image successfully updated');
-        setTimeout(() => (window.location = `/group/${group.link}`), 500);
+        setTimeout(() => {
+          window.location = `/group/${group.link}`;
+        }, 500);
       }
     } catch ({ response }) {
       if (response) toast.error(response.data.message);
@@ -41,7 +43,7 @@ const ImageForm = () => {
             Select image
           </label>
           <Input name="image" type="file" onChange={handleChangeImage} />
-          <button className="btn btn-dark">
+          <button type="submit" className="btn btn-dark">
             {loader ? <Loader size={2} /> : 'Save'}
           </button>
         </div>

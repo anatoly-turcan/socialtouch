@@ -22,43 +22,28 @@ const Navbar = () => {
         <nav>
           <ul>
             <li>
-              <Link
-                to="/news"
-                className="btn-nav icon-lg ri-dashboard-fill"
-              ></Link>
+              <Link to="/news" className="btn-nav icon-lg ri-dashboard-fill" />
             </li>
             <li>
-              <Link
-                to="/chat"
-                className="btn-nav icon-lg ri-chat-1-fill"
-              ></Link>
+              <Link to="/chat" className="btn-nav icon-lg ri-chat-1-fill" />
             </li>
             <li>
-              <Link
-                to="/friends"
-                className="btn-nav icon-lg ri-user-fill"
-              ></Link>
+              <Link to="/friends" className="btn-nav icon-lg ri-user-fill" />
             </li>
             <li>
-              <Link
-                to="/groups"
-                className="btn-nav icon-lg ri-group-fill"
-              ></Link>
+              <Link to="/groups" className="btn-nav icon-lg ri-group-fill" />
             </li>
             <li>
               <Link
                 to="/signout"
                 className="btn-nav icon-lg ri-logout-box-r-fill"
                 style={{ color: 'var(--red)' }}
-              ></Link>
+              />
             </li>
           </ul>
         </nav>
         <div className="settings">
-          <Link
-            to="/settings"
-            className="btn-nav icon-lg ri-settings-3-fill"
-          ></Link>
+          <Link to="/settings" className="btn-nav icon-lg ri-settings-3-fill" />
         </div>
       </div>
     </header>

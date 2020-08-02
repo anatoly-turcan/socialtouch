@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import UserContext from '../../context/userContext';
-import Loader from '../common/loader';
-import { getUserGroups } from '../../services/apiService';
+import Loader from './loader';
+import { getUserGroups } from '../../services/userService';
 import noGroup from '../../img/no-group.png';
 
 const AllGroups = ({ link }) => {

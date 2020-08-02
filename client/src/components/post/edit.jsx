@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { updatePost, updateGroupPost } from '../../services/apiService';
+import { updatePost } from '../../services/postService';
+import { updateGroupPost } from '../../services/groupService';
 
 const EditPost = ({ post, refresh }) => {
   const [content, setContent] = useState(post.content);
@@ -32,8 +33,7 @@ const EditPost = ({ post, refresh }) => {
           className="pb-edit-area w-100"
           value={content}
           onChange={handleChange}
-          autoFocus
-        ></textarea>
+        />
         <div className="right">
           <button type="submit" className="btn-dark centered pb-edit-save-btn">
             Save

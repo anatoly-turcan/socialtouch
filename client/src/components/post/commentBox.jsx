@@ -10,14 +10,15 @@ const CommentBox = ({ user, comment, handleDelete }) => {
 
   const renderOptions = () => (
     <div className="post__box--action clickable dropdown">
-      <i className="icon-md ri-more-fill"></i>
+      <i className="icon-md ri-more-fill" />
       <div className="dropdown-content">
-        <div
+        <button
+          type="button"
           className="dropdown-el clickable d-btn-danger"
           onClick={() => handleDelete(comment.link)}
         >
           Delete
-        </div>
+        </button>
       </div>
     </div>
   );
@@ -27,7 +28,7 @@ const CommentBox = ({ user, comment, handleDelete }) => {
       <div className="comment__user-image">
         <div className="round__box">
           <Link to={`/${user.link}`}>
-            <img src={user.image ? user.image.location : avatar} />
+            <img src={user.image ? user.image.location : avatar} alt="User" />
           </Link>
         </div>
       </div>

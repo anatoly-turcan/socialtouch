@@ -4,7 +4,7 @@ import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userConstraints from '../../validators/userConstraints';
-import { updateMe } from '../../services/apiService';
+import { updateMe } from '../../services/meService';
 import UserContext from '../../context/userContext';
 
 const MeForm = () => {
@@ -17,7 +17,9 @@ const MeForm = () => {
       const success = await updateMe(data);
       if (success) {
         toast.success('Data changed successfully');
-        setTimeout(() => (window.location = '/settings'), 500);
+        setTimeout(() => {
+          window.location = '/settings';
+        }, 500);
       }
     } catch ({ response }) {
       if (response) toast.error(response.data.message);
@@ -40,7 +42,7 @@ const MeForm = () => {
       constraints={userConstraints}
     >
       {(handleChange, data) => (
-        <Fragment>
+        <>
           {Object.keys(init).map((name) => {
             if (!data[name]) data[name] = '';
             return (
@@ -55,7 +57,7 @@ const MeForm = () => {
           <button type="submit" className="btn btn-dark">
             {loader ? <Loader size={2} /> : 'Save'}
           </button>
-        </Fragment>
+        </>
       )}
     </Form>
   );

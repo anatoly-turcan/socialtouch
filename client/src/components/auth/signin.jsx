@@ -1,10 +1,10 @@
-import React, { useContext, Fragment } from 'react';
+import React, { useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import UserContext from '../../context/userContext';
 import Form from './form';
 import AuthPage from '../../pages/auth';
 import Input from '../common/input';
-import { signin } from '../../services/apiService';
+import { signin } from '../../services/authService';
 
 const Signin = ({ history }) => {
   const { user: currentUse, setUser } = useContext(UserContext);
@@ -27,7 +27,7 @@ const Signin = ({ history }) => {
         handleSubmit={handleSubmit}
       >
         {(handleChange, data) => (
-          <Fragment>
+          <>
             <Input
               name="email"
               type="email"
@@ -42,7 +42,7 @@ const Signin = ({ history }) => {
               onChange={handleChange}
               value={data.password}
             />
-          </Fragment>
+          </>
         )}
       </Form>
     </AuthPage>

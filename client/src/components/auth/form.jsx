@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Loader from '../common/loader';
 import validate from '../../utils/validate';
@@ -31,7 +31,7 @@ const Form = ({ title, reverse, handleSubmit, btn, init, children }) => {
   };
 
   return (
-    <Fragment>
+    <>
       <div className="block__header">
         <div className="block__header-el">{title}</div>
         {reverse && (
@@ -56,7 +56,7 @@ const Form = ({ title, reverse, handleSubmit, btn, init, children }) => {
           </form>
         )}
       </div>
-    </Fragment>
+    </>
   );
 };
 

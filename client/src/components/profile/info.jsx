@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { getSettings } from '../../services/apiService';
+import { getSettings } from '../../services/userService';
 import Loader from '../common/loader';
 
 const ProfileInfo = ({ link }) => {

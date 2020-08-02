@@ -13,11 +13,8 @@ const Form = ({ title, children, doSubmit, init, constraints }) => {
     doSubmit(data, (fields) => setData(fields || init));
   };
 
-  const handleChange = ({ currentTarget: input }) => {
-    const newData = { ...data };
-    newData[input.name] = input.value;
-    setData(newData);
-  };
+  const handleChange = ({ currentTarget: input }) =>
+    setData({ ...data, ...{ [input.name]: input.value } });
 
   return (
     <div className="form__box">

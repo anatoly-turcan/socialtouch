@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getFriends } from '../../services/apiService';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import UserContext from '../../context/userContext';
 import Loader from './loader';
-import { Link } from 'react-router-dom';
+import { getFriends } from '../../services/userService';
 import avatar from '../../img/no-avatar.png';
 
 const AllFriends = ({ link }) => {

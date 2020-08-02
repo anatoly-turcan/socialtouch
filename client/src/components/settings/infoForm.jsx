@@ -5,7 +5,8 @@ import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import userSettingsConstraints from '../../validators/userSettingsConstraints';
-import { getSettings, updateMySettings } from '../../services/apiService';
+import { updateMySettings } from '../../services/meService';
+import { getSettings } from '../../services/userService';
 
 const InfoForm = () => {
   const { user } = useContext(UserContext);
@@ -47,9 +48,8 @@ const InfoForm = () => {
         constraints={userSettingsConstraints}
       >
         {(handleChange, data) => (
-          <Fragment>
+          <>
             {Object.keys(settings).map((name) => {
-              if (!data[name]) data[name] = '';
               return (
                 <Fragment key={name}>
                   <label htmlFor={name}>
@@ -57,7 +57,7 @@ const InfoForm = () => {
                   </label>
                   <Input
                     name={name}
-                    value={data[name]}
+                    value={data[name] || ''}
                     onChange={handleChange}
                   />
                 </Fragment>
@@ -66,7 +66,7 @@ const InfoForm = () => {
             <button type="submit" className="btn btn-dark">
               {loader ? <Loader size={2} /> : 'Save'}
             </button>
-          </Fragment>
+          </>
         )}
       </Form>
     );

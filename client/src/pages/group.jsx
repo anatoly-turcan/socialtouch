@@ -10,7 +10,7 @@ import {
   createGroupPost,
   getGroup,
   getGroupPosts,
-} from '../services/apiService';
+} from '../services/groupService';
 
 const Group = () => {
   const params = useParams();
@@ -32,7 +32,7 @@ const Group = () => {
       try {
         setGroup(await getGroup(link));
       } catch ({ response }) {
-        if ((response.status = 404)) history.push('/not-found');
+        if (response.status === 404) history.push('/not-found');
         else toast.error(response.data.message);
       }
     };

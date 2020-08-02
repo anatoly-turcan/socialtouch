@@ -39,7 +39,7 @@ const ChatSend = () => {
         autoFocus
       />
       <button type="submit" className="centered btn-light">
-        <i className="ri-send-plane-2-fill"></i>
+        <i className="ri-send-plane-2-fill" />
       </button>
     </form>
   );

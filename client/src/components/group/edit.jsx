@@ -7,7 +7,11 @@ import DeleteGroup from './deleteForm';
 const EditGroup = ({ goBack }) => {
   return (
     <div className="group__edit__box">
-      <button className="btn btn-light btn-go-back" onClick={goBack}>
+      <button
+        type="button"
+        className="btn btn-light btn-go-back"
+        onClick={goBack}
+      >
         Go back
       </button>
       <LinearNav

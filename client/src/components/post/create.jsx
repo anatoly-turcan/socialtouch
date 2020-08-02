@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import Input from '../common/input';
 import Loader from '../common/loader';
@@ -47,13 +47,13 @@ const CreatePost = ({ refresh, createMethod }) => {
       >
         {loader && <Loader size={5} w100 />}
         {!loader && (
-          <Fragment>
+          <>
             <div className="create-new-post__title centered">New post</div>
 
             <div className="create-new-post__add-photo ">
               <label htmlFor="photo" className="create-new-post__photo">
                 <Input name="photo" type="file" onChange={handleChangeImage} />
-                <i className="ri-image-add-fill"></i>
+                <i className="ri-image-add-fill" />
               </label>
             </div>
 
@@ -69,9 +69,9 @@ const CreatePost = ({ refresh, createMethod }) => {
             </div>
 
             <button type="submit" className="create-new-post__button centered">
-              <i className="ri-send-plane-fill"></i>
+              <i className="ri-send-plane-fill" />
             </button>
-          </Fragment>
+          </>
         )}
       </form>
     </div>

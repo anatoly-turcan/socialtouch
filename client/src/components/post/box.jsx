@@ -7,7 +7,8 @@ import EditPost from './edit';
 import PostMore from './more';
 import PostComments from './comments';
 import PostFull from './full';
-import { deletePost, deleteGroupPost } from '../../services/apiService';
+import { deleteGroupPost } from '../../services/groupService';
+import { deletePost } from '../../services/postService';
 import avatar from '../../img/no-avatar.png';
 import noGroup from '../../img/no-group.png';
 
@@ -70,8 +71,8 @@ const PostBox = ({ post, refresh }) => {
               <img
                 src={
                   group
-                    ? (author.image && author.image.location) || noGroup
-                    : (author.image && author.image.location) || avatar
+                    ? author.image?.location || noGroup
+                    : author.image?.location || avatar
                 }
                 alt="Author"
               />
@@ -87,20 +88,22 @@ const PostBox = ({ post, refresh }) => {
 
           {isMine && (
             <div className="post__box--action clickable dropdown">
-              <i className="icon-md ri-more-fill"></i>
+              <i className="icon-md ri-more-fill" />
               <div className="dropdown-content">
-                <div
+                <button
+                  type="button"
                   className="dropdown-el clickable d-btn-default"
                   onClick={handleEdit}
                 >
                   Edit
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   className="dropdown-el clickable d-btn-danger"
                   onClick={handleDelete}
                 >
                   Delete
-                </div>
+                </button>
               </div>
             </div>
           )}
@@ -115,18 +118,20 @@ const PostBox = ({ post, refresh }) => {
         <div className="post__box--content-actions">
           <div className="post__box--actions-part">
             <button
+              type="button"
               className="post__box--action post__box--action-comment btn-transparent"
               onClick={handleComments}
             >
-              <i className="icon ri-message-3-line"></i>
+              <i className="icon ri-message-3-line" />
             </button>
           </div>
 
           <button
+            type="button"
             className="post__box--action btn-transparent"
             onClick={handleFull}
           >
-            <i className="ri-file-list-2-line"></i>
+            <i className="ri-file-list-2-line" />
           </button>
         </div>
       </div>

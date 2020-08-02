@@ -1,11 +1,11 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Form from '../common/form';
 import Input from '../common/input';
 import Loader from '../common/loader';
 import groupConstraints from '../../validators/groupConstraints';
-import { createGroup } from '../../services/apiService';
+import { createGroup } from '../../services/groupService';
 
 const CreateGroup = () => {
   const history = useHistory();
@@ -39,7 +39,7 @@ const CreateGroup = () => {
       constraints={groupConstraints}
     >
       {(handleChange, data) => (
-        <Fragment>
+        <>
           <label htmlFor="name">Group name</label>
           <Input name="name" value={data.name} onChange={handleChange} />
           <label htmlFor="description">Group description</label>
@@ -51,7 +51,7 @@ const CreateGroup = () => {
           <button type="submit" className="btn btn-dark">
             {loader ? <Loader size={2} /> : 'Create'}
           </button>
-        </Fragment>
+        </>
       )}
     </Form>
   );

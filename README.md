@@ -2,11 +2,6 @@
 
 API documentation: https://documenter.getpostman.com/view/11652731/T1Ds9vkY
 
-### Demo
-
-- **Client**: https://socialtouch.herokuapp.com/
-- **API**: https://socialtouchapi.herokuapp.com/
-
 ### Tech
 
 - **Client**: React
